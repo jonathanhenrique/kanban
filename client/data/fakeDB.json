@@ -1,0 +1,82 @@
+{
+  "boards": [
+    {
+      "board": "Platform Lauch",
+      "id": "b394a898-28f6-4e8e-83c5-c12855b84040",
+      "columns": [
+        {
+          "column": "todo",
+          "tasks": [
+            {
+              "task": "Build UI onboarding",
+              "subtasks": [
+                { "subtask": "Subtask 1", "done": false },
+                { "subtask": "Subtask 2", "done": false },
+                { "subtask": "Subtask 3", "done": false }
+              ]
+            },
+            {
+              "task": "Build UI for search",
+              "subtasks": [
+                { "subtask": "Subtask 1", "done": false },
+                { "subtask": "Subtask 2", "done": false }
+              ]
+            },
+            {
+              "task": "QA and test all major user",
+              "subtasks": [{ "subtask": "Subtask 1", "done": false }]
+            }
+          ]
+        },
+        {
+          "column": "doing",
+          "tasks": [
+            {
+              "task": "Design settings and search",
+              "subtasks": [
+                { "subtask": "Subtask 1", "done": false },
+                { "subtask": "Subtask 2", "done": true },
+                { "subtask": "Subtask 3", "done": true }
+              ]
+            },
+            {
+              "task": "Add search endpoints",
+              "subtasks": [
+                { "subtask": "Subtask 1", "done": true },
+                { "subtask": "Subtask 2", "done": false }
+              ]
+            },
+            {
+              "task": "Add authentication endpoints",
+              "subtasks": [{ "subtask": "Subtask 1", "done": false }]
+            },
+            {
+              "task": "Research pricing points of various competitors",
+              "subtasks": [{ "subtask": "Subtask 1", "done": false }]
+            }
+          ]
+        },
+        {
+          "column": "done",
+          "tasks": [
+            {
+              "task": "Create wireframe prototype",
+              "subtasks": [
+                { "subtask": "Subtask 1", "done": true },
+                { "subtask": "Subtask 2", "done": true },
+                { "subtask": "Subtask 3", "done": true }
+              ]
+            },
+            {
+              "task": "Market discovery",
+              "subtasks": [
+                { "subtask": "Subtask 1", "done": true },
+                { "subtask": "Subtask 2", "done": true }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
