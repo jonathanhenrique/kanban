@@ -9,3 +9,59 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  name     String
+  email    String @unique
+  password String
+
+  boards Board[]
+}
+
+model Board {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  name String @db.VarChar(30)
+
+  belongsToId String
+  belongsTo   User     @relation(fields: [belongsToId], references: [id])
+  columns     Column[]
+}
+
+model Column {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  name String @db.VarChar(30)
+
+  boardId String
+  board   Board  @relation(fields: [boardId], references: [id])
+  tasks   Task[]
+}
+
+model Task {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  title       String  @db.VarChar(255)
+  description String? @db.VarChar(255)
+  order       Int
+
+  columnId String
+  column   Column    @relation(fields: [columnId], references: [id])
+  subTasks SubTask[]
+}
+
+model SubTask {
+  id String @id @default(uuid())
+
+  description String  @db.VarChar(255)
+  completed   Boolean @default(false)
+
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id])
+}
