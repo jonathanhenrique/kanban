@@ -4,5 +4,8 @@
     "outDir": "dist",
     "lib": ["esnext"],
     "esModuleInterop": true
+  },
+  "typeAcquisition": {
+    "enable": true
   }
 }
