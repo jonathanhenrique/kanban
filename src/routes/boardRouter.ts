@@ -5,7 +5,7 @@ import {
   createBoard,
   updateBoard,
   deleteBoard,
-} from '../controllers/boardController';
+} from '../controllers/board';
 
 const router = Router();
 
