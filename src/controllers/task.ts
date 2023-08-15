@@ -2,21 +2,21 @@ import prisma from '../db';
 
 export async function createTask(req, res) {
   const { user } = req;
-  const boardId = req.body.boardId;
+  // const boardId = req.body.boardId;
 
-  const userBoards = await prisma.board.findMany({
-    where: {
-      belongsToId: user.id,
-    },
-  });
+  // const userBoards = await prisma.board.findMany({
+  //   where: {
+  //     belongsToId: user.id,
+  //   },
+  // });
 
-  const belongsToUser = userBoards.findIndex((board) => board.id === boardId);
+  // const belongsToUser = userBoards.findIndex((board) => board.id === boardId);
 
-  if (belongsToUser === -1) {
-    res.status(401);
-    res.json({ message: 'You cannnot access this resource' });
-    return;
-  }
+  // if (belongsToUser === -1) {
+  //   res.status(401);
+  //   res.json({ message: 'You cannnot access this resource' });
+  //   return;
+  // }
 
   const subTasks = req.body.subTasks.map((st: string) => {
     return { description: st };
@@ -41,23 +41,52 @@ export async function createTask(req, res) {
   res.json({ task });
 }
 
-export async function markSubtask(req, res) {
-  const { user } = req;
-  const boardId = req.body.boardId;
+export async function updateTask(req, res) {
+  const { id: paramId } = req.params;
 
-  const userBoards = await prisma.board.findMany({
+  console.log({ ...req.body });
+
+  const task = await prisma.task.update({
     where: {
-      belongsToId: user.id,
+      id: paramId,
+    },
+    data: req.body,
+  });
+
+  res.status(200);
+  res.json({ task });
+}
+
+export async function deleteTask(req, res) {
+  const { id: paramId } = req.params;
+
+  const task = await prisma.column.delete({
+    where: {
+      id: paramId,
     },
   });
 
-  const belongsToUser = userBoards.findIndex((board) => board.id === boardId);
+  res.status(200);
+  res.json({ task });
+}
 
-  if (belongsToUser === -1) {
-    res.status(401);
-    res.json({ message: 'You cannnot access this resource' });
-    return;
-  }
+export async function markSubtask(req, res) {
+  // const { user } = req;
+  // const boardId = req.body.boardId;
+
+  // const userBoards = await prisma.board.findMany({
+  //   where: {
+  //     belongsToId: user.id,
+  //   },
+  // });
+
+  // const belongsToUser = userBoards.findIndex((board) => board.id === boardId);
+
+  // if (belongsToUser === -1) {
+  //   res.status(401);
+  //   res.json({ message: 'You cannnot access this resource' });
+  //   return;
+  // }
 
   const subTask = await prisma.subTask.update({
     where: {

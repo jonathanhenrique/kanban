@@ -20,6 +20,17 @@ export async function getBoard(req, res) {
     where: {
       id: paramId,
     },
+    include: {
+      columns: {
+        include: {
+          tasks: {
+            include: {
+              subTasks: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   res.status(200);
@@ -57,7 +68,14 @@ export async function updateBoard(req, res) {
 }
 
 export async function deleteBoard(req, res) {
-  const { id } = req.params;
+  const { id: paramId } = req.params;
+
+  const board = await prisma.board.delete({
+    where: {
+      id: paramId,
+    },
+  });
+
   res.status(200);
-  res.json({ message: `Delete the ${id} Board` });
+  res.json({ board });
 }

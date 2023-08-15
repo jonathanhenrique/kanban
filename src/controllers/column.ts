@@ -1,22 +1,7 @@
 import prisma from '../db';
 
 export async function createColumn(req, res) {
-  const { user } = req;
   const boardId = req.body.boardId;
-
-  const userBoards = await prisma.board.findMany({
-    where: {
-      belongsToId: user.id,
-    },
-  });
-
-  const belongsToUser = userBoards.findIndex((board) => board.id === boardId);
-
-  if (belongsToUser === -1) {
-    res.status(401);
-    res.json({ message: 'You cannnot access this resource' });
-    return;
-  }
 
   const column = await prisma.column.create({
     data: {
@@ -32,7 +17,7 @@ export async function createColumn(req, res) {
 export async function updateColumn(req, res) {
   const { id: paramId } = req.params;
 
-  const board = await prisma.board.update({
+  const column = await prisma.column.update({
     where: {
       id: paramId,
     },
@@ -42,11 +27,18 @@ export async function updateColumn(req, res) {
   });
 
   res.status(200);
-  res.json({ board });
+  res.json({ column });
 }
 
 export async function deleteColumn(req, res) {
-  const { id } = req.params;
+  const { id: paramId } = req.params;
+
+  const column = await prisma.column.delete({
+    where: {
+      id: paramId,
+    },
+  });
+
   res.status(200);
-  res.json({ message: `Delete the ${id} Board` });
+  res.json({ column });
 }

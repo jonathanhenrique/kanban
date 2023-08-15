@@ -19,8 +19,8 @@ app.use(express.urlencoded({ extended: true })); //Convert the URL to an object
 
 // Routes
 app.use('/api/boards', protectRoute, boardRouter);
-app.use('/api/column', protectRoute, columnRouter);
-app.use('/api/task', protectRoute, taskRouter);
+app.use('/api/columns', protectRoute, columnRouter);
+app.use('/api/tasks', protectRoute, taskRouter);
 
 //SignIn and SignUp
 app.post('/signup', createNewUser);
