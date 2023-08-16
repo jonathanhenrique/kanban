@@ -28,7 +28,7 @@ model Board {
   name String @db.VarChar(30)
 
   belongsToId String
-  belongsTo   User     @relation(fields: [belongsToId], references: [id])
+  belongsTo   User     @relation(fields: [belongsToId], references: [id], onDelete: Cascade)
   columns     Column[]
 }
 
@@ -39,7 +39,7 @@ model Column {
   name String @db.VarChar(30)
 
   boardId String
-  board   Board  @relation(fields: [boardId], references: [id])
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
   tasks   Task[]
 }
 
@@ -52,7 +52,7 @@ model Task {
   order       Int
 
   columnId String
-  column   Column    @relation(fields: [columnId], references: [id])
+  column   Column    @relation(fields: [columnId], references: [id], onDelete: Cascade)
   subTasks SubTask[]
 }
 
@@ -63,5 +63,5 @@ model SubTask {
   completed   Boolean @default(false)
 
   taskId String
-  task   Task   @relation(fields: [taskId], references: [id])
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }

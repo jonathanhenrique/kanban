@@ -44,8 +44,6 @@ export async function createTask(req, res) {
 export async function updateTask(req, res) {
   const { id: paramId } = req.params;
 
-  console.log({ ...req.body });
-
   const task = await prisma.task.update({
     where: {
       id: paramId,
@@ -60,7 +58,7 @@ export async function updateTask(req, res) {
 export async function deleteTask(req, res) {
   const { id: paramId } = req.params;
 
-  const task = await prisma.column.delete({
+  const task = await prisma.task.delete({
     where: {
       id: paramId,
     },
@@ -70,33 +68,18 @@ export async function deleteTask(req, res) {
   res.json({ task });
 }
 
-export async function markSubtask(req, res) {
-  // const { user } = req;
-  // const boardId = req.body.boardId;
+export async function changeColumn(req, res) {
+  const { taskId, currColumn, newColumn } = req.body;
 
-  // const userBoards = await prisma.board.findMany({
-  //   where: {
-  //     belongsToId: user.id,
-  //   },
-  // });
-
-  // const belongsToUser = userBoards.findIndex((board) => board.id === boardId);
-
-  // if (belongsToUser === -1) {
-  //   res.status(401);
-  //   res.json({ message: 'You cannnot access this resource' });
-  //   return;
-  // }
-
-  const subTask = await prisma.subTask.update({
+  const task = await prisma.task.update({
     where: {
-      id: req.body.subTaskId,
+      id: taskId,
     },
     data: {
-      completed: req.body.completed,
+      columnId: newColumn,
     },
   });
 
   res.status(200);
-  res.json({ subTask });
+  res.json({ task });
 }

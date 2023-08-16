@@ -4,6 +4,7 @@ import cors from 'cors';
 import { protectRoute } from './modules/auth';
 
 // Import the Routes
+import subtaskRouter from './routes/subtaskRouter';
 import taskRouter from './routes/taskRouter';
 import columnRouter from './routes/columnRouter';
 import boardRouter from './routes/boardRouter';
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true })); //Convert the URL to an object
 app.use('/api/boards', protectRoute, boardRouter);
 app.use('/api/columns', protectRoute, columnRouter);
 app.use('/api/tasks', protectRoute, taskRouter);
+app.use('/api/subtasks', protectRoute, subtaskRouter);
 
 //SignIn and SignUp
 app.post('/signup', createNewUser);
