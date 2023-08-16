@@ -170,3 +170,70 @@ export async function changeOrder(req, res) {
   res.status(200);
   res.json({ column });
 }
+
+export async function changeOrderColumn(req, res) {
+  const { taskId, currOrder, newOrder, currColumn, newColumn } = req.body;
+
+  await prisma.column.update({
+    where: {
+      id: newColumn,
+    },
+    data: {
+      tasks: {
+        updateMany: {
+          where: {
+            order: {
+              gte: newOrder,
+            },
+          },
+          data: {
+            order: {
+              increment: 1,
+            },
+          },
+        },
+      },
+    },
+    include: {
+      tasks: true,
+    },
+  });
+
+  await prisma.column.update({
+    where: {
+      id: currColumn,
+    },
+    data: {
+      tasks: {
+        updateMany: {
+          where: {
+            order: {
+              gt: currOrder,
+            },
+          },
+          data: {
+            order: {
+              decrement: 1,
+            },
+          },
+        },
+      },
+    },
+    include: {
+      tasks: true,
+    },
+  });
+
+  const task = await prisma.task.update({
+    where: {
+      id: taskId,
+    },
+    data: {
+      columnId: newColumn,
+      order: newOrder,
+    },
+  });
+
+  res.status(200);
+  res.json({ task });
+}

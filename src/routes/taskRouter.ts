@@ -3,12 +3,12 @@ import {
   createTask,
   deleteTask,
   updateTask,
-  changeColumn,
   changeOrder,
+  changeOrderColumn,
 } from '../controllers/task';
 
 const router = Router();
-router.route('/').post(createTask).patch(changeOrder);
+router.route('/').post(createTask).patch(changeOrder).put(changeOrderColumn);
 router.route('/:id').patch(updateTask).delete(deleteTask);
 
 export default router;
