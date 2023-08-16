@@ -42,3 +42,26 @@ export async function deleteColumn(req, res) {
   res.status(200);
   res.json({ column });
 }
+
+export async function getColumn(req, res) {
+  const { id: paramId } = req.params;
+
+  const column = await prisma.column.findUnique({
+    where: {
+      id: paramId,
+    },
+    include: {
+      tasks: {
+        orderBy: {
+          order: 'asc',
+        },
+        select: {
+          title: true,
+        },
+      },
+    },
+  });
+
+  res.status(200);
+  res.json({ column });
+}

@@ -83,3 +83,90 @@ export async function changeColumn(req, res) {
   res.status(200);
   res.json({ task });
 }
+
+export async function changeOrder(req, res) {
+  const { taskId, newOrder } = req.body;
+  let column;
+
+  const selectedTask = await prisma.task.findUnique({
+    where: {
+      id: taskId,
+    },
+    select: {
+      columnId: true,
+      order: true,
+    },
+  });
+
+  if (selectedTask.order === newOrder) {
+    res.status(200);
+    res.json({ message: 'No order change detected.' });
+    return;
+  }
+
+  if (selectedTask.order < newOrder) {
+    column = await prisma.column.update({
+      where: {
+        id: selectedTask.columnId,
+      },
+      data: {
+        tasks: {
+          updateMany: {
+            where: {
+              order: {
+                gt: selectedTask.order,
+                lte: newOrder,
+              },
+            },
+            data: {
+              order: {
+                decrement: 1,
+              },
+            },
+          },
+        },
+      },
+      include: {
+        tasks: true,
+      },
+    });
+  } else if (selectedTask.order > newOrder) {
+    column = await prisma.column.update({
+      where: {
+        id: selectedTask.columnId,
+      },
+      data: {
+        tasks: {
+          updateMany: {
+            where: {
+              order: {
+                lt: selectedTask.order,
+                gte: newOrder,
+              },
+            },
+            data: {
+              order: {
+                increment: 1,
+              },
+            },
+          },
+        },
+      },
+      include: {
+        tasks: true,
+      },
+    });
+  }
+
+  await prisma.task.update({
+    where: {
+      id: taskId,
+    },
+    data: {
+      order: newOrder,
+    },
+  });
+
+  res.status(200);
+  res.json({ column });
+}
