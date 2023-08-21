@@ -1,12 +1,13 @@
 import jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 
-export function comparePasswords(password, hashedPassword) {
-  return bcrypt.compare(password, hashedPassword);
+export function hashPassword(password) {
+  const salt = bcrypt.genSaltSync();
+  return bcrypt.hash(password, salt);
 }
 
-export function hashPassword(password) {
-  return bcrypt.hash(password, 5);
+export function comparePasswords(password, hashedPassword) {
+  return bcrypt.compare(password, hashedPassword);
 }
 
 export function createJWT(user) {
