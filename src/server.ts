@@ -3,6 +3,8 @@ import morgan from 'morgan';
 import cors from 'cors';
 import { protectRoute } from './modules/auth';
 
+import { errorHandlerMiddleware } from './modules/errors';
+
 // Import the Routes
 import subtaskRouter from './routes/subtaskRouter';
 import taskRouter from './routes/taskRouter';
@@ -34,9 +36,6 @@ app.use('*', (req, res) => {
 });
 
 // Error Handler
-app.use((err, req, res, next) => {
-  console.log(err);
-  res.status(500).json({ message: 'Something went wrong' });
-});
+app.use(errorHandlerMiddleware);
 
 export default app;
