@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
+import { UnauthorizedError } from './errors';
 
 export function hashPassword(password) {
   const salt = bcrypt.genSaltSync();
@@ -13,37 +14,23 @@ export function comparePasswords(password, hashedPassword) {
 export function createJWT(user) {
   const token = jwt.sign(
     { id: user.id, email: user.email },
-    process.env.JWT_SECRET
+    process.env.JWT_SECRET,
+    { expiresIn: `${process.env.JWT_EXPIRES_IN}d` }
   );
 
   return token;
 }
 
-export function protectRoute(req, res, next) {
-  const bearer = req.headers.authorization;
+export function protectedRoute(req, res, next) {
+  const { token } = req.cookies;
 
-  if (!bearer) {
-    res.status(401);
-    res.json({ message: 'Not authorized' });
-    return;
-  }
-
-  const [, token] = bearer.split(' ');
-
-  if (!token) {
-    res.status(401);
-    res.json({ message: 'Not valid token' });
-    return;
-  }
+  if (!token) throw new UnauthorizedError('invalid authentication credentials');
 
   try {
     const user = jwt.verify(token, process.env.JWT_SECRET);
     req.user = user;
     next();
   } catch (error) {
-    console.log(error);
-    res.status(401);
-    res.json({ message: 'Not valid token' });
-    return;
+    throw new UnauthorizedError('invalid authentication credentials');
   }
 }

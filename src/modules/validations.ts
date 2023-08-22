@@ -34,8 +34,13 @@ export const validateBoardInput = [
   validationHandler,
 ];
 
-export const validateIdParam = [
-  [param('id').custom(validateUUID).withMessage('Invalid UUID')],
+export const validateBoardParam = [
+  [
+    param('id').custom(async (value, { req }) => {
+      const isValidId = validateUUID(value);
+      if (!isValidId) throw new BadRequestError('invalid id');
+    }),
+  ],
   validationHandler,
 ];
 

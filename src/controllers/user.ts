@@ -35,7 +35,15 @@ export async function login(req, res, next) {
     if (!isValid) throw new UnauthorizedError('invalid credentials');
 
     const token = createJWT(user);
-    res.json({ token });
+    const expireTime = +process.env.JWT_EXPIRES_IN * 24 * 60 * 60 * 1000;
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      expires: new Date(Date.now() + expireTime),
+      secure: process.env.ENVIRONMENT === 'production',
+    });
+    res.status(200);
+    res.json({ message: 'user logged in' });
   } catch (error) {
     next(error.statusCode ? error : new Error());
   }
