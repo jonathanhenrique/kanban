@@ -5,7 +5,7 @@ import {
   updateTask,
   changeOrder,
   changeOrderColumn,
-} from '../controllers/task';
+} from '../controllers/taskController';
 
 const router = Router();
 router.route('/').post(createTask).patch(changeOrder).put(changeOrderColumn);

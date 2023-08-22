@@ -5,7 +5,7 @@ import {
   createBoard,
   updateBoard,
   deleteBoard,
-} from '../controllers/board';
+} from '../controllers/boardController';
 import { validateBoardInput, validateBoardParam } from '../modules/validations';
 
 const router = Router();

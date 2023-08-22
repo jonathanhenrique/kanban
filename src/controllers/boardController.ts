@@ -1,5 +1,4 @@
 import prisma from '../db';
-import { ForbiddenError, NotFoundError } from '../modules/errors';
 
 export async function getAllBoards(req, res, next) {
   try {
@@ -12,7 +11,7 @@ export async function getAllBoards(req, res, next) {
     res.status(200);
     res.json({ boards });
   } catch (error) {
-    next(new Error());
+    next(error);
   }
 }
 
@@ -35,40 +34,32 @@ export async function getBoard(req, res, next) {
       },
     });
 
-    if (!board) {
-      throw new NotFoundError('board not found');
-    }
-
-    if (board.belongsToId !== req.user.id) {
-      throw new ForbiddenError('not allowed to access');
-    }
-
     res.status(200);
     res.json({ board });
   } catch (error) {
-    next(error.statusCode ? error : new Error());
+    next(error);
   }
 }
 
 export async function createBoard(req, res, next) {
   try {
-    const newBoard = await prisma.board.create({
+    await prisma.board.create({
       data: {
         name: req.body.name,
         belongsToId: req.user.id,
       },
     });
 
-    res.status(200);
-    res.json({ newBoard });
+    res.status(201);
+    res.json({ message: 'board created' });
   } catch (error) {
-    next(new Error());
+    next(error);
   }
 }
 
 export async function updateBoard(req, res, next) {
   try {
-    const board = await prisma.board.update({
+    await prisma.board.update({
       where: {
         id: req.params.id,
       },
@@ -78,21 +69,23 @@ export async function updateBoard(req, res, next) {
     });
 
     res.status(200);
-    res.json({ board });
+    res.json({ message: 'board updated' });
   } catch (error) {
-    next(new Error());
+    next(error);
   }
 }
 
-export async function deleteBoard(req, res) {
-  const { id: paramId } = req.params;
+export async function deleteBoard(req, res, next) {
+  try {
+    await prisma.board.delete({
+      where: {
+        id: req.params.id,
+      },
+    });
 
-  const board = await prisma.board.delete({
-    where: {
-      id: paramId,
-    },
-  });
-
-  res.status(200);
-  res.json({ board });
+    res.status(200);
+    res.json({ message: 'board deleted' });
+  } catch (error) {
+    next(error);
+  }
 }

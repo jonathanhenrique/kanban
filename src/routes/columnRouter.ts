@@ -4,7 +4,7 @@ import {
   deleteColumn,
   updateColumn,
   getColumn,
-} from '../controllers/column';
+} from '../controllers/columnController';
 
 const router = Router();
 router.route('/').post(createColumn);

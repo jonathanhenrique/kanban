@@ -15,7 +15,7 @@ import subtaskRouter from './routes/subtaskRouter';
 import taskRouter from './routes/taskRouter';
 import columnRouter from './routes/columnRouter';
 import boardRouter from './routes/boardRouter';
-import { register, login } from './controllers/user';
+import { register, login } from './controllers/userController';
 
 const app = express();
 
