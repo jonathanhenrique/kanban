@@ -7,7 +7,7 @@ const UUID_PATTERN =
 
 const validateUUID = (id) => UUID_PATTERN.test(id);
 
-function validateInput(req, res, next) {
+function inputErrorHandler(req, res, next) {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -18,7 +18,7 @@ function validateInput(req, res, next) {
   next();
 }
 
-function validateOwnership(req, res, next) {
+function ownershipErrorHandler(req, res, next) {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -38,18 +38,19 @@ function validateOwnership(req, res, next) {
   next();
 }
 
+// Validations for board
 export const validateBoardInput = [
   [
     body('name')
       .notEmpty()
       .withMessage('board name is required')
       .isLength({ min: 3, max: 30 })
-      .withMessage('board name length must between 3 and 30'),
+      .withMessage('board name length must be between 3 and 30'),
   ],
-  validateInput,
+  inputErrorHandler,
 ];
 
-export const validateBoardParam = [
+export const validateBoardOwnership = [
   param('id').custom(async (value, { req }) => {
     const isValidID = validateUUID(value);
     if (!isValidID) throw new BadRequestError('invalid ID');
@@ -68,9 +69,74 @@ export const validateBoardParam = [
       throw new UnauthorizedError('not allowed');
     }
   }),
-  validateOwnership,
+  ownershipErrorHandler,
 ];
 
+// Validations for column
+export const validateColumnInput = [
+  [
+    body('name')
+      .notEmpty()
+      .withMessage('column name is required')
+      .isLength({ min: 3, max: 30 })
+      .withMessage('column name length must be between 3 and 30'),
+    body('boardId').custom(async (value, { req }) => {
+      if (req.method === 'POST') {
+        // need the boardID
+        if (!value) throw new Error('boardID is required');
+        if (!validateUUID(value)) throw new Error('invalid boardID');
+
+        const board = await prisma.board.findUnique({
+          where: {
+            id: value,
+          },
+        });
+
+        if (!board) {
+          throw new NotFoundError('boardID not found');
+        }
+
+        if (board.belongsToId !== req.user.id) {
+          throw new UnauthorizedError(
+            'not allowed to create a column in this board'
+          );
+        }
+      }
+    }),
+  ],
+  inputErrorHandler,
+];
+
+export const validateColumnOwnership = [
+  param('id').custom(async (value, { req }) => {
+    const isValidID = validateUUID(value);
+    if (!isValidID) throw new BadRequestError('invalid ID');
+
+    const column = await prisma.column.findUnique({
+      where: {
+        id: value,
+      },
+      include: {
+        board: {
+          include: {
+            belongsTo: true,
+          },
+        },
+      },
+    });
+
+    if (!column) {
+      throw new NotFoundError('not found');
+    }
+
+    if (column.board.belongsTo.id !== req.user.id) {
+      throw new UnauthorizedError('not allowed');
+    }
+  }),
+  ownershipErrorHandler,
+];
+
+// Validations for register and login
 export const validateRegisterInput = [
   [
     body('name')
@@ -99,7 +165,7 @@ export const validateRegisterInput = [
       .isLength({ min: 8 })
       .withMessage('password must be at least 8 characters'),
   ],
-  validateInput,
+  inputErrorHandler,
 ];
 
 export const validateLoginInput = [
@@ -111,5 +177,5 @@ export const validateLoginInput = [
       .withMessage('email address is not valid'),
     body('password').notEmpty().withMessage('password is required'),
   ],
-  validateInput,
+  inputErrorHandler,
 ];

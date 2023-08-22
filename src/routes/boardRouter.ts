@@ -6,7 +6,10 @@ import {
   updateBoard,
   deleteBoard,
 } from '../controllers/boardController';
-import { validateBoardInput, validateBoardParam } from '../modules/validations';
+import {
+  validateBoardInput,
+  validateBoardOwnership,
+} from '../modules/validations';
 
 const router = Router();
 
@@ -17,8 +20,8 @@ router
 
 router
   .route('/:id')
-  .get(validateBoardParam as [], getBoard)
-  .patch(validateBoardParam as [], validateBoardInput as [], updateBoard)
-  .delete(validateBoardParam as [], deleteBoard);
+  .get(validateBoardOwnership as [], getBoard)
+  .patch(validateBoardOwnership as [], validateBoardInput as [], updateBoard)
+  .delete(validateBoardOwnership as [], deleteBoard);
 
 export default router;

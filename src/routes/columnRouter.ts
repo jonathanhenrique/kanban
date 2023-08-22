@@ -5,9 +5,17 @@ import {
   updateColumn,
   getColumn,
 } from '../controllers/columnController';
+import {
+  validateColumnInput,
+  validateColumnOwnership,
+} from '../modules/validations';
 
 const router = Router();
-router.route('/').post(createColumn);
-router.route('/:id').get(getColumn).patch(updateColumn).delete(deleteColumn);
+router.route('/').post(validateColumnInput as [], createColumn);
+router
+  .route('/:id')
+  .get(validateColumnOwnership as [], getColumn)
+  .patch(validateColumnOwnership as [], validateColumnInput as [], updateColumn)
+  .delete(validateColumnOwnership as [], deleteColumn);
 
 export default router;
