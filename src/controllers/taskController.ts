@@ -1,147 +1,163 @@
 import prisma from '../db';
 
-export async function createTask(req, res) {
-  const { user } = req;
-  // const boardId = req.body.boardId;
+export async function createTask(req, res, next) {
+  const { subTasks } = req.body;
+  let subTasksData = [];
 
-  // const userBoards = await prisma.board.findMany({
-  //   where: {
-  //     belongsToId: user.id,
-  //   },
-  // });
-
-  // const belongsToUser = userBoards.findIndex((board) => board.id === boardId);
-
-  // if (belongsToUser === -1) {
-  //   res.status(401);
-  //   res.json({ message: 'You cannnot access this resource' });
-  //   return;
-  // }
-
-  const subTasks = req.body.subTasks.map((st: string) => {
-    return { description: st };
-  });
-
-  const task = await prisma.task.create({
-    data: {
-      title: req.body.title,
-      description: req.body.description,
-      order: req.body.order,
-      columnId: req.body.columnId,
-      subTasks: {
-        create: subTasks,
-      },
-    },
-    include: {
-      subTasks: true,
-    },
-  });
-
-  res.status(200);
-  res.json({ task });
-}
-
-export async function updateTask(req, res) {
-  const { id: paramId } = req.params;
-
-  const task = await prisma.task.update({
-    where: {
-      id: paramId,
-    },
-    data: req.body,
-  });
-
-  res.status(200);
-  res.json({ task });
-}
-
-export async function deleteTask(req, res) {
-  const { id: paramId } = req.params;
-
-  const task = await prisma.task.delete({
-    where: {
-      id: paramId,
-    },
-  });
-
-  res.status(200);
-  res.json({ task });
-}
-
-export async function changeColumn(req, res) {
-  const { taskId, currColumn, newColumn } = req.body;
-
-  const task = await prisma.task.update({
-    where: {
-      id: taskId,
-    },
-    data: {
-      columnId: newColumn,
-    },
-  });
-
-  res.status(200);
-  res.json({ task });
-}
-
-export async function changeOrder(req, res) {
-  const { taskId, newOrder } = req.body;
-  let column;
-
-  const selectedTask = await prisma.task.findUnique({
-    where: {
-      id: taskId,
-    },
-    select: {
-      columnId: true,
-      order: true,
-    },
-  });
-
-  if (selectedTask.order === newOrder) {
-    res.status(200);
-    res.json({ message: 'No order change detected.' });
-    return;
+  if (subTasks && subTasks.length > 0) {
+    subTasksData = subTasks.map((st: string) => {
+      return { description: st };
+    });
   }
 
-  if (selectedTask.order < newOrder) {
-    column = await prisma.column.update({
-      where: {
-        id: selectedTask.columnId,
-      },
+  try {
+    await prisma.task.create({
       data: {
-        tasks: {
-          updateMany: {
-            where: {
-              order: {
-                gt: selectedTask.order,
-                lte: newOrder,
+        title: req.body.title,
+        description: req.body.description ?? '',
+        order: req.body.order,
+        columnId: req.body.columnId,
+        subTasks: {
+          create: subTasksData,
+        },
+      },
+      include: {
+        subTasks: true,
+      },
+    });
+
+    res.status(200);
+    res.json({ message: 'task created' });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateTask(req, res, next) {
+  try {
+    const task = await prisma.task.update({
+      where: {
+        id: req.params.id,
+      },
+      data: req.body,
+    });
+
+    res.status(200);
+    res.json({ task });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deleteTask(req, res, next) {
+  try {
+    const { id: paramId } = req.params;
+
+    const task = await prisma.task.delete({
+      where: {
+        id: paramId,
+      },
+    });
+
+    res.status(200);
+    res.json({ task });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function changeOrder(req, res, next) {
+  try {
+    const { newPosition } = req.body;
+    const selectedTask = req.task;
+
+    let column;
+
+    if (selectedTask.order < newPosition) {
+      column = await prisma.column.update({
+        where: {
+          id: selectedTask.column.id,
+        },
+        data: {
+          tasks: {
+            updateMany: {
+              where: {
+                order: {
+                  gt: selectedTask.order,
+                  lte: newPosition,
+                },
               },
-            },
-            data: {
-              order: {
-                decrement: 1,
+              data: {
+                order: {
+                  decrement: 1,
+                },
               },
             },
           },
         },
+        include: {
+          tasks: true,
+        },
+      });
+    } else if (selectedTask.order > newPosition) {
+      column = await prisma.column.update({
+        where: {
+          id: selectedTask.column.id,
+        },
+        data: {
+          tasks: {
+            updateMany: {
+              where: {
+                order: {
+                  lt: selectedTask.order,
+                  gte: newPosition,
+                },
+              },
+              data: {
+                order: {
+                  increment: 1,
+                },
+              },
+            },
+          },
+        },
+        include: {
+          tasks: true,
+        },
+      });
+    }
+
+    await prisma.task.update({
+      where: {
+        id: selectedTask.id,
       },
-      include: {
-        tasks: true,
+      data: {
+        order: newPosition,
       },
     });
-  } else if (selectedTask.order > newOrder) {
-    column = await prisma.column.update({
+
+    res.status(200);
+    res.json({ column });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function changeOrderColumn(req, res, next) {
+  try {
+    const { newPosition, newColumnId } = req.body;
+    const selectedTask = req.task;
+
+    await prisma.column.update({
       where: {
-        id: selectedTask.columnId,
+        id: newColumnId,
       },
       data: {
         tasks: {
           updateMany: {
             where: {
               order: {
-                lt: selectedTask.order,
-                gte: newOrder,
+                gte: newPosition,
               },
             },
             data: {
@@ -156,73 +172,51 @@ export async function changeOrder(req, res) {
         tasks: true,
       },
     });
+
+    await prisma.column.update({
+      where: {
+        id: selectedTask.column.id,
+      },
+      data: {
+        tasks: {
+          updateMany: {
+            where: {
+              order: {
+                gt: selectedTask.order,
+              },
+            },
+            data: {
+              order: {
+                decrement: 1,
+              },
+            },
+          },
+        },
+      },
+      include: {
+        tasks: true,
+      },
+    });
+
+    const task = await prisma.task.update({
+      where: {
+        id: selectedTask.id,
+      },
+      data: {
+        columnId: newColumnId,
+        order: newPosition,
+      },
+    });
+
+    res.status(200);
+    res.json({ task });
+  } catch (error) {
+    next(error);
   }
-
-  await prisma.task.update({
-    where: {
-      id: taskId,
-    },
-    data: {
-      order: newOrder,
-    },
-  });
-
-  res.status(200);
-  res.json({ column });
 }
 
-export async function changeOrderColumn(req, res) {
-  const { taskId, currOrder, newOrder, currColumn, newColumn } = req.body;
-
-  await prisma.column.update({
-    where: {
-      id: newColumn,
-    },
-    data: {
-      tasks: {
-        updateMany: {
-          where: {
-            order: {
-              gte: newOrder,
-            },
-          },
-          data: {
-            order: {
-              increment: 1,
-            },
-          },
-        },
-      },
-    },
-    include: {
-      tasks: true,
-    },
-  });
-
-  await prisma.column.update({
-    where: {
-      id: currColumn,
-    },
-    data: {
-      tasks: {
-        updateMany: {
-          where: {
-            order: {
-              gt: currOrder,
-            },
-          },
-          data: {
-            order: {
-              decrement: 1,
-            },
-          },
-        },
-      },
-    },
-    include: {
-      tasks: true,
-    },
-  });
+export async function changeColumn(req, res) {
+  const { taskId, currColumn, newColumn } = req.body;
 
   const task = await prisma.task.update({
     where: {
@@ -230,7 +224,6 @@ export async function changeOrderColumn(req, res) {
     },
     data: {
       columnId: newColumn,
-      order: newOrder,
     },
   });
 

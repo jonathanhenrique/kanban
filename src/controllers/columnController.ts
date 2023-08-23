@@ -2,7 +2,7 @@ import prisma from '../db';
 
 export async function createColumn(req, res, next) {
   try {
-    const column = await prisma.column.create({
+    await prisma.column.create({
       data: {
         name: req.body.name,
         boardId: req.body.boardId,
@@ -10,7 +10,7 @@ export async function createColumn(req, res, next) {
     });
 
     res.status(200);
-    res.json({ column });
+    res.json({ message: 'column created' });
   } catch (error) {
     next(error);
   }
@@ -22,13 +22,16 @@ export async function getColumn(req, res, next) {
       where: {
         id: req.params.id,
       },
-      include: {
+      select: {
+        id: true,
         tasks: {
           orderBy: {
             order: 'asc',
           },
           select: {
             title: true,
+            id: true,
+            order: true,
           },
         },
       },

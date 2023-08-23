@@ -25,6 +25,9 @@ export async function getBoard(req, res, next) {
         columns: {
           include: {
             tasks: {
+              orderBy: {
+                order: 'asc',
+              },
               include: {
                 subTasks: true,
               },
