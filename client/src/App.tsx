@@ -1,24 +1,21 @@
 import GlobalStyles from './styles/GlobalStyles';
-import AppLayout from './ui/AppLayout';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-// const queryClient = new QueryClient({
-//   defaultOptions: {
-//     queries: {
-//       staleTime: 0,
-//     },
-//   },
-// });
+import Homepage from './pages/Homepage';
+import Login from './pages/Login';
+import AppLayout from './ui/AppLayout';
 
 function App() {
   return (
     <>
-      {/* <QueryClientProvider client={queryClient}> */}
-      {/* <ReactQueryDevtools /> */}
       <GlobalStyles />
-      <AppLayout></AppLayout>
-      {/* </QueryClientProvider> */}
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<Homepage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/app" element={<AppLayout />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }

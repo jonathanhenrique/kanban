@@ -1,7 +1,17 @@
 import { styled } from 'styled-components';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import Board from './Board';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 10000000,
+    },
+  },
+});
 
 const StyledAppLayout = styled.div`
   display: grid;
@@ -19,7 +29,8 @@ const Main = styled.main`
 
 export default function AppLayout() {
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools />
       <StyledAppLayout>
         <Sidebar />
         <Header />
@@ -27,6 +38,6 @@ export default function AppLayout() {
           <Board />
         </Main>
       </StyledAppLayout>
-    </>
+    </QueryClientProvider>
   );
 }

@@ -1,6 +1,18 @@
 import { css, styled } from 'styled-components';
 
 const variations = {
+  task: css`
+    line-height: 0;
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 1.2rem;
+    background-color: var(--color-grey-500);
+    color: var(--color-grey-300);
+    --hover-color: var(--color-border);
+  `,
   icon: css`
     background: none;
     padding: 0;
@@ -27,12 +39,13 @@ const StyledButton = styled.button`
   transition: transform 250ms var(--easing-in), background-color 150ms linear;
 
   & svg {
-    height: 2.2rem;
-    width: 2.2rem;
+    height: ${(props) => (props.variation === 'task' ? '1.7rem' : '2.2rem')};
+    width: ${(props) => (props.variation === 'task' ? '1.7rem' : '2.2rem')};
   }
 
   &:hover {
-    transform: translateY(-2px);
+    transform: ${(props) =>
+      props.variation === 'task' ? 'translateX(3px)' : 'translateY(-3px)'};
     background-color: var(--hover-color);
     stroke: var(--hover-color);
   }
@@ -46,11 +59,21 @@ export default function Button({
   children,
   onClick,
   variation = 'primary',
+  icon,
 }: {
   children: string;
   onClick: React.MouseEventHandler;
-  variation?: 'primary' | 'secondary' | 'icon';
+  variation?: 'primary' | 'secondary' | 'icon' | 'task';
+  icon?: React.ReactNode;
 }) {
+  if (variation === 'task') {
+    return (
+      <StyledButton variation={variation} onClick={onClick}>
+        <span>{children}</span> <span>{icon}</span>
+      </StyledButton>
+    );
+  }
+
   return (
     <StyledButton variation={variation} onClick={onClick}>
       {children}

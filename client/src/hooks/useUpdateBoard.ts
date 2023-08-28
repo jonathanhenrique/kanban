@@ -1,16 +1,17 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { changeOrder } from '../services/apiTask';
 
-export function useEditTask() {
+export function useUpdateBoard() {
   const queryClient = useQueryClient();
-  const { isLoading: isEditing, mutate: editTask } = useMutation({
-    mutationFn: async () => new Promise(),
+  const { isLoading: isUpdatingPosition, mutate } = useMutation({
+    mutationFn: ({ taskId, newPosition }) => changeOrder(taskId, newPosition),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['tasks'],
+        queryKey: ['currBoard'],
       });
     },
     onError: (err) => console.log('Error'),
   });
 
-  return { isEditing, editTask };
+  return { isUpdatingPosition, mutate };
 }

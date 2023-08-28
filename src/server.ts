@@ -33,8 +33,8 @@ app.use('/api/tasks', protectedRoute, taskRouter);
 app.use('/api/subtasks', protectedRoute, subtaskRouter);
 
 //Register and Login
-app.post('/register', validateRegisterInput as [], register);
-app.post('/login', validateLoginInput as [], login);
+app.post('/api/register', validateRegisterInput as [], register);
+app.post('/api/login', validateLoginInput as [], login);
 
 // Not Found handler
 app.use('*', (req, res) => {

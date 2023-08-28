@@ -265,6 +265,8 @@ export const validateTaskOrder = [
     req.task = task;
   }),
   body('newPosition').custom(async (value, { req }) => {
+    if (!req.task) return;
+
     if (!value) {
       throw new BadRequestError('newPosition is required');
     }

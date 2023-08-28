@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { styled } from 'styled-components';
 
 const Heading = styled.h2`
@@ -10,10 +11,10 @@ const StyledForm = styled.form`
   min-width: 50rem;
 `;
 
-export default function TaskDetails({ task }: { task: string }) {
+export default function TaskDetails({ task }) {
   return (
     <StyledForm>
-      <Heading>{task}</Heading>
+      <Heading>{task.title}</Heading>
     </StyledForm>
   );
 }

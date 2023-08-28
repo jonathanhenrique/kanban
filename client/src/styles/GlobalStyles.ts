@@ -13,6 +13,7 @@ const GlobalStyles = createGlobalStyle`
   
   /* --color-brand-500: hsl(241, 47%, 48%); */
   --color-brand-500: hsl(241, 47%, 58%);
+  hsl(241, 47%, 65%)
 
   --color-border-dark: hsl(240, 12%, 25%);
   --color-border: hsl(240, 12%, 35%);
@@ -170,13 +171,20 @@ img {
   }
 }
 
+@keyframes modalPopUp2 {
+  0%{
+    transform: translateY(var(--origin-y, 0)) translateX(var(--origin-x, 0)) scale(.1);
+  }
+
+  100%{
+    transform: translateY(0) translateX(0) scale(1);
+    /* transform: translate(calc(var(--origin-x, 0) + 10%), calc(var(--origin-y, 0) + 10%)) scale(1);  */
+  }
+}
+
 @keyframes blur {
   0%{
-    opacity: 0;
     backdrop-filter: blur(0);
-  }
-  30%{
-    opacity: 1;
   }
 
   100%{
