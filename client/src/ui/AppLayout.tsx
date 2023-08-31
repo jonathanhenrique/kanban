@@ -4,6 +4,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import Board from './Board';
+import Modal from './Modal';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,7 +23,7 @@ const StyledAppLayout = styled.div`
 `;
 
 const Main = styled.main`
-  padding: 4rem 4.8rem 6.4rem;
+  padding: 1rem 4.8rem 6.4rem;
   overflow: scroll;
   grid-column: 2;
 `;
@@ -31,13 +32,15 @@ export default function AppLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools />
-      <StyledAppLayout>
-        <Sidebar />
-        <Header />
-        <Main>
-          <Board />
-        </Main>
-      </StyledAppLayout>
+      <Modal>
+        <StyledAppLayout>
+          <Sidebar />
+          <Header />
+          <Main>
+            <Board />
+          </Main>
+        </StyledAppLayout>
+      </Modal>
     </QueryClientProvider>
   );
 }

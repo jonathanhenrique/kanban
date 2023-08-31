@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import BoardInside from './BoardInside';
 
 export default function Board() {
-  const { data, isFetching } = useQuery({
+  const { isLoading, isError, data, error } = useQuery({
     queryKey: ['currBoard'],
     queryFn: async () => {
       const res = await fetch(
@@ -14,7 +14,9 @@ export default function Board() {
     },
   });
 
-  if (isFetching && !data) return <p>Loading...</p>;
+  if (isLoading) return <p>Loading...</p>;
+
+  if (isError) return <p>error.message</p>;
 
   return <BoardInside board={data.board} />;
 }

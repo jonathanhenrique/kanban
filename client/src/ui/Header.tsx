@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 import Button from './Button';
 import Modal from './Modal';
 import AddNewTask from './AddNewTask';
-
+import { useQueryClient } from '@tanstack/react-query';
 const StyledHeader = styled.header`
   display: flex;
   align-items: center;
@@ -22,18 +22,19 @@ const StyledHeader = styled.header`
 `;
 
 export default function Header() {
+  const queryClient = useQueryClient();
+  const data = queryClient.getQueryData(['currBoard']);
+
   return (
     <StyledHeader>
-      <h1>Platform Launch</h1>
-      <Modal>
-        <Modal.Trigger>
-          <Button>+ add new task</Button>
-        </Modal.Trigger>
+      <h1>{data ? data.board.name : 'loading'}</h1>
+      <Modal.Trigger opens="newTask">
+        <Button>+ add new task</Button>
+      </Modal.Trigger>
 
-        <Modal.Content>
-          <AddNewTask />
-        </Modal.Content>
-      </Modal>
+      <Modal.Content name="newTask">
+        <AddNewTask />
+      </Modal.Content>
     </StyledHeader>
   );
 }

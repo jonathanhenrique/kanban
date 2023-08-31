@@ -28,7 +28,7 @@ const StyledColumn = styled.div`
     --color-shadow: hsl(241, 47%, 65%);
 
     ${(props) => {
-      if (!props.isDraggingOver) return '';
+      if (!props.$isDraggingOver) return '';
       return css`
         box-shadow: 0 1px 5px 0 var(--color-shadow),
           0 -1px 5px 0 var(--color-shadow), 1px 0 5px 0 var(--color-shadow),
@@ -40,7 +40,7 @@ const StyledColumn = styled.div`
 
 export default function Column({ children, title, isDraggingOver }) {
   return (
-    <StyledColumn isDraggingOver={isDraggingOver}>
+    <StyledColumn $isDraggingOver={isDraggingOver}>
       {title && <h3>{title}</h3>}
       {children}
     </StyledColumn>

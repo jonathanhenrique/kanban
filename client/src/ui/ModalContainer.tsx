@@ -4,22 +4,31 @@ const ModalContainer = styled.div`
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-lg);
   padding: 3rem 4rem;
+  position: relative;
 
   background-color: var(--color-grey-500);
   background-image: url('noise-bg-soft.png');
   background-position: 0 0;
   background-size: 200px 200px;
 
-  /* transform-origin: -50% -50%; */
-  animation: modalPopUp2 400ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  transform: translateY(0) translateX(0) scale(1);
+  animation: modalPosition 400ms, modalScale 300ms 200ms, modalOpacity 50ms;
+  animation-fill-mode: both;
 
+  & > div {
+    opacity: 1;
+    animation: contentAnimation 200ms 200ms ease-out backwards;
+    transition: opacity 150ms ease-out;
+  }
 
-  transition: all 300ms cubic-bezier(0.63, -0.34, 0.84, 0.11);
+  transition: transform 200ms cubic-bezier(0.5, 0, 0.38, 1);
 
   &.toClose {
     transform: translateY(var(--origin-y, 0)) translateX(var(--origin-x, 0))
-      scale(0.25);
+      scale(0.1);
+
+    & > div {
+      opacity: 0;
+    }
   }
 `;
 

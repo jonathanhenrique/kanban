@@ -15,7 +15,7 @@ type ModalContextType = {
 const ModalContext = createContext<ModalContextType | null>(null);
 
 function Modal({ children }: { children: React.ReactNode }) {
-  const [contentId, setContentId] = useState();
+  const [contentToOpen, setContentToOpen] = useState();
   const [clickOrigin, setClickOrigin] = useState(null);
   const { open, close, isOpen, isRunningAnimation } = useAnimationOnUnmount({
     isMounted: false,
@@ -31,8 +31,8 @@ function Modal({ children }: { children: React.ReactNode }) {
         isRunningAnimation,
         clickOrigin,
         setClickOrigin,
-        contentId,
-        setContentId,
+        contentToOpen,
+        setContentToOpen,
       }}
     >
       {children}
@@ -40,15 +40,28 @@ function Modal({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Content({ children }: { children: React.ReactNode }) {
+function Content({
+  children,
+  name,
+}: {
+  children: React.ReactNode;
+  name?: string;
+}) {
   const value = useContext(ModalContext);
-  const { close, isOpen, isRunningAnimation, clickOrigin } =
-    value as ModalContextType;
-  const { ref } = useOutsideClick(close);
+  const {
+    close,
+    isOpen,
+    isRunningAnimation,
+    clickOrigin,
+    contentToOpen,
+    setContentToOpen,
+  } = value as ModalContextType;
+  const { ref } = useOutsideClick(() => {
+    setContentToOpen('');
+    close();
+  });
 
-  // console.log(clickOrigin);
-
-  if (!isOpen && !isRunningAnimation) return null;
+  if (name !== contentToOpen && !isRunningAnimation) return null;
 
   const classToClose = isRunningAnimation ? 'toClose' : '';
   return createPortal(
@@ -73,35 +86,30 @@ function Content({ children }: { children: React.ReactNode }) {
 function Trigger({
   children,
   fn,
-  contentToOpen,
+  opens,
 }: {
   children: React.ReactNode;
   fn?: () => void;
-  contentToOpen?: string;
+  opens?: string;
 }) {
   const value = useContext(ModalContext);
-  const { open, setClickOrigin, setContentId } = value as ModalContextType;
-
-  if (fn)
-    return cloneElement(children as React.ReactElement, {
-      onClick: (e) => {
-        const centerX = e.view.innerWidth / 2;
-        const centerY = e.view.innerHeight / 2;
-        const clickX = e.clientX;
-        const clickY = e.clientY;
-
-        setClickOrigin({
-          x: clickX > centerX ? clickX - centerX : -1 * (centerX - clickX),
-          y: clickY > centerY ? clickY - centerY : -1 * (centerY - clickY),
-        });
-        fn();
-        setContentId(contentToOpen);
-        open();
-      },
-    });
+  const { open, setClickOrigin, setContentToOpen } = value as ModalContextType;
 
   return cloneElement(children as React.ReactElement, {
-    onClick: open,
+    onClick: (e) => {
+      const centerX = e.view.innerWidth / 2;
+      const centerY = e.view.innerHeight / 2;
+      const clickX = e.clientX;
+      const clickY = e.clientY;
+
+      setClickOrigin({
+        x: clickX > centerX ? clickX - centerX : -1 * (centerX - clickX),
+        y: clickY > centerY ? clickY - centerY : -1 * (centerY - clickY),
+      });
+      fn && fn();
+      setContentToOpen(opens);
+      open();
+    },
   });
 }
 

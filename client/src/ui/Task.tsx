@@ -1,5 +1,3 @@
-import { Draggable } from 'react-beautiful-dnd';
-import { taskType, subtaskType } from '../types/types';
 import { styled } from 'styled-components';
 import Button from './Button';
 import {
@@ -7,12 +5,13 @@ import {
   HiOutlineTrash,
   HiOutlineWrenchScrewdriver,
 } from 'react-icons/hi2';
+import Modal from './Modal';
+import TaskInfo from './TaskInfo';
 
 const StyledTask = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  /* gap: 1rem; */
 
   padding: 1rem 1.2rem;
   margin-bottom: 1rem;
@@ -35,24 +34,22 @@ const ButtonsGroup = styled.div`
   gap: 0.2rem;
 `;
 
-export default function Task({ task, isDragging }) {
+export default function Task({ task, isDragging, setCurrentTask }) {
   return (
-    <StyledTask isDragging={isDragging}>
-      <div>
-        <h4>{task.title}</h4>
-        <p>{`${task.subTasks.reduce(
-          (acc, st) => acc + st.completed,
-          0
-        )} subtasks completed`}</p>
-      </div>
+    <StyledTask $isDragging={isDragging}>
+      <TaskInfo task={task} />
       <ButtonsGroup>
-        <Button variation="task" icon={<HiOutlineArrowTopRightOnSquare />}>
-          Open
-        </Button>
+        <Modal.Trigger fn={() => setCurrentTask(task)} opens="details">
+          <Button variation="task" icon={<HiOutlineArrowTopRightOnSquare />}>
+            Open
+          </Button>
+        </Modal.Trigger>
 
-        <Button variation="task" icon={<HiOutlineWrenchScrewdriver />}>
-          Edit
-        </Button>
+        <Modal.Trigger fn={() => setCurrentTask(task)} opens="edit">
+          <Button variation="task" icon={<HiOutlineWrenchScrewdriver />}>
+            Edit
+          </Button>
+        </Modal.Trigger>
 
         <Button variation="task" icon={<HiOutlineTrash />}>
           Delete

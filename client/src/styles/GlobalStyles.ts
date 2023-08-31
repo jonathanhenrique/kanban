@@ -90,13 +90,14 @@ html {
 
 body {
   font-family: "Nunito Sans", sans-serif;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-grey-100);
 
   transition: color 0.3s, background-color 0.3s;
   min-height: 100vh;
   line-height: 1.5;
   font-size: 1.4rem;
+  letter-spacing: 1.1px;
   background-color: var(--bg-color);
   background-image: url('noise-bg-soft.png');
   background-position: 0 0;
@@ -171,14 +172,45 @@ img {
   }
 }
 
-@keyframes modalPopUp2 {
+@keyframes modalPosition {
   0%{
-    transform: translateY(var(--origin-y, 0)) translateX(var(--origin-x, 0)) scale(.1);
+    translate: var(--origin-x, 0) var(--origin-y, 0);
+    animation-timing-function: cubic-bezier(.5,0,.38,1);
+  }
+  100%{
+    translate: 0 0;
+  }
+}
+
+@keyframes modalScale {
+  0%{
+    scale: .1 .05;
+    animation-timing-function: cubic-bezier(.18,1.57,.68,.87);
   }
 
   100%{
-    transform: translateY(0) translateX(0) scale(1);
-    /* transform: translate(calc(var(--origin-x, 0) + 10%), calc(var(--origin-y, 0) + 10%)) scale(1);  */
+    scale: 1;
+  }
+}
+
+
+@keyframes modalOpacity {
+  0%{
+    opacity:0;
+  }
+
+  100%{
+    opacity:1;
+  }
+}
+
+@keyframes contentAnimation {
+  0%{
+    opacity:0;
+  }
+
+  100%{
+    opacity:1;
   }
 }
 
@@ -191,11 +223,6 @@ img {
     backdrop-filter: blur(2px);
   }
 }
-
-.opened {
-    opacity: 1;
-    transform: translateY(0);
-  }
 
 `;
 

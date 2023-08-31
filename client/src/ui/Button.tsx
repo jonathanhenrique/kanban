@@ -18,6 +18,7 @@ const variations = {
     padding: 0;
   `,
   primary: css`
+    background: linear-gradient(90deg, #d73b54, #cd3262);
     background-color: var(--color-brand-500);
     --hover-color: hsl(241, 47%, 62%);
   `,

@@ -2,6 +2,8 @@ import { styled } from 'styled-components';
 import { useReducer } from 'react';
 import Button from './Button';
 import { HiOutlineTrash } from 'react-icons/hi2';
+import { useQueryClient } from '@tanstack/react-query';
+import { useCreateTask } from '../hooks/useCreateTask';
 
 const Heading = styled.h2`
   font-weight: 500;
@@ -134,99 +136,124 @@ function reducer(state: StateType, action: ActionType): StateType {
 }
 
 export default function AddNewTask() {
+  const { isCreatingTask, mutate } = useCreateTask();
   const [{ title, description, subtasks, status }, dispatch] = useReducer(
     reducer,
     initialState
   );
+  const queryClient = useQueryClient();
+  const data = queryClient.getQueryData(['currBoard']);
+
+  const columns = data
+    ? data.board.columns.map((column) => ({
+        id: column.id,
+        name: column.name,
+      }))
+    : null;
+
+  // console.log(columns);
 
   function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
-    console.log({ title, description, subtasks, status });
+    const columnId = status || columns[0].id;
+
+    const order =
+      data.board.columns.find((column) => column.id === columnId).tasks.length +
+      1;
+    mutate({ title, description, subtasks, columnId, order });
+    // console.log({ title, description, subtasks, columnId, order });
   }
 
   return (
     <StyledForm onSubmit={handleSubmit}>
-      <Heading>Add new Task</Heading>
-      <FormBlock>
-        <label htmlFor="title">Title</label>
-        <StyledInput
-          id="title"
-          name="title"
-          placeholder="e.g. Take coffee break"
-          value={title}
-          onChange={(event) =>
-            dispatch({ type: 'changeTitle', payload: event.target.value })
-          }
-        />
-      </FormBlock>
-      <FormBlock>
-        <label htmlFor="description">Description</label>
-        <StyledTextArea
-          id="description"
-          name="description"
-          placeholder={DESCRIPTION_PLACEHOLDER}
-          value={description}
-          onChange={(event) =>
-            dispatch({ type: 'changeDescription', payload: event.target.value })
-          }
-          rows={4}
-        ></StyledTextArea>
-      </FormBlock>
-      <FormBlock>
-        <label htmlFor="subtasks">Subtasks</label>
-        <StyledSubtasks>
-          {subtasks.map((st, idx: number) => (
-            <SubTask key={`subtask_${idx}`}>
-              <StyledInput
-                value={st}
-                onChange={(event) =>
-                  dispatch({
-                    type: 'updateSubtask',
-                    payload: { index: idx, input: event.target.value },
-                  })
-                }
-                placeholder={`e.g. ${SUBTASK_PLACEHOLDERS[idx]}`}
-              />
-              <Button
-                variation="icon"
-                handleClick={(event) => {
-                  event.preventDefault();
-                  dispatch({ type: 'deleteSubtask', payload: idx });
-                }}
-              >
-                <HiOutlineTrash />
-              </Button>
-            </SubTask>
-          ))}
-          <Button
-            variation="secondary"
-            handleClick={(event) => {
-              event.preventDefault();
-              dispatch({ type: 'newSubtask' });
-            }}
+      <div style={{ opacity: isCreatingTask ? '.5' : '1' }}>
+        <Heading>Add new Task</Heading>
+        <FormBlock>
+          <label htmlFor="title">Title</label>
+          <StyledInput
+            id="title"
+            name="title"
+            placeholder="e.g. Take coffee break"
+            value={title}
+            onChange={(event) =>
+              dispatch({ type: 'changeTitle', payload: event.target.value })
+            }
+          />
+        </FormBlock>
+        <FormBlock>
+          <label htmlFor="description">Description</label>
+          <StyledTextArea
+            id="description"
+            name="description"
+            placeholder={DESCRIPTION_PLACEHOLDER}
+            value={description}
+            onChange={(event) =>
+              dispatch({
+                type: 'changeDescription',
+                payload: event.target.value,
+              })
+            }
+            rows={4}
+          ></StyledTextArea>
+        </FormBlock>
+        <FormBlock>
+          <label htmlFor="subtasks">Subtasks</label>
+          <StyledSubtasks>
+            {subtasks.map((st, idx: number) => (
+              <SubTask key={`subtask_${idx}`}>
+                <StyledInput
+                  value={st}
+                  onChange={(event) =>
+                    dispatch({
+                      type: 'updateSubtask',
+                      payload: { index: idx, input: event.target.value },
+                    })
+                  }
+                  placeholder={`e.g. ${SUBTASK_PLACEHOLDERS[idx]}`}
+                />
+                <Button
+                  variation="icon"
+                  handleClick={(event) => {
+                    event.preventDefault();
+                    dispatch({ type: 'deleteSubtask', payload: idx });
+                  }}
+                >
+                  <HiOutlineTrash />
+                </Button>
+              </SubTask>
+            ))}
+            <Button
+              variation="secondary"
+              handleClick={(event) => {
+                event.preventDefault();
+                dispatch({ type: 'newSubtask' });
+              }}
+            >
+              + Add new subtask
+            </Button>
+          </StyledSubtasks>
+        </FormBlock>
+        <FormBlock>
+          <label htmlFor="status">Status</label>
+          <StyledSelect
+            name="status"
+            id="status"
+            defaultValue={columns[0].id}
+            onChange={(event) =>
+              dispatch({ type: 'changeStatus', payload: event.target.value })
+            }
           >
-            + Add new subtask
-          </Button>
-        </StyledSubtasks>
-      </FormBlock>
-      <FormBlock>
-        <label htmlFor="status">Status</label>
-        <StyledSelect
-          name="status"
-          id="status"
-          defaultValue="todo"
-          onChange={(event) =>
-            dispatch({ type: 'changeStatus', payload: event.target.value })
-          }
-        >
-          <option value="todo">Todo</option>
-          <option value="doing">Doing</option>
-          <option value="done">Done</option>
-        </StyledSelect>
-      </FormBlock>
-      <FormBlock>
-        <Button>Create Task</Button>
-      </FormBlock>
+            {columns.map((opt, idx) => (
+              <option key={`column_${idx}`} value={opt.id}>
+                {opt.name}
+              </option>
+            ))}
+          </StyledSelect>
+        </FormBlock>
+        <FormBlock>
+          <Button variation="primary">Create Task</Button>
+        </FormBlock>
+      </div>
     </StyledForm>
   );
 }
