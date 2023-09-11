@@ -21,3 +21,15 @@ export async function createTask(newTask) {
 
   if (res.status !== 200) throw new Error('An error occurs');
 }
+
+export async function toggleCompleted(subtaskId, completed) {
+  const res = await fetch(`/api/subtasks/${subtaskId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ completed: completed }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (res.status !== 200) throw new Error('An error occurs');
+}

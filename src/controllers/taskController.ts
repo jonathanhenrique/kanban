@@ -1,5 +1,27 @@
 import prisma from '../db';
 
+export async function getTask(req, res, next) {
+  try {
+    const task = await prisma.task.findUnique({
+      where: {
+        id: req.params.id,
+      },
+      include: {
+        subTasks: {
+          orderBy: {
+            description: 'asc',
+          },
+        },
+      },
+    });
+
+    res.status(200);
+    res.json({ task });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function createTask(req, res, next) {
   const { subTasks } = req.body;
   let subTasksData = [];

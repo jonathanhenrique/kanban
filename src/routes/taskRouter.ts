@@ -5,6 +5,7 @@ import {
   updateTask,
   changeOrder,
   changeOrderColumn,
+  getTask,
 } from '../controllers/taskController';
 import {
   validateTaskInput,
@@ -22,6 +23,7 @@ router
   .put(validateTaskOrderColumn as [], changeOrderColumn);
 router
   .route('/:id')
+  .get(validateTaskOwnership as [], getTask)
   .patch(validateTaskOwnership as [], validateTaskUpdate as [], updateTask)
   .delete(validateTaskOwnership as [], deleteTask);
 

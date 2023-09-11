@@ -422,3 +422,48 @@ export const validateLoginInput = [
   ],
   inputErrorHandler,
 ];
+
+// Validations for subtasks
+export const validateSubtaskToggle = [
+  [
+    body('completed')
+      .notEmpty()
+      .withMessage('task completed is required')
+      .isBoolean()
+      .withMessage('task completed must be true or false'),
+  ],
+  inputErrorHandler,
+];
+
+export const validateSubtaskOwnership = [
+  param('id').custom(async (value, { req }) => {
+    const isValidID = validateUUID(value);
+    if (!isValidID) throw new BadRequestError('invalid ID');
+
+    const subtask = await prisma.subTask.findUnique({
+      where: {
+        id: value,
+      },
+      include: {
+        task: {
+          include: {
+            column: {
+              include: {
+                board: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!subtask) {
+      throw new NotFoundError('not found');
+    }
+
+    if (subtask.task.column.board.belongsToId !== req.user.id) {
+      throw new UnauthorizedError('not allowed');
+    }
+  }),
+  ownershipErrorHandler,
+];

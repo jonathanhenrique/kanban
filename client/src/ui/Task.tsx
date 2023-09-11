@@ -1,4 +1,4 @@
-import { styled } from 'styled-components';
+import { styled, css } from 'styled-components';
 import Button from './Button';
 import {
   HiOutlineArrowTopRightOnSquare,
@@ -23,8 +23,21 @@ const StyledTask = styled.div`
   background-position: 0 0;
   background-size: 200px 200px;
 
-  background-color: ${(props) =>
-    props.isDragging ? 'var(--bg-color)' : 'var(--color-grey-700)'};
+  transition: box-shadow 100ms ease-in;
+
+  --color-shadow-1: #d73b54;
+  --color-shadow-2: #cd3262;
+  --shadow-pixels: 2px;
+
+  ${(props) => {
+    if (!props.$isDragging) return '';
+    return css`
+      box-shadow: 0 1px var(--shadow-pixels) 0 var(--color-shadow-1),
+        0 -1px var(--shadow-pixels) 0 var(--color-shadow-2),
+        1px 0 var(--shadow-pixels) 0 var(--color-shadow-1),
+        -1px 0 var(--shadow-pixels) 0 var(--color-shadow-2);
+    `;
+  }};
 `;
 
 const ButtonsGroup = styled.div`

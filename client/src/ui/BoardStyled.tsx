@@ -5,7 +5,7 @@ const StyledBoard = styled.div`
   align-items: top;
   gap: 3rem;
   transition: opacity 100ms;
-  opacity: ${(props) => (props.$isUpdating ? '.5' : '1')};
+  /* opacity: ${(props) => (props.$isUpdating ? '.5' : '1')}; */
 `;
 
 export default StyledBoard;

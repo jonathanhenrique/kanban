@@ -2,7 +2,6 @@ import { styled, css } from 'styled-components';
 
 const StyledColumn = styled.div`
   width: 36rem;
-  /* background-color: var(--color-grey-500); */
   padding-top: 1rem;
 
   & h3 {
@@ -16,23 +15,22 @@ const StyledColumn = styled.div`
     display: flex;
     flex-direction: column;
     padding: 0.8rem;
-    /* background-color: ${(props) =>
-      props.isDraggingOver
-        ? 'var(--backdrop-color)'
-        : 'var(--color-grey-500)'}; */
     background-color: var(--color-grey-500);
     border-radius: var(--border-radius-lg);
 
-    transition: box-shadow 150ms;
+    transition: box-shadow 100ms ease-in;
 
-    --color-shadow: hsl(241, 47%, 65%);
+    --color-shadow-1: #d73b54;
+    --color-shadow-2: #cd3262;
+    --shadow-pixels: 5px;
 
     ${(props) => {
       if (!props.$isDraggingOver) return '';
       return css`
-        box-shadow: 0 1px 5px 0 var(--color-shadow),
-          0 -1px 5px 0 var(--color-shadow), 1px 0 5px 0 var(--color-shadow),
-          -1px 0 5px 0 var(--color-shadow);
+        box-shadow: 0 1px var(--shadow-pixels) 0 var(--color-shadow-1),
+          0 -1px var(--shadow-pixels) 0 var(--color-shadow-2),
+          1px 0 var(--shadow-pixels) 0 var(--color-shadow-1),
+          -1px 0 var(--shadow-pixels) 0 var(--color-shadow-2);
       `;
     }};
   }

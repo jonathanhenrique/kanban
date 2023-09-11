@@ -1,17 +1,37 @@
 import prisma from '../db';
 
-export async function toggleCompleted(req, res) {
-  const { id: paramId } = req.params;
+export async function toggleCompleted(req, res, next) {
+  try {
+    const subTask = await prisma.subTask.update({
+      where: {
+        id: req.params.id,
+      },
+      data: {
+        completed: req.body.completed,
+      },
+    });
 
-  const subTask = await prisma.subTask.update({
-    where: {
-      id: paramId,
-    },
-    data: {
-      completed: req.body.completed,
-    },
-  });
-
-  res.status(200);
-  res.json({ subTask });
+    res.status(200);
+    res.json({ subTask });
+  } catch (error) {
+    next(error);
+  }
 }
+
+// export async function toggleCompleted2(req, res, next) {
+//   try {
+//     const subTask = await prisma.subTask.update({
+//       where: {
+//         id: req.params.id,
+//       },
+//       data: {
+//         completed: req.body.completed,
+//       },
+//     });
+
+//     res.status(200);
+//     res.json({ subTask });
+//   } catch (error) {
+//     next(error);
+//   }
+// }
