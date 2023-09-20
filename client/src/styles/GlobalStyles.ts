@@ -62,9 +62,10 @@ body {
   font-size: 1.4rem;
   letter-spacing: .8px;
   background-color: var(--bg-color);
-  background-image: url('noise-bg-soft.png');
-  background-position: 0 0;
-  background-size: 200px 200px;
+
+  height: 100dvh;
+  width: 100%;
+
 }
 
 input,

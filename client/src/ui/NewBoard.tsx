@@ -1,5 +1,15 @@
 import { styled } from 'styled-components';
-import { HiPlus, HiOutlineMinus } from 'react-icons/hi2';
+import {
+  HiPlus,
+  HiOutlineMinus,
+  HiOutlineSquaresPlus,
+  HiPlusSmall,
+  HiOutlinePlusCircle,
+  HiNoSymbol,
+  HiMiniXMark,
+  HiMiniPlusCircle,
+  HiMiniXCircle,
+} from 'react-icons/hi2';
 import { useState } from 'react';
 import Button from './Button';
 import { useAnimationOnUnmount } from '../hooks/useAnimationOnUnmount';
@@ -9,8 +19,7 @@ const StyledButton = styled.button`
   background: none;
   border: none;
   padding: 1rem 1.5rem;
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
+  border-radius: 8px;
   color: var(--color-brand-600);
   display: flex;
   align-items: center;
@@ -43,6 +52,7 @@ const StyledButton = styled.button`
 const StyledNewBoard = styled.div`
   display: flex;
   flex-direction: column;
+  border-top: var(--border-hairline);
 `;
 
 const FormBlock = styled.div`
@@ -68,7 +78,7 @@ const StyledInput = styled.input`
   padding: 1rem;
 `;
 
-export function NewBoard() {
+export default function NewBoard() {
   const [newBoard, setNewBoard] = useState('');
   const { open, close, isOpen, isRunningAnimation } = useAnimationOnUnmount({
     isMounted: false,
@@ -83,7 +93,8 @@ export function NewBoard() {
   return (
     <StyledNewBoard>
       <StyledButton onClick={() => (isOpen ? close() : open())}>
-        {isOpen ? <HiOutlineMinus /> : <HiPlus />}
+        {isOpen ? <HiMiniXCircle /> : <HiMiniPlusCircle />}
+        {/* <HiPlusSmall /> */}
         <span>New Board</span>
       </StyledButton>
 
@@ -97,9 +108,15 @@ export function NewBoard() {
                 onChange={(e) => setNewBoard(e.target.value)}
                 placeholder="Board Name"
               />
-              <div style={{ display: 'flex' }}>
-                <Button onClick={() => close()}>Cancel</Button>
-                <Button>Create</Button>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Button type="secondary" onClick={() => close()}>
+                  <HiMiniXMark />
+                  <span>Cancel</span>
+                </Button>
+                <Button type="primary">
+                  <HiPlusSmall />
+                  <span>Create</span>
+                </Button>
               </div>
             </FormBlock>
           </div>

@@ -33,15 +33,13 @@ export default function AppLayout() {
       <ReactQueryDevtools />
       <GlobalUIProvider>
         <Modal>
-          <div style={{ height: '100dvh', width: '100%' }}>
-            <Header />
-            <Content>
-              <Sidebar />
-              <Main>
-                <Outlet />
-              </Main>
-            </Content>
-          </div>
+          <Header />
+          <Content>
+            <Sidebar />
+            <Main>
+              <Outlet />
+            </Main>
+          </Content>
         </Modal>
       </GlobalUIProvider>
     </QueryClientProvider>

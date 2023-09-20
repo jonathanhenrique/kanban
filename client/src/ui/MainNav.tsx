@@ -1,14 +1,15 @@
-import { styled } from 'styled-components';
-import NavItem from './NavItem';
 import { useQuery } from '@tanstack/react-query';
+import { styled } from 'styled-components';
+
+import NavItem from './NavItem';
 import Spinner from './Spinner';
-import { NavLink } from 'react-router-dom';
-import { NewBoard } from './NewBoard';
+import NewBoard from './NewBoard';
 
 const NavList = styled.ul`
+  padding: 0;
   display: flex;
   flex-direction: column;
-  padding: 0;
+  margin-bottom: 2rem;
 `;
 
 const Subtitle = styled.p`
@@ -19,45 +20,6 @@ const Subtitle = styled.p`
   font-size: 1.4rem;
   margin-bottom: 1.5rem;
 `;
-
-// const StyledNavLink = styled(NavLink)`
-//   &:link,
-//   &:visited {
-//     display: flex;
-//     align-items: center;
-//     gap: 1.2rem;
-
-//     color: var(--color-grey-600);
-//     font-size: 1.6rem;
-//     font-weight: 500;
-//     padding: 1.2rem 2.4rem;
-//     transition: all 0.3s;
-//   }
-
-//   /* This works because react-router places the active class on the active NavLink */
-//   &:hover,
-//   &:active,
-//   &.active:link,
-//   &.active:visited {
-//     color: var(--color-grey-800);
-//     background-color: var(--color-grey-50);
-//     border-radius: var(--border-radius-sm);
-//   }
-
-//   & svg {
-//     width: 2.4rem;
-//     height: 2.4rem;
-//     color: var(--color-grey-400);
-//     transition: all 0.3s;
-//   }
-
-//   &:hover svg,
-//   &:active svg,
-//   &.active:link svg,
-//   &.active:visited svg {
-//     color: var(--color-brand-600);
-//   }
-// `;
 
 export default function MainNav({ floated = false }) {
   const { isLoading, isError, data, error } = useQuery({
@@ -82,8 +44,8 @@ export default function MainNav({ floated = false }) {
             {board.name}
           </NavItem>
         ))}
-        <NewBoard />
       </NavList>
+      <NewBoard />
     </nav>
   );
 }

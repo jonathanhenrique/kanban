@@ -1,12 +1,14 @@
 import { styled } from 'styled-components';
 
-const IconButton = styled.button`
+type Props = { open?: boolean };
+
+const IconButton = styled.button<Props>`
   width: 4rem;
   height: 4rem;
   border: none;
   background-color: transparent;
   border-radius: 50%;
-  animation: scale 200ms var(--bezier-ease-out) 300ms;
+  animation: scale 200ms var(--bezier-ease-out);
 
   & svg {
     transition: transform 200ms var(--bezier-ease-out);

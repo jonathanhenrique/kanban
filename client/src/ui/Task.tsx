@@ -53,19 +53,22 @@ export default function Task({ task, isDragging, onSelectTask }) {
       <TaskInfo task={task} />
       <ButtonsGroup>
         <Modal.Trigger fn={() => onSelectTask(task)} opens="details">
-          <Button variation="task" icon={<HiOutlineArrowTopRightOnSquare />}>
-            Open
+          <Button type="mini">
+            <HiOutlineArrowTopRightOnSquare />
+            <span>Open</span>
           </Button>
         </Modal.Trigger>
 
         <Modal.Trigger fn={() => onSelectTask(task)} opens="edit">
-          <Button variation="task" icon={<HiOutlineWrenchScrewdriver />}>
-            Edit
+          <Button type="mini">
+            <HiOutlineWrenchScrewdriver />
+            <span>Edit</span>
           </Button>
         </Modal.Trigger>
 
-        <Button variation="task" icon={<HiOutlineTrash />}>
-          Delete
+        <Button type="mini">
+          <HiOutlineTrash />
+          <span>Delete</span>
         </Button>
       </ButtonsGroup>
     </StyledTask>

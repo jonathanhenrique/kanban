@@ -4,8 +4,9 @@ import { NavLink } from 'react-router-dom';
 
 const StyledItem = styled(NavLink)`
   padding: 1rem 1.5rem;
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
+  /* border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px; */
+  border-radius: 8px;
   color: var(--color-grey-300);
   display: flex;
   align-items: center;

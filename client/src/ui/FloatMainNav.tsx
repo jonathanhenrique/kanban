@@ -8,7 +8,7 @@ import IconButton from './IconButton';
 
 const FloatContainer = styled.div`
   padding: 1.5rem 1rem;
-  width: 240px;
+  width: 260px;
   background-color: var(--color-grey-700);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-lg);
