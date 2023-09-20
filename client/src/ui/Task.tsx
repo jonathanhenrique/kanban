@@ -47,18 +47,18 @@ const ButtonsGroup = styled.div`
   gap: 0.2rem;
 `;
 
-export default function Task({ task, isDragging, setCurrentTask }) {
+export default function Task({ task, isDragging, onSelectTask }) {
   return (
     <StyledTask $isDragging={isDragging}>
       <TaskInfo task={task} />
       <ButtonsGroup>
-        <Modal.Trigger fn={() => setCurrentTask(task)} opens="details">
+        <Modal.Trigger fn={() => onSelectTask(task)} opens="details">
           <Button variation="task" icon={<HiOutlineArrowTopRightOnSquare />}>
             Open
           </Button>
         </Modal.Trigger>
 
-        <Modal.Trigger fn={() => setCurrentTask(task)} opens="edit">
+        <Modal.Trigger fn={() => onSelectTask(task)} opens="edit">
           <Button variation="task" icon={<HiOutlineWrenchScrewdriver />}>
             Edit
           </Button>

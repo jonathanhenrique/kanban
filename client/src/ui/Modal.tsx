@@ -4,6 +4,7 @@ import { useOutsideClick } from '../hooks/useOutsideClick';
 import { useAnimationOnUnmount } from '../hooks/useAnimationOnUnmount';
 import Backdrop from './Backdrop';
 import ModalContainer from './ModalContainer';
+import { useGlobalUI } from './GlobalUI';
 
 type ModalContextType = {
   open: () => void;
@@ -15,11 +16,13 @@ type ModalContextType = {
 const ModalContext = createContext<ModalContextType | null>(null);
 
 function Modal({ children }: { children: React.ReactNode }) {
-  const [contentToOpen, setContentToOpen] = useState();
+  const { setBoardLocked } = useGlobalUI();
+  const [contentToOpen, setContentToOpen] = useState('');
   const [clickOrigin, setClickOrigin] = useState(null);
   const { open, close, isOpen, isRunningAnimation } = useAnimationOnUnmount({
     isMounted: false,
-    delay: 350,
+    delay: 200,
+    fn: () => setContentToOpen(''),
   });
 
   return (
@@ -33,6 +36,7 @@ function Modal({ children }: { children: React.ReactNode }) {
         setClickOrigin,
         contentToOpen,
         setContentToOpen,
+        setBoardLocked,
       }}
     >
       {children}
@@ -55,17 +59,22 @@ function Content({
     clickOrigin,
     contentToOpen,
     setContentToOpen,
+    setBoardLocked,
+    setClickOrigin,
   } = value as ModalContextType;
   const { ref } = useOutsideClick(() => {
-    setContentToOpen('');
+    // setContentToOpen('');
+    setBoardLocked(false);
     close();
   });
 
-  if (name !== contentToOpen && !isRunningAnimation) return null;
+  if (name !== contentToOpen) return null;
+
+  // if (name !== contentToOpen && !isRunningAnimation) return null;
 
   const classToClose = isRunningAnimation ? 'toClose' : '';
   return createPortal(
-    <Backdrop animationClass={classToClose}>
+    <Backdrop>
       <ModalContainer
         style={
           {
@@ -93,7 +102,8 @@ function Trigger({
   opens?: string;
 }) {
   const value = useContext(ModalContext);
-  const { open, setClickOrigin, setContentToOpen } = value as ModalContextType;
+  const { open, setBoardLocked, setClickOrigin, setContentToOpen } =
+    value as ModalContextType;
 
   return cloneElement(children as React.ReactElement, {
     onClick: (e) => {
@@ -108,6 +118,7 @@ function Trigger({
       });
       fn && fn();
       setContentToOpen(opens);
+      setBoardLocked(true);
       open();
     },
   });

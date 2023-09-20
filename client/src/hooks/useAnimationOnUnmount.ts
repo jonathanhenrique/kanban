@@ -3,11 +3,13 @@ import { useEffect, useState, useCallback } from 'react';
 type UseAnimationType = {
   isMounted: boolean;
   delay?: number;
+  fn?: () => void;
 };
 
 export function useAnimationOnUnmount({
   isMounted = false,
   delay,
+  fn,
 }: UseAnimationType) {
   const [animationState, setAnimationState] = useState(
     isMounted ? 'mounted' : 'unmounted'
@@ -24,6 +26,7 @@ export function useAnimationOnUnmount({
       let timerId: number;
       if (animationState === 'toUnmount') {
         timerId = setTimeout(() => {
+          fn && fn();
           setAnimationState('unmounted');
         }, delay);
       }
@@ -33,7 +36,7 @@ export function useAnimationOnUnmount({
       };
     },
 
-    [animationState, setAnimationState, delay]
+    [animationState, setAnimationState, delay, fn]
   );
 
   if (!delay || delay === 0) return { open, close, isOpen };

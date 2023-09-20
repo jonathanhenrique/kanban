@@ -3,20 +3,27 @@ import { styled } from 'styled-components';
 import SubTaskDetails from './SubTaskDetails';
 
 const Heading = styled.h2`
-  font-weight: 500;
-  font-size: 2rem;
-  margin-bottom: 1rem;
+  font-weight: 400;
+  font-size: 1.6rem;
+  margin-bottom: 1.2rem;
 `;
 
 const Description = styled.p`
+  font-size: 1.4rem;
   color: var(--color-grey-300);
+  margin-bottom: 2rem;
 `;
 
 const StyledForm = styled.form`
   width: 50rem;
+
+  & > h3 {
+    font-size: 1.6rem;
+    font-weight: 400;
+  }
 `;
 
-export default function TaskDetails({ task }) {
+export default function TaskDetails({ currTask }) {
   const {
     isLoading: loadingTask,
     isError,
@@ -25,7 +32,7 @@ export default function TaskDetails({ task }) {
   } = useQuery({
     queryKey: ['currTask'],
     queryFn: async () => {
-      const res = await fetch(`/api/tasks/${task.id}`);
+      const res = await fetch(`/api/tasks/${currTask}`);
       const data = await res.json();
 
       return data;
@@ -33,6 +40,7 @@ export default function TaskDetails({ task }) {
     onSuccess(data) {
       // console.log(data);
     },
+    refetchOnMount: true,
   });
 
   if (loadingTask) return <p>Loading...</p>;
@@ -44,8 +52,12 @@ export default function TaskDetails({ task }) {
       <Heading>
         This is the Title of the Task and it should be bigger than 15 words
       </Heading>
-      <Description>{task.description}</Description>
-      <h3>Subtasks (2 of 3)</h3>
+      <Description>
+        This is the Title of the Task and it should be bigger than 15 words,
+        This is the Title of the Task and it should be bigger than 15 words,
+        This is the Title of the Task and it should be bigger than 15 words
+      </Description>
+      <Heading>Subtasks completed (2 of 3)</Heading>
       {data.task.subTasks.map((st) => {
         return <SubTaskDetails key={st.id} subtask={st} />;
       })}

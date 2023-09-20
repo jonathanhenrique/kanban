@@ -1,23 +1,28 @@
-export default function BoardInside() {
-  const queryClient = useQueryClient();
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { useQueryClient } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+
+import { useUpdateBoard } from '../hooks/useUpdateBoard';
+import { changeColumn, reorder } from '../utils/cacheOperations';
+
+import StyledBoard from './BoardStyled';
+import Column from './Column';
+import Task from './Task';
+import Modal from './Modal';
+import TaskDetails from './TaskDetails';
+import EditTask from './EditTask';
+import Spinner from './Spinner';
+import useLoadBoard from '../hooks/useLoadBoard';
+
+export default function Board() {
+  const { boardId } = useParams();
   const { isUpdatingPosition, mutate } = useUpdateBoard();
+  const queryClient = useQueryClient();
   const [currTask, setCurrTask] = useState(null);
   const [cache, setCache] = useState([]);
 
-  const { isLoading, isError, data, error } = useQuery({
-    queryKey: ['currBoard'],
-    queryFn: async () => {
-      const res = await fetch(
-        '/api/boards/cc529ae3-d1d2-4297-8eed-74b9c8e71070'
-      );
-      const data = await res.json();
-
-      return data;
-    },
-    onSuccess(data) {
-      setCache(data.board.columns);
-    },
-  });
+  const { isLoading, isError, data, error } = useLoadBoard(boardId, setCache);
 
   const onDragEnd = (result) => {
     const { source, destination } = result;
@@ -34,11 +39,6 @@ export default function BoardInside() {
     const taskId = data.board.columns.find(
       (column) => column.id === source.droppableId
     ).tasks[source.index].id;
-
-    // mutate({
-    //   taskId: taskId,
-    //   newPosition: destination.index,
-    // });
 
     if (source.droppableId === destination.droppableId) {
       mutate({
@@ -85,13 +85,15 @@ export default function BoardInside() {
     queryClient.setQueryData(['currTask'], () => ({ task }));
   };
 
-  // console.log(currTask);
+  if (!boardId) return null;
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <Spinner />;
 
   if (!cache) return null;
 
   if (isError) return <p>{error.message}</p>;
+
+  console.log(data.board);
 
   return (
     <>

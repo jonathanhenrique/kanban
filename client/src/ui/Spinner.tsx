@@ -19,7 +19,7 @@ const Spinner = styled.div`
       no-repeat,
     conic-gradient(#0000 30%, #cd3262);
   -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 10px), #000 0);
-  animation: ${rotate} 1000ms infinite cubic-bezier(0.5, 0, 0.5, 1);
+  animation: ${rotate} 1000ms infinite linear;
 `;
 
 export default Spinner;

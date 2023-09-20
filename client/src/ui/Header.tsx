@@ -2,34 +2,60 @@ import { styled } from 'styled-components';
 import Button from './Button';
 import Modal from './Modal';
 import AddNewTask from './AddNewTask';
-import { useQueryClient } from '@tanstack/react-query';
+import Logo from './Logo';
+import { HiBars3 } from 'react-icons/hi2';
+import { FloatMainNav } from './FloatMainNav';
+import { useGlobalUI } from './GlobalUI';
+import IconButton from './IconButton';
+
 const StyledHeader = styled.header`
+  height: 64px;
+  padding: 0.8rem 1.6rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2rem;
-  border-bottom: 1px solid var(--color-border-dark);
-
+  border-bottom: var(--border-hairline);
   background-color: var(--color-grey-700);
-  background-image: url('noise-bg-soft.png');
-  background-position: 0 0;
-  background-size: 200px 200px;
 
   & h1 {
-    font-weight: 500;
+    font-weight: 400;
     font-size: 2rem;
+    line-height: 0;
   }
 `;
 
 export default function Header() {
-  const queryClient = useQueryClient();
-  const data = queryClient.getQueryData(['currBoard']);
+  const { sidebarOpen, toggleSidebar } = useGlobalUI();
 
   return (
     <StyledHeader>
-      <h1>{data ? data.board.name : 'loading'}</h1>
+      <div
+        style={{
+          minWidth: '256px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '2rem',
+          marginRight: '1rem',
+        }}
+      >
+        <IconButton onClick={toggleSidebar}>
+          <HiBars3 />
+        </IconButton>
+        <Logo />
+      </div>
+      <div
+        style={{
+          flex: '1 0 auto',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1rem',
+        }}
+      >
+        <h1>This is the Title</h1>
+        {!sidebarOpen && <FloatMainNav />}
+      </div>
       <Modal.Trigger opens="newTask">
-        <Button>+ add new task</Button>
+        <Button>+ new task</Button>
       </Modal.Trigger>
 
       <Modal.Content name="newTask">

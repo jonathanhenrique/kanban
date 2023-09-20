@@ -6,20 +6,26 @@ import { IoCheckbox, IoSquare } from 'react-icons/io5';
 
 const Subtask = styled.button`
   position: relative;
-  /* cursor: pointer; */
+  font-size: 1.4rem;
   text-decoration: ${(props) => (props.isCompleted ? 'line-through' : 'none')};
   line-height: 0;
-  border-radius: var(--border-radius-lg);
+  border: none;
+  border-radius: var(--border-radius-sm);
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 2rem;
-  margin-bottom: 1rem;
+  gap: 1.2rem;
+  padding: 0.8rem 1.6rem;
   background-color: var(--color-grey-700);
+
+  &:not(:last-of-type) {
+    margin-bottom: 1rem;
+  }
 
   color: ${(props) =>
     props.isCompleted ? 'var(--color-grey-300)' : 'var(--color-grey-100)'};
+
+  opacity: ${(props) => (props.isCompleted ? '.5' : '1')};
 
   --hover-color: var(--color-border);
 

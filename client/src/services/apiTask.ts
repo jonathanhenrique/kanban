@@ -1,7 +1,11 @@
-export async function changeOrder(taskId, newPosition) {
+export async function changeOrder(taskId, newPosition, newColumnId) {
   const res = await fetch('/api/tasks/', {
-    method: 'PATCH',
-    body: JSON.stringify({ taskId, newPosition }),
+    method: newColumnId ? 'PUT' : 'PATCH',
+    body: JSON.stringify(
+      newColumnId
+        ? { taskId, newPosition, newColumnId }
+        : { taskId, newPosition }
+    ),
     headers: {
       'Content-Type': 'application/json',
     },

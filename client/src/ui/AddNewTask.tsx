@@ -4,6 +4,7 @@ import Button from './Button';
 import { HiOutlineTrash } from 'react-icons/hi2';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCreateTask } from '../hooks/useCreateTask';
+import { useParams } from 'react-router-dom';
 
 const Heading = styled.h2`
   font-weight: 500;
@@ -136,13 +137,14 @@ function reducer(state: StateType, action: ActionType): StateType {
 }
 
 export default function AddNewTask() {
+  const { boardId } = useParams();
   const { isCreatingTask, mutate } = useCreateTask();
   const [{ title, description, subtasks, status }, dispatch] = useReducer(
     reducer,
     initialState
   );
   const queryClient = useQueryClient();
-  const data = queryClient.getQueryData(['currBoard']);
+  const data = queryClient.getQueryData([boardId]);
 
   const columns = data
     ? data.board.columns.map((column) => ({
@@ -163,6 +165,8 @@ export default function AddNewTask() {
     mutate({ title, description, subtasks, columnId, order });
     // console.log({ title, description, subtasks, columnId, order });
   }
+
+  console.log('Inside new Task');
 
   return (
     <StyledForm onSubmit={handleSubmit}>
