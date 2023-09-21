@@ -20,7 +20,6 @@ const LogoStyled = styled.div`
     transform: rotateZ(-90deg) scaleX(-1);
     width: 26px;
     height: 26px;
-    /* fill: var(--color-grey-300); */
   }
 `;
 
@@ -32,14 +31,14 @@ export default function Logo() {
         version="1.1"
         id="Layer_1"
         xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
+        xmlnsXlink="http://www.w3.org/1999/xlink"
         x="0px"
         y="0px"
         width="28px"
         height="28px"
         viewBox="0 0 50 50"
-        enable-background="new 0 0 50 50"
-        xml:space="preserve"
+        enableBackground="new 0 0 50 50"
+        xmlSpace="preserve"
       >
         {/* <path
           fill="#cd3262"

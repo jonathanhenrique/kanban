@@ -3,14 +3,14 @@ import { HiOutlineSquares2X2 } from 'react-icons/hi2';
 import { NavLink } from 'react-router-dom';
 
 const StyledItem = styled(NavLink)`
-  padding: 1rem 1.5rem;
-  /* border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px; */
-  border-radius: 8px;
+  padding: 1rem 1.4rem;
+  border-radius: var(--border-radius-lg);
   color: var(--color-grey-300);
   display: flex;
   align-items: center;
   gap: 1.2rem;
+
+  transition: background-color 100ms linear;
 
   &:hover {
     background: var(--color-grey-500);
@@ -31,17 +31,23 @@ const StyledItem = styled(NavLink)`
   }
 
   &.active {
-    color: var(--color-brand-600);
-    background: linear-gradient(90deg, #d73b54, #cd3262);
+    color: #f8fafc;
+    background: linear-gradient(90deg, var(--color-1), var(--color-2));
   }
 `;
 
-export default function NavItem({ children, id }: { children: string }) {
+export default function NavItem({
+  children,
+  id,
+}: {
+  children: string;
+  id: string;
+}) {
   return (
     <StyledItem to={`/app/${id}`}>
       <span>
         <HiOutlineSquares2X2 />
-      </span>{' '}
+      </span>
       {children}
     </StyledItem>
   );

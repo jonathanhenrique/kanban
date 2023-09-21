@@ -4,7 +4,7 @@ import { useOutsideClick } from '../hooks/useOutsideClick';
 import { useAnimationOnUnmount } from '../hooks/useAnimationOnUnmount';
 import Backdrop from './Backdrop';
 import ModalContainer from './ModalContainer';
-import { useGlobalUI } from './GlobalUI';
+import { useGlobalUI } from '../utils/GlobalUI';
 
 type ModalContextType = {
   open: () => void;

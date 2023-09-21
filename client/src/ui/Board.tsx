@@ -15,7 +15,7 @@ import EditTask from './EditTask';
 import Spinner from './Spinner';
 import useLoadBoard from '../hooks/useLoadBoard';
 import BoardLock from './BoardLock';
-import { useGlobalUI } from './GlobalUI';
+import { useGlobalUI } from '../utils/GlobalUI';
 
 export default function Board() {
   const { boardLocked } = useGlobalUI();
@@ -124,6 +124,7 @@ export default function Board() {
                           >
                             {(provided, snapshot) => (
                               <li
+                                className="mb-1rem"
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}

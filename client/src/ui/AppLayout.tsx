@@ -3,7 +3,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { styled } from 'styled-components';
 import { Outlet } from 'react-router-dom';
 
-import { GlobalUIProvider } from './GlobalUI';
+import { GlobalUIProvider } from '../utils/GlobalUI';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import Modal from './Modal';

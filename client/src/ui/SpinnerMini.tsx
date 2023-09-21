@@ -14,7 +14,16 @@ const SpinnerMini = styled(BiLoaderAlt)`
   top: calc(50% - 1.2rem);
   left: calc(50% - 1.2rem);
 
-  animation: ${rotate} 1.5s infinite linear;
+  animation: ${rotate} 800ms infinite linear;
+`;
+
+export const SpinnerMiniR = styled(BiLoaderAlt)`
+  width: 2.4rem;
+  height: 2.4rem;
+  top: calc(50% - 1.2rem);
+  left: calc(50% - 1.2rem);
+
+  animation: ${rotate} 800ms infinite linear;
 `;
 
 export default SpinnerMini;

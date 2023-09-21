@@ -14,20 +14,15 @@ const StyledTask = styled.div`
   justify-content: space-between;
 
   padding: 1rem 1.2rem;
-  margin-bottom: 1rem;
-  border: 1px solid var(--color-border-dark);
+  border: 1px solid var(--color-grey-400);
   border-radius: var(--border-radius-lg);
-
-  background-color: var(--color-grey-700);
-  background-image: url('noise-bg-soft.png');
-  background-position: 0 0;
-  background-size: 200px 200px;
+  background-color: var(--bg-color);
 
   transition: box-shadow 100ms ease-in;
 
-  --color-shadow-1: #d73b54;
-  --color-shadow-2: #cd3262;
-  --shadow-pixels: 2px;
+  --color-shadow-1: var(--color-1);
+  --color-shadow-2: var(--color-2);
+  --shadow-pixels: 3px;
 
   ${(props) => {
     if (!props.$isDragging) return '';

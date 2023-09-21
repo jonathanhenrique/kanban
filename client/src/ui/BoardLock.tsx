@@ -1,18 +1,26 @@
 import { styled, css } from 'styled-components';
 
-const StyledLocker = styled.div`
+type Props = { $isLocked: boolean };
+
+const StyledLocker = styled.div<Props>`
   transition: 100ms linear;
 
   ${(props) =>
-    props.isLocked
+    props.$isLocked
       ? css`
           opacity: 0.8;
           pointer-events: none;
-          filter: blur(4px);
+          filter: blur(2px);
         `
       : ''};
 `;
 
-export default function BoardLock({ children, isLocked }) {
-  return <StyledLocker isLocked={isLocked}>{children}</StyledLocker>;
+export default function BoardLock({
+  children,
+  isLocked,
+}: {
+  children: React.ReactNode;
+  isLocked: boolean;
+}) {
+  return <StyledLocker $isLocked={isLocked}>{children}</StyledLocker>;
 }

@@ -2,27 +2,34 @@ import { useQuery } from '@tanstack/react-query';
 import { styled } from 'styled-components';
 
 import NavItem from './NavItem';
-import Spinner from './Spinner';
 import NewBoard from './NewBoard';
+import { SpinnerMiniR } from './SpinnerMini';
 
 const NavList = styled.ul`
-  padding: 0;
+  padding: 1rem 0;
   display: flex;
   flex-direction: column;
-  margin-bottom: 2rem;
+  gap: 2px;
+  position: relative;
 `;
 
-const Subtitle = styled.p`
+const Subtitle = styled.div`
+  height: 2.4rem;
+  padding: 0 1.8rem;
+  line-height: 0;
+  letter-spacing: 1px;
+  font-size: 1.4rem;
+  font-weight: 600;
   text-transform: uppercase;
   color: var(--color-grey-300);
-  letter-spacing: 1px;
-  font-weight: 600;
-  font-size: 1.4rem;
-  margin-bottom: 1.5rem;
+
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 `;
 
-export default function MainNav({ floated = false }) {
-  const { isLoading, isError, data, error } = useQuery({
+export default function MainNav() {
+  const { isLoading, isError, data } = useQuery({
     queryKey: ['userBoards'],
     queryFn: async () => {
       const res = await fetch('/api/boards/');
@@ -31,15 +38,20 @@ export default function MainNav({ floated = false }) {
     },
   });
 
-  if (isLoading) return <Spinner />;
-
-  if (isError) return <p>{error.message}</p>;
+  if (isError) return <p>An error occurs try to reload the page</p>;
 
   return (
     <nav>
-      {!floated && <Subtitle>{`all boards (${data.boards.length})`}</Subtitle>}
+      <Subtitle>
+        <span>all boards</span>
+        {isLoading ? (
+          <SpinnerMiniR />
+        ) : (
+          <span>{`(${data.boards.length})`}</span>
+        )}
+      </Subtitle>
       <NavList>
-        {data.boards.map((board) => (
+        {data?.boards?.map((board: { id: string; name: string }) => (
           <NavItem key={board.id} id={board.id}>
             {board.name}
           </NavItem>

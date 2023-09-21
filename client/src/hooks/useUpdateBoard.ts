@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { changeOrder } from '../services/apiTask';
-import { useGlobalUI } from '../ui/GlobalUI';
+import { useGlobalUI } from '../utils/GlobalUI';
 
 export function useUpdateBoard(boardId) {
   const queryClient = useQueryClient();

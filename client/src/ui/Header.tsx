@@ -1,12 +1,13 @@
+import { HiBars3, HiMiniChevronDown, HiPlusSmall } from 'react-icons/hi2';
 import { styled } from 'styled-components';
 import Button from './Button';
 import Modal from './Modal';
 import AddNewTask from './AddNewTask';
 import Logo from './Logo';
-import { HiBars3, HiPlusSmall } from 'react-icons/hi2';
-import { FloatMainNav } from './FloatMainNav';
-import { useGlobalUI } from './GlobalUI';
+import HeaderMenu from './HeaderMenu';
+import { useGlobalUI } from '../utils/GlobalUI';
 import IconButton from './IconButton';
+import MainNav from './MainNav';
 
 const StyledHeader = styled.header`
   height: 64px;
@@ -51,7 +52,11 @@ export default function Header() {
       </HeaderWrapper>
       <HeaderWrapperFull>
         <h1>This is the Title</h1>
-        {!sidebarOpen && <FloatMainNav />}
+        {!sidebarOpen && (
+          <HeaderMenu icon={<HiMiniChevronDown />}>
+            <MainNav />
+          </HeaderMenu>
+        )}
       </HeaderWrapperFull>
       <Modal.Trigger opens="newTask">
         <Button type="primary">

@@ -10,7 +10,12 @@ export function useAnimationOnUnmount({
   isMounted = false,
   delay,
   fn,
-}: UseAnimationType) {
+}: UseAnimationType): {
+  open: () => void;
+  close: () => void;
+  isOpen: boolean;
+  isRunningAnimation: boolean;
+} {
   const [animationState, setAnimationState] = useState(
     isMounted ? 'mounted' : 'unmounted'
   );
@@ -39,7 +44,7 @@ export function useAnimationOnUnmount({
     [animationState, setAnimationState, delay, fn]
   );
 
-  if (!delay || delay === 0) return { open, close, isOpen };
+  // if (!delay || delay === 0) return { open, close, isOpen };
 
   return { open, close, isOpen, isRunningAnimation };
 }

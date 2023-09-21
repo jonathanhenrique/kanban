@@ -2,7 +2,7 @@ import { styled, css } from 'styled-components';
 
 const StyledColumn = styled.div`
   width: 36rem;
-  padding-top: 1rem;
+  padding: 1rem 0;
 
   & h3 {
     text-transform: uppercase;
@@ -14,15 +14,15 @@ const StyledColumn = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-    padding: 0.8rem;
-    background-color: var(--color-grey-500);
+    padding: 1rem;
+    background-color: var(--color-grey-700);
     border-radius: var(--border-radius-lg);
 
-    transition: box-shadow 100ms ease-in;
+    transition: box-shadow 100ms ease-out;
 
-    --color-shadow-1: #d73b54;
-    --color-shadow-2: #cd3262;
-    --shadow-pixels: 5px;
+    --color-shadow-1: var(--color-1);
+    --color-shadow-2: var(--color-2);
+    --shadow-pixels: 4px;
 
     ${(props) => {
       if (!props.$isDraggingOver) return '';
