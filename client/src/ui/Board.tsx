@@ -1,4 +1,9 @@
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from 'react-beautiful-dnd';
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -16,22 +21,24 @@ import Spinner from './Spinner';
 import useLoadBoard from '../hooks/useLoadBoard';
 import BoardLock from './BoardLock';
 import { useGlobalUI } from '../utils/GlobalUI';
+import { columnType, taskType } from '../types/types';
+import NewColumn from './NewColumn';
 
 export default function Board() {
   const { boardLocked } = useGlobalUI();
   const { boardId } = useParams();
   const { isUpdatingPosition, mutate } = useUpdateBoard(boardId);
   const queryClient = useQueryClient();
-  const [currTask, setCurrTask] = useState(null);
-  const [cache, setCache] = useState([]);
+  const [currTask, setCurrTask] = useState<null | string>(null);
+  const [cache, setCache] = useState<columnType[]>([]);
 
   const { isLoading, isError, data, error } = useLoadBoard(boardId, setCache);
 
-  const onDragEnd = (result) => {
+  function onDragEnd(result: DropResult) {
     const { source, destination } = result;
 
+    // Check if a change really occurs, case not will return without changes
     if (!source || !destination) return;
-
     if (
       source.droppableId === destination.droppableId &&
       source.index === destination.index
@@ -39,9 +46,9 @@ export default function Board() {
       return;
     }
 
-    const taskId = data.board.columns.find(
-      (column) => column.id === source.droppableId
-    ).tasks[source.index].id;
+    const taskId = data.board.columns.find((column: columnType) => {
+      return column.id === source.droppableId;
+    }).tasks[source.index].id;
 
     if (source.droppableId === destination.droppableId) {
       mutate({
@@ -50,13 +57,14 @@ export default function Board() {
       });
 
       const index = cache.findIndex((cl) => cl.id === source.droppableId);
+
       const reorderedItems = reorder(
         cache[index].tasks,
         source.index,
         destination.index
       );
 
-      const newCache = [...cache];
+      const newCache: columnType[] = [...cache];
       newCache[index].tasks = reorderedItems;
       setCache(newCache);
     } else {
@@ -81,7 +89,7 @@ export default function Board() {
       newCache[idxDes].tasks = result[destination.droppableId];
       setCache(newCache);
     }
-  };
+  }
 
   useEffect(() => {
     if (!data) return;
@@ -89,7 +97,7 @@ export default function Board() {
     setCache(data.board.columns);
   }, [boardId]);
 
-  const onSelectTask = (task) => {
+  const onSelectTask = (task: taskType) => {
     setCurrTask(task.id);
     queryClient.setQueryData(['currTask'], () => ({ task }));
   };
@@ -98,13 +106,13 @@ export default function Board() {
 
   if (isLoading) return <Spinner />;
 
-  if (isError) return <p>{error.message}</p>;
+  if (isError) return <p>{(error as Error).message}</p>;
 
   return (
     <>
       <DragDropContext onDragEnd={onDragEnd}>
         <BoardLock isLocked={boardLocked}>
-          <StyledBoard>
+          <StyledBoard id="board">
             {cache.map((column) => {
               return (
                 <Droppable droppableId={column.id} key={column.id}>
@@ -119,7 +127,6 @@ export default function Board() {
                             isDragDisabled={boardLocked}
                             draggableId={task.id}
                             key={task.id}
-                            // index={task.order}
                             index={idx}
                           >
                             {(provided, snapshot) => (
@@ -145,27 +152,14 @@ export default function Board() {
                 </Droppable>
               );
             })}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '290px',
-                backgroundColor: 'var(--color-grey-700)',
-                marginTop: '5.6rem',
-                height: '50dvh',
-                borderRadius: 'var(--border-radius-md)',
-              }}
-            >
-              New Column
-            </div>
+            <NewColumn />
           </StyledBoard>
         </BoardLock>
         {isUpdatingPosition ? <Spinner /> : null}
       </DragDropContext>
       <Modal.Content name="details">
         {currTask && !isUpdatingPosition ? (
-          <TaskDetails task={currTask} />
+          <TaskDetails currTask={currTask} />
         ) : (
           <div>Loading</div>
         )}

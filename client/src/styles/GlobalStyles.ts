@@ -6,6 +6,8 @@ const GlobalStyles = createGlobalStyle`
   --color-1: #f43f5e;
   --color-2: #be185d;
 
+  --alert: #dc2626;
+
   &, &.dark{
     --color-grey-100: hsl(220, 14%, 90%);
     --color-grey-300: hsl(219, 15%, 63%);  
@@ -219,6 +221,15 @@ img {
   }
   100%{
     transform: translateY(0);
+  }
+}
+
+@keyframes maskReveal {
+  0%{
+    clip-path: circle(0% at 0 0);
+  }
+  100%{
+    clip-path: circle(200% at 0 0);
   }
 }
 

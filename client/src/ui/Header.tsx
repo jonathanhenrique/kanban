@@ -4,10 +4,14 @@ import Button from './Button';
 import Modal from './Modal';
 import AddNewTask from './AddNewTask';
 import Logo from './Logo';
-import HeaderMenu from './HeaderMenu';
+import FloatMenu from './FloatMenu';
 import { useGlobalUI } from '../utils/GlobalUI';
 import IconButton from './IconButton';
 import MainNav from './MainNav';
+import { useParams } from 'react-router-dom';
+import { useIsFetching, useQueryClient } from '@tanstack/react-query';
+import { boardType } from '../types/types';
+import { SpinnerMiniR } from './SpinnerMini';
 
 const StyledHeader = styled.header`
   height: 64px;
@@ -40,7 +44,13 @@ const HeaderWrapperFull = styled.div`
 `;
 
 export default function Header() {
-  const { sidebarOpen, toggleSidebar } = useGlobalUI();
+  const { boardId } = useParams();
+  const { sidebarOpen, toggleSidebar, setBoardLocked } = useGlobalUI();
+  const queryClient = useQueryClient();
+  const isFetching = useIsFetching({ queryKey: ['userBoards'] });
+
+  const data = !isFetching ? queryClient.getQueryData(['userBoards']) : null;
+  const board = data?.boards.find((b: boardType) => b.id === boardId);
 
   return (
     <StyledHeader>
@@ -51,15 +61,20 @@ export default function Header() {
         <Logo />
       </HeaderWrapper>
       <HeaderWrapperFull>
-        <h1>This is the Title</h1>
+        {isFetching ? <SpinnerMiniR /> : <h1>{board?.name || 'Boards'}</h1>}
         {!sidebarOpen && (
-          <HeaderMenu icon={<HiMiniChevronDown />}>
+          <FloatMenu
+            fn={setBoardLocked}
+            identifier="boards-header"
+            icon={<HiMiniChevronDown />}
+            fineTunePosition={[-130, 126]}
+          >
             <MainNav />
-          </HeaderMenu>
+          </FloatMenu>
         )}
       </HeaderWrapperFull>
       <Modal.Trigger opens="newTask">
-        <Button type="primary">
+        <Button variation="primary">
           <HiPlusSmall />
           <span>new task</span>
         </Button>

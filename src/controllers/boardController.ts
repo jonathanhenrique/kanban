@@ -8,6 +8,8 @@ export async function getAllBoards(req, res, next) {
       },
     });
 
+    // throw new Error('This is a Test');
+
     res.status(200);
     res.json({ boards });
   } catch (error) {

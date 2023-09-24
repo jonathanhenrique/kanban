@@ -1,13 +1,17 @@
 import { styled, css } from 'styled-components';
+import FloatMenu from './FloatMenu';
+import { HiMiniChevronDown } from 'react-icons/hi2';
 
-const StyledColumn = styled.div`
-  width: 36rem;
+type Props = { $isDraggingOver: boolean };
+
+const StyledColumn = styled.div<Props>`
+  flex: 0 0 34rem;
   padding: 1rem 0;
 
   & h3 {
     text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 2rem;
+    letter-spacing: 1px;
+    margin-bottom: 1.4rem;
   }
 
   & ul {
@@ -36,10 +40,34 @@ const StyledColumn = styled.div`
   }
 `;
 
-export default function Column({ children, title, isDraggingOver }) {
+const ColumnOptions = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export default function Column({
+  children,
+  title,
+  isDraggingOver,
+}: {
+  children: React.ReactNode;
+  title: string;
+  isDraggingOver: boolean;
+}) {
   return (
     <StyledColumn $isDraggingOver={isDraggingOver}>
-      {title && <h3>{title}</h3>}
+      <ColumnOptions>
+        {title && <h3>{title}</h3>}
+        <FloatMenu
+          fineTunePosition={[-230, 42]}
+          identifier={`column-${title}`}
+          icon={<HiMiniChevronDown />}
+        >
+          <p>Teste 1</p>
+          <p>Teste 2</p>
+        </FloatMenu>
+      </ColumnOptions>
       {children}
     </StyledColumn>
   );

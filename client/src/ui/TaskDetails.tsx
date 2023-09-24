@@ -1,11 +1,12 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { styled } from 'styled-components';
 import SubTaskDetails from './SubTaskDetails';
+import { subtaskType } from '../types/types';
 
 const Heading = styled.h2`
-  font-weight: 400;
   font-size: 1.6rem;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.6rem;
+  font-weight: 600;
 `;
 
 const Description = styled.p`
@@ -19,11 +20,10 @@ const StyledForm = styled.form`
 
   & > h3 {
     font-size: 1.6rem;
-    font-weight: 400;
   }
 `;
 
-export default function TaskDetails({ currTask }) {
+export default function TaskDetails({ currTask }: { currTask: string }) {
   const {
     isLoading: loadingTask,
     isError,
@@ -37,28 +37,35 @@ export default function TaskDetails({ currTask }) {
 
       return data;
     },
-    onSuccess(data) {
-      // console.log(data);
-    },
+    // onSuccess(data) {
+    //  console.log(data);
+    // },
     refetchOnMount: true,
   });
 
   if (loadingTask) return <p>Loading...</p>;
 
-  if (isError) return <p>{error.message}</p>;
+  if (isError) return <p>{(error as Error).message}</p>;
+
+  const totalSubtasks = data?.task.subTasks.length;
+  const subtasksCompleted = data?.task.subTasks.reduce(
+    (acc: number, item: subtaskType) => acc + (item.completed ? 1 : 0),
+    0
+  );
 
   return (
     <StyledForm>
       <Heading>
-        This is the Title of the Task and it should be bigger than 15 words
+        This is the Title of the Task and it should be bigger than 15 words this
+        is good
       </Heading>
       <Description>
         This is the Title of the Task and it should be bigger than 15 words,
         This is the Title of the Task and it should be bigger than 15 words,
         This is the Title of the Task and it should be bigger than 15 words
       </Description>
-      <Heading>Subtasks completed (2 of 3)</Heading>
-      {data.task.subTasks.map((st) => {
+      <Heading>{`Subtasks completed (${subtasksCompleted} of ${totalSubtasks})`}</Heading>
+      {data.task.subTasks.map((st: subtaskType) => {
         return <SubTaskDetails key={st.id} subtask={st} />;
       })}
     </StyledForm>

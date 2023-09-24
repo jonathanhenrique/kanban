@@ -26,6 +26,34 @@ export async function createTask(newTask) {
   if (res.status !== 200) throw new Error('An error occurs');
 }
 
+export async function createColumn(newColumn) {
+  const res = await fetch('/api/columns/', {
+    method: 'POST',
+    body: JSON.stringify(newColumn),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (res.status !== 200) {
+    throw new Error('Something went wrong, try again latter.');
+  }
+}
+
+export async function createBoard(newBoard) {
+  const res = await fetch('/api/boards/', {
+    method: 'POST',
+    body: JSON.stringify(newBoard),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (res.status !== 200) {
+    throw new Error('Something went wrong, try again latter.');
+  }
+}
+
 export async function toggleCompleted(subtaskId, completed) {
   const res = await fetch(`/api/subtasks/${subtaskId}`, {
     method: 'PATCH',

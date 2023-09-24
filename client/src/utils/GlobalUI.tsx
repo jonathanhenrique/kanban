@@ -34,7 +34,7 @@ function GlobalUIProvider({ children }: { children: React.ReactNode }) {
         document.documentElement.classList.add('light');
         document.documentElement.classList.remove('dark');
       }
-    }, 300);
+    }, 350);
 
     return () => clearTimeout(timerID);
   }, [darkTheme]);

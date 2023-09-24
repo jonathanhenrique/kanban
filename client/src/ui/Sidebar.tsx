@@ -1,14 +1,13 @@
-import { HiMoon, HiSun } from 'react-icons/hi2';
 import { styled } from 'styled-components';
 import { useGlobalUI } from '../utils/GlobalUI';
 import MainNav from './MainNav';
-import Toggle from './Toggle';
 import DarkModeToggle from './DarkModeToggle';
 
 type Props = { $closed: boolean };
 
 const StyledSidebar = styled.aside<Props>`
-  width: 264px;
+  flex: 0 0 264px;
+  /* flex: 0 0 500px; */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -23,26 +22,12 @@ const StyledSidebar = styled.aside<Props>`
 `;
 
 export default function Sidebar() {
-  const { sidebarOpen, darkTheme, toggleTheme } = useGlobalUI();
+  const { sidebarOpen } = useGlobalUI();
 
   return (
     <StyledSidebar $closed={!sidebarOpen}>
       <MainNav />
-      <DarkModeToggle>
-        <HiMoon
-          style={{
-            fill: darkTheme ? 'var(--color-1)' : 'hsl(219, 15%, 63%)',
-          }}
-        />
-        <Toggle on={darkTheme} toggle={toggleTheme} />
-        <HiSun
-          style={{
-            height: '2rem',
-            width: '2rem',
-            fill: !darkTheme ? 'var(--color-1)' : 'hsl(219, 15%, 63%)',
-          }}
-        />
-      </DarkModeToggle>
+      <DarkModeToggle />
     </StyledSidebar>
   );
 }

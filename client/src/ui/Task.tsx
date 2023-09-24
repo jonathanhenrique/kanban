@@ -14,7 +14,7 @@ const StyledTask = styled.div`
   justify-content: space-between;
 
   padding: 1rem 1.2rem;
-  border: 1px solid var(--color-grey-400);
+  border: 1px solid var(--color-grey-500);
   border-radius: var(--border-radius-lg);
   background-color: var(--bg-color);
 
@@ -48,20 +48,20 @@ export default function Task({ task, isDragging, onSelectTask }) {
       <TaskInfo task={task} />
       <ButtonsGroup>
         <Modal.Trigger fn={() => onSelectTask(task)} opens="details">
-          <Button type="mini">
+          <Button variation="mini">
             <HiOutlineArrowTopRightOnSquare />
             <span>Open</span>
           </Button>
         </Modal.Trigger>
 
         <Modal.Trigger fn={() => onSelectTask(task)} opens="edit">
-          <Button type="mini">
+          <Button variation="mini">
             <HiOutlineWrenchScrewdriver />
             <span>Edit</span>
           </Button>
         </Modal.Trigger>
 
-        <Button type="mini">
+        <Button variation="mini">
           <HiOutlineTrash />
           <span>Delete</span>
         </Button>

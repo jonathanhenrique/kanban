@@ -1,5 +1,5 @@
 import { styled } from 'styled-components';
-type Props = { on: boolean };
+type Props = { $on: boolean };
 
 const ToggleStyled = styled.div<Props>`
   width: 50px;
@@ -28,7 +28,7 @@ const ToggleStyled = styled.div<Props>`
     background-color: var(--color-1);
     transition: transform 300ms var(--bezier-overshoot);
 
-    transform: ${(props) => (props.on ? 'translateX(calc(46px - 100%))' : '')};
+    transform: ${(props) => (props.$on ? 'translateX(calc(46px - 100%))' : '')};
   }
 `;
 
@@ -40,8 +40,8 @@ export default function Toggle({
   toggle: () => void;
 }) {
   return (
-    <ToggleStyled onClick={() => toggle()} on={!on}>
-      <input type="checkbox" checked={!on}></input>
+    <ToggleStyled onClick={() => toggle()} $on={!on}>
+      <input type="checkbox" readOnly={true} checked={!on}></input>
     </ToggleStyled>
   );
 }

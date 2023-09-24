@@ -6,7 +6,7 @@ const ModalContainer = styled.div`
   padding: 2.4rem;
   position: relative;
 
-  background-color: var(--color-grey-500);
+  background-color: var(--color-grey-700);
 
   animation: modalPosition 400ms var(--bezier-overshoot),
     modalScale 400ms var(--bezier-overshoot);

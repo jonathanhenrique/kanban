@@ -1,8 +1,11 @@
 import { css, styled } from 'styled-components';
 
-type Props = { type: 'primary' | 'secondary' | 'mini' | 'link' };
+type Props = {
+  $variation: 'primary' | 'secondary' | 'mini' | 'link' | 'linkCentered';
+  type?: 'text' | 'submit' | 'reset';
+};
 
-const types = {
+const variations = {
   mini: css`
     padding: 0.5rem 1rem;
     border-radius: var(--border-radius-lg);
@@ -33,6 +36,15 @@ const types = {
     border-radius: var(--border-radius-lg);
     --hover-color: var(--color-grey-500);
   `,
+
+  linkCentered: css`
+    justify-content: center;
+    padding: 1rem 1.4rem;
+    gap: 1.2rem;
+    background: transparent;
+    border-radius: var(--border-radius-lg);
+    --hover-color: var(--color-grey-500);
+  `,
 };
 
 const StyledButton = styled.button<Props>`
@@ -43,36 +55,49 @@ const StyledButton = styled.button<Props>`
   text-transform: capitalize;
   border: none;
 
-  ${(props) => types[props.type]};
+  ${(props) => variations[props.$variation]};
 
   transition: background-color 100ms linear;
 
   & svg {
     transition: transform 200ms var(--bezier-ease-out);
-    height: ${(props) => (props.type === 'mini' ? '1.6rem' : '2rem')};
-    width: ${(props) => (props.type === 'mini' ? '1.6rem' : '2rem')};
+    height: ${(props) => (props.$variation === 'mini' ? '1.6rem' : '2rem')};
+    width: ${(props) => (props.$variation === 'mini' ? '1.6rem' : '2rem')};
   }
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: var(--hover-color);
   }
 
-  &:hover svg {
+  &:hover:not(:disabled) svg {
     transform: translateX(-4px);
+  }
+
+  &:disabled {
+    opacity: 0.7;
   }
 `;
 
 export default function Button({
   children,
   onClick,
-  type = 'primary',
+  variation = 'primary',
+  type = 'submit',
+  disabled,
 }: {
   children: React.ReactNode;
   onClick?: React.MouseEventHandler;
-  type?: 'primary' | 'secondary' | 'mini' | 'link';
+  variation?: 'primary' | 'secondary' | 'mini' | 'link' | 'linkCentered';
+  type?: 'text' | 'submit' | 'reset';
+  disabled?: boolean;
 }) {
   return (
-    <StyledButton type={type} onClick={onClick}>
+    <StyledButton
+      $variation={variation}
+      onClick={onClick}
+      type={type}
+      disabled={disabled}
+    >
       {children}
     </StyledButton>
   );
