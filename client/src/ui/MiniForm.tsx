@@ -6,10 +6,11 @@ import {
   HiMiniXCircle,
 } from 'react-icons/hi2';
 import { useState } from 'react';
-import Button from './Button';
+import Button from './formUI/Button';
 import { useAnimationOnUnmount } from '../hooks/useAnimationOnUnmount';
 import { SpinnerMiniR } from './SpinnerMini';
-import FormErrorMessage from './FormErrorMessage';
+import FormErrorMessage from './formUI/FormErrorMessage';
+import StyledInput from './formUI/Input';
 
 type Props = {
   $minWidth: string | undefined;
@@ -55,14 +56,6 @@ const FormBlock = styled.div`
   &.toClose {
     transform: translateY(-120px);
   }
-`;
-
-const StyledInput = styled.input`
-  width: 100%;
-  background-color: transparent;
-  border-radius: var(--border-radius-sm);
-  border: 1px solid var(--color-border);
-  padding: 1rem;
 `;
 
 export default function MiniForm({
@@ -134,7 +127,7 @@ export default function MiniForm({
                   disabled={userInput.length < 2 || loading}
                 >
                   {loading ? <SpinnerMiniR /> : <HiPlusSmall />}
-                  <span>Create</span>
+                  <span>{loading ? 'Creating...' : 'Create'}</span>
                 </Button>
               </div>
               {error && <FormErrorMessage reset={reset} error={error} />}

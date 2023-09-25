@@ -1,12 +1,19 @@
-import { HiBars3, HiMiniChevronDown, HiPlusSmall } from 'react-icons/hi2';
+import {
+  HiBars3,
+  HiMiniChevronDown,
+  HiMiniEllipsisVertical,
+  HiMiniTrash,
+  HiMiniWrenchScrewdriver,
+  HiPlusSmall,
+} from 'react-icons/hi2';
 import { styled } from 'styled-components';
-import Button from './Button';
+import Button from './formUI/Button';
 import Modal from './Modal';
-import AddNewTask from './AddNewTask';
+import NewTask from '../features/task/NewTask';
 import Logo from './Logo';
 import FloatMenu from './FloatMenu';
 import { useGlobalUI } from '../utils/GlobalUI';
-import IconButton from './IconButton';
+import IconButton from './formUI/IconButton';
 import MainNav from './MainNav';
 import { useParams } from 'react-router-dom';
 import { useIsFetching, useQueryClient } from '@tanstack/react-query';
@@ -81,8 +88,22 @@ export default function Header() {
       </Modal.Trigger>
 
       <Modal.Content name="newTask">
-        <AddNewTask />
+        <NewTask />
       </Modal.Content>
+      <FloatMenu
+        fineTunePosition={[220, 126]}
+        identifier="header-options"
+        icon={<HiMiniEllipsisVertical />}
+      >
+        <Button variation="link" onClick={() => mutate(columnId)}>
+          <HiMiniTrash />
+          <span>Delete</span>
+        </Button>
+        <Button variation="link">
+          <HiMiniWrenchScrewdriver />
+          <span>Edit</span>
+        </Button>
+      </FloatMenu>
     </StyledHeader>
   );
 }

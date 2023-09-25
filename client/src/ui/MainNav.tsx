@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 import NavItem from './NavItem';
-import NewBoard from './NewBoard';
+import NewBoard from '../features/board/NewBoard';
 import { SpinnerMiniR } from './SpinnerMini';
 import { boardType } from '../types/types';
 import { useQuery } from '@tanstack/react-query';

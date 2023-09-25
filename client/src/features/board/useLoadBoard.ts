@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { columnType } from '../types/types';
+import { columnType } from '../../types/types';
 
 export default function useLoadBoard(
   boardId: string | undefined,

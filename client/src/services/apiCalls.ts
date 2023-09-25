@@ -40,6 +40,16 @@ export async function createColumn(newColumn) {
   }
 }
 
+export async function deleteColumn(columnId: string) {
+  const res = await fetch(`/api/columns/${columnId}`, {
+    method: 'DELETE',
+  });
+
+  if (res.status !== 200) {
+    throw new Error('Something went wrong, try again latter.');
+  }
+}
+
 export async function createBoard(newBoard) {
   const res = await fetch('/api/boards/', {
     method: 'POST',

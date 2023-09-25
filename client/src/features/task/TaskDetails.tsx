@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { styled } from 'styled-components';
-import SubTaskDetails from './SubTaskDetails';
-import { subtaskType } from '../types/types';
+import SubTaskDetails from '../subtask/SubTaskDetails';
+import { subtaskType } from '../../types/types';
 
 const Heading = styled.h2`
   font-size: 1.6rem;

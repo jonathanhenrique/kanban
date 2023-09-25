@@ -1,6 +1,6 @@
 import { useAnimationOnUnmount } from '../hooks/useAnimationOnUnmount';
 import FloatContainer from './FloatContainer';
-import IconButton from './IconButton';
+import IconButton from './formUI/IconButton';
 import { useState } from 'react';
 
 export default function FloatMenu({

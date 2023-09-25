@@ -1,5 +1,5 @@
-import { useCreateBoard } from '../hooks/useCreateBoard';
-import MiniForm from './MiniForm';
+import { useCreateBoard } from './useCreateBoard';
+import MiniForm from '../../ui/MiniForm';
 
 export default function NewBoard() {
   const { isCreatingBoard, mutate, isError, error, reset } = useCreateBoard();

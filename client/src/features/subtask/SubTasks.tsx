@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
-import Button from './Button';
+import Button from '../../ui/formUI/Button';
 import SubTask from './SubTask';
 
 const StyledSubtasks = styled.div`

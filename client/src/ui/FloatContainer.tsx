@@ -15,7 +15,9 @@ const Mask = styled.div<Props>`
 
 const Container = styled.div`
   padding: 1.5rem 1rem;
-  width: 260px;
+  display: flex;
+  flex-direction: column;
+  /* width: 260px; */
   background-color: var(--color-grey-700);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-lg);

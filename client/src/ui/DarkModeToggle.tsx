@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 import { useGlobalUI } from '../utils/GlobalUI';
 import { HiMoon, HiSun } from 'react-icons/hi2';
-import Toggle from './Toggle';
+import Toggle from './formUI/Toggle';
 
 const StyledDarkModeToggle = styled.div`
   align-self: center;

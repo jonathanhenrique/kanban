@@ -2,13 +2,14 @@ import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
 :root {
-  color-scheme: dark;
   --color-1: #f43f5e;
   --color-2: #be185d;
 
   --alert: #dc2626;
 
-  &, &.dark{
+  &.dark{
+    color-scheme: dark;
+
     --color-grey-100: hsl(220, 14%, 90%);
     --color-grey-300: hsl(219, 15%, 63%);  
     --color-grey-400: hsl(240, 12%, 23%);
@@ -21,7 +22,7 @@ const GlobalStyles = createGlobalStyle`
     --color-hairline: hsl(240, 12%, 23%);
   }
 
-  &.light{
+  &, &.light{
     color-scheme: light;
 
     --color-grey-100: #030712;
@@ -239,6 +240,24 @@ img {
   }
   100%{
     transform: scale(1);
+  }
+}
+
+@keyframes scaleX {
+  0%{
+    transform: scaleX(0);
+  }
+  100%{
+    transform: scaleX(1);
+  }
+}
+
+@keyframes height {
+  0%{
+    height: 0;
+  }
+  100%{
+    height: auto;
   }
 }
 

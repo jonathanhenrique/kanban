@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { styled } from 'styled-components';
-import { toggleCompleted } from '../services/apiCalls';
-import SpinnerMini from './SpinnerMini';
+import { toggleCompleted } from '../../services/apiCalls';
+import SpinnerMini from '../../ui/SpinnerMini';
 import { ImCheckboxChecked, ImCheckboxUnchecked } from 'react-icons/im';
-import { subtaskType } from '../types/types';
+import { subtaskType } from '../../types/types';
 
 type Props = { $isCompleted: boolean };
 

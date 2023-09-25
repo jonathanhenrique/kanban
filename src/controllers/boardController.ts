@@ -55,7 +55,7 @@ export async function createBoard(req, res, next) {
       },
     });
 
-    res.status(201);
+    res.status(200);
     res.json({ message: 'board created' });
   } catch (error) {
     next(error);

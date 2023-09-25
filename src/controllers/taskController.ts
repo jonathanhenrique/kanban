@@ -33,11 +33,18 @@ export async function createTask(req, res, next) {
   }
 
   try {
+    const order = await prisma.task.findMany({
+      where: {
+        columnId: req.body.columnId,
+      },
+    });
+
     await prisma.task.create({
       data: {
         title: req.body.title,
         description: req.body.description ?? '',
-        order: req.body.order,
+        // order: req.body.order,
+        order: order.length + 1,
         columnId: req.body.columnId,
         subTasks: {
           create: subTasksData,

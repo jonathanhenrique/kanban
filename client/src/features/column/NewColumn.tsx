@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
-import MiniForm from './MiniForm';
-import { useCreateColumn } from '../hooks/useCreateColumn';
+import MiniForm from '../../ui/MiniForm';
+import { useCreateColumn } from './useCreateColumn';
 import { useParams } from 'react-router-dom';
 
 const NewColumnStyled = styled.div`

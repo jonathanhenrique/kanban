@@ -8,6 +8,7 @@ const ErrorMessage = styled.div`
   color: #f1f5f9;
   position: absolute;
   /* width: 264px; */
+  width: 100%;
   height: 90px;
 
   & svg {

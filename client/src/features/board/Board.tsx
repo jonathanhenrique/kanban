@@ -1,29 +1,44 @@
-export default function BoardInside() {
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from 'react-beautiful-dnd';
+import { useQueryClient } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+
+import { useUpdateBoard } from './useUpdateBoard';
+import { changeColumn, reorder } from '../../utils/cacheOperations';
+
+import StyledBoard from './BoardStyled';
+import Column from '../column/Column';
+import Task from '../task/Task';
+import Modal from '../../ui/Modal';
+import TaskDetails from '../task/TaskDetails';
+import EditTask from '../task/EditTask';
+import Spinner from '../../ui/Spinner';
+import useLoadBoard from './useLoadBoard';
+import BoardLock from './BoardLock';
+import { useGlobalUI } from '../../utils/GlobalUI';
+import { columnType, taskType } from '../../types/types';
+import NewColumn from '../column/NewColumn';
+
+export default function Board() {
+  const { boardLocked } = useGlobalUI();
+  const { boardId } = useParams();
+  const { isUpdatingPosition, mutate } = useUpdateBoard(boardId);
   const queryClient = useQueryClient();
-  const { isUpdatingPosition, mutate } = useUpdateBoard();
-  const [currTask, setCurrTask] = useState(null);
-  const [cache, setCache] = useState([]);
+  const [currTask, setCurrTask] = useState<null | string>(null);
+  const [cache, setCache] = useState<columnType[]>([]);
 
-  const { isLoading, isError, data, error } = useQuery({
-    queryKey: ['currBoard'],
-    queryFn: async () => {
-      const res = await fetch(
-        '/api/boards/cc529ae3-d1d2-4297-8eed-74b9c8e71070'
-      );
-      const data = await res.json();
+  const { isLoading, isError, data, error } = useLoadBoard(boardId, setCache);
 
-      return data;
-    },
-    onSuccess(data) {
-      setCache(data.board.columns);
-    },
-  });
-
-  const onDragEnd = (result) => {
+  function onDragEnd(result: DropResult) {
     const { source, destination } = result;
 
+    // Check if a change really occurs, case not will return without changes
     if (!source || !destination) return;
-
     if (
       source.droppableId === destination.droppableId &&
       source.index === destination.index
@@ -31,14 +46,9 @@ export default function BoardInside() {
       return;
     }
 
-    const taskId = data.board.columns.find(
-      (column) => column.id === source.droppableId
-    ).tasks[source.index].id;
-
-    // mutate({
-    //   taskId: taskId,
-    //   newPosition: destination.index,
-    // });
+    const taskId = data.board.columns.find((column: columnType) => {
+      return column.id === source.droppableId;
+    }).tasks[source.index].id;
 
     if (source.droppableId === destination.droppableId) {
       mutate({
@@ -47,13 +57,14 @@ export default function BoardInside() {
       });
 
       const index = cache.findIndex((cl) => cl.id === source.droppableId);
+
       const reorderedItems = reorder(
         cache[index].tasks,
         source.index,
         destination.index
       );
 
-      const newCache = [...cache];
+      const newCache: columnType[] = [...cache];
       newCache[index].tasks = reorderedItems;
       setCache(newCache);
     } else {
@@ -78,33 +89,30 @@ export default function BoardInside() {
       newCache[idxDes].tasks = result[destination.droppableId];
       setCache(newCache);
     }
-  };
+  }
 
-  const onSelectTask = (task) => {
+  useEffect(() => {
+    if (!data) return;
+
+    setCache(data.board.columns);
+  }, [boardId]);
+
+  const onSelectTask = (task: taskType) => {
     setCurrTask(task.id);
     queryClient.setQueryData(['currTask'], () => ({ task }));
   };
 
-  // console.log(currTask);
+  if (!boardId) return null;
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <Spinner />;
 
-  if (!cache) return null;
-
-  if (isError) return <p>{error.message}</p>;
+  if (isError) return <p>{(error as Error).message}</p>;
 
   return (
     <>
       <DragDropContext onDragEnd={onDragEnd}>
-        <div
-          style={{
-            opacity: isUpdatingPosition ? 0.5 : 1,
-            pointerEvents: isUpdatingPosition ? 'none' : 'auto',
-            transition: '100ms linear',
-            filter: isUpdatingPosition ? 'blur(1px)' : '',
-          }}
-        >
-          <StyledBoard>
+        <BoardLock isLocked={boardLocked}>
+          <StyledBoard id="board">
             {cache.map((column) => {
               return (
                 <Droppable droppableId={column.id} key={column.id}>
@@ -112,18 +120,20 @@ export default function BoardInside() {
                     <Column
                       title={column.name}
                       isDraggingOver={snapshot.isDraggingOver}
+                      columnId={column.id}
+                      boardId={column.boardId}
                     >
                       <ul ref={provided.innerRef} {...provided.droppableProps}>
                         {column.tasks.map((task, idx) => (
                           <Draggable
-                            isDragDisabled={isUpdatingPosition}
+                            isDragDisabled={boardLocked}
                             draggableId={task.id}
                             key={task.id}
-                            // index={task.order}
                             index={idx}
                           >
                             {(provided, snapshot) => (
                               <li
+                                className="mb-1rem"
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
@@ -144,13 +154,14 @@ export default function BoardInside() {
                 </Droppable>
               );
             })}
+            <NewColumn />
           </StyledBoard>
-        </div>
+        </BoardLock>
         {isUpdatingPosition ? <Spinner /> : null}
       </DragDropContext>
       <Modal.Content name="details">
         {currTask && !isUpdatingPosition ? (
-          <TaskDetails task={currTask} />
+          <TaskDetails currTask={currTask} />
         ) : (
           <div>Loading</div>
         )}

@@ -148,11 +148,11 @@ export const validateTaskInput = [
       .isLength({ max: 255 })
       .withMessage('task description length must be less than 255')
       .optional(),
-    body('order')
-      .notEmpty()
-      .withMessage('task order is required')
-      .isInt()
-      .withMessage('task order should be a integer number'),
+    // body('order')
+    //   .notEmpty()
+    //   .withMessage('task order is required')
+    //   .isInt()
+    //   .withMessage('task order should be a integer number'),
     body('subTasks').isArray().optional(),
     body('columnId').custom(async (value, { req }) => {
       if (!value) throw new Error('columnID is required');

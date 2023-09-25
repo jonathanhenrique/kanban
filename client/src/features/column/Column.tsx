@@ -1,6 +1,15 @@
 import { styled, css } from 'styled-components';
-import FloatMenu from './FloatMenu';
-import { HiMiniChevronDown } from 'react-icons/hi2';
+import FloatMenu from '../../ui/FloatMenu';
+import {
+  HiMiniChevronDown,
+  HiMiniEllipsisVertical,
+  HiMiniTrash,
+  HiMiniWrenchScrewdriver,
+} from 'react-icons/hi2';
+import Button from '../../ui/formUI/Button';
+import IconButton from '../../ui/formUI/IconButton';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { deleteColumn } from '../../services/apiCalls';
 
 type Props = { $isDraggingOver: boolean };
 
@@ -12,6 +21,7 @@ const StyledColumn = styled.div<Props>`
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 1.4rem;
+    line-height: 0;
   }
 
   & ul {
@@ -50,22 +60,48 @@ export default function Column({
   children,
   title,
   isDraggingOver,
+  columnId,
+  boardId,
 }: {
   children: React.ReactNode;
   title: string;
   isDraggingOver: boolean;
+  columnId: string;
+  boardId: string;
 }) {
+  const queryClient = useQueryClient();
+  const {
+    isLoading: isDeleting,
+    mutate,
+    isError,
+    error,
+    reset,
+  } = useMutation({
+    mutationFn: deleteColumn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [boardId],
+      });
+    },
+  });
+
   return (
     <StyledColumn $isDraggingOver={isDraggingOver}>
       <ColumnOptions>
         {title && <h3>{title}</h3>}
         <FloatMenu
-          fineTunePosition={[-230, 42]}
+          fineTunePosition={[-60, 45]}
           identifier={`column-${title}`}
-          icon={<HiMiniChevronDown />}
+          icon={<HiMiniEllipsisVertical />}
         >
-          <p>Teste 1</p>
-          <p>Teste 2</p>
+          <Button variation="mini" onClick={() => mutate(columnId)}>
+            <HiMiniTrash />
+            <span>Delete</span>
+          </Button>
+          <Button variation="mini">
+            <HiMiniWrenchScrewdriver />
+            <span>Edit</span>
+          </Button>
         </FloatMenu>
       </ColumnOptions>
       {children}

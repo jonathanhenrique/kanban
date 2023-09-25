@@ -1,11 +1,11 @@
 import { styled, css } from 'styled-components';
-import Button from './Button';
+import Button from '../../ui/formUI/Button';
 import {
   HiOutlineArrowTopRightOnSquare,
   HiOutlineTrash,
   HiOutlineWrenchScrewdriver,
 } from 'react-icons/hi2';
-import Modal from './Modal';
+import Modal from '../../ui/Modal';
 import TaskInfo from './TaskInfo';
 
 const StyledTask = styled.div`

@@ -1,22 +1,22 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createBoard } from '../services/apiCalls';
+import { createColumn } from '../../services/apiCalls';
 
-export function useCreateBoard() {
+export function useCreateColumn(boardId) {
   const queryClient = useQueryClient();
   const {
-    isLoading: isCreatingBoard,
+    isLoading: isCreatingColumn,
     mutate,
     isError,
     error,
     reset,
   } = useMutation({
-    mutationFn: createBoard,
+    mutationFn: createColumn,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['userBoards'],
+        queryKey: [boardId],
       });
     },
   });
 
-  return { isCreatingBoard, mutate, isError, error, reset };
+  return { isCreatingColumn, mutate, isError, error, reset };
 }

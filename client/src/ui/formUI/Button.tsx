@@ -50,6 +50,7 @@ const variations = {
 const StyledButton = styled.button<Props>`
   display: flex;
   align-items: center;
+  justify-content: center;
   line-height: 0;
   gap: 0.4rem;
   text-transform: capitalize;
