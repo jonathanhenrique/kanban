@@ -6,11 +6,15 @@ export default function useLoadBoard(
   onSuccessFn: (arg: columnType[]) => void
 ) {
   const { isLoading, isError, data, error } = useQuery({
-    queryKey: [boardId],
+    queryKey: ['boards', boardId],
     queryFn: async () => {
       const res = await fetch(`/api/boards/${boardId}`);
-      const data = await res.json();
 
+      if (res.status !== 200)
+        throw new Error('Something went wrong, try again latter.');
+
+      const data = await res.json();
+      onSuccessFn(data.board.columns);
       return data;
     },
     onSuccess(data) {

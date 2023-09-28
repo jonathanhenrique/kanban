@@ -1,71 +1,79 @@
-import { styled, css } from 'styled-components';
-import Button from '../../ui/formUI/Button';
+import { useState } from 'react';
+import { DraggableProvided } from 'react-beautiful-dnd';
 import {
-  HiOutlineArrowTopRightOnSquare,
-  HiOutlineTrash,
-  HiOutlineWrenchScrewdriver,
+  HiMiniEllipsisVertical,
+  HiMiniTrash,
+  HiMiniWrenchScrewdriver,
 } from 'react-icons/hi2';
+import FloatMenuConfirmation from '../../ui/FloatMenuConfirmation';
+import DragDropHandler from '../../ui/DragDropHandler';
+import StyledTask from '../../ui/StyledTask';
+import { taskType } from '../../types/types';
+import Button from '../../ui/formUI/Button';
+import useDeleteTask from './useDeleteTask';
 import Modal from '../../ui/Modal';
 import TaskInfo from './TaskInfo';
 
-const StyledTask = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+type TaskProps = {
+  provided: DraggableProvided;
+  task: taskType;
+  isDragging: boolean;
+  boardId: string;
+};
 
-  padding: 1rem 1.2rem;
-  border: 1px solid var(--color-grey-500);
-  border-radius: var(--border-radius-lg);
-  background-color: var(--bg-color);
+export default function Task({
+  provided,
+  task,
+  isDragging,
+  boardId,
+}: TaskProps) {
+  const [confirm, setConfirm] = useState('idle');
+  const { isDeleting, mutate } = useDeleteTask(boardId, task.columnId, task.id);
 
-  transition: box-shadow 100ms ease-in;
+  function deleteTask() {
+    mutate(task.id);
+  }
 
-  --color-shadow-1: var(--color-1);
-  --color-shadow-2: var(--color-2);
-  --shadow-pixels: 3px;
-
-  ${(props) => {
-    if (!props.$isDragging) return '';
-    return css`
-      box-shadow: 0 1px var(--shadow-pixels) 0 var(--color-shadow-1),
-        0 -1px var(--shadow-pixels) 0 var(--color-shadow-2),
-        1px 0 var(--shadow-pixels) 0 var(--color-shadow-1),
-        -1px 0 var(--shadow-pixels) 0 var(--color-shadow-2);
-    `;
-  }};
-`;
-
-const ButtonsGroup = styled.div`
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-`;
-
-export default function Task({ task, isDragging, onSelectTask }) {
   return (
-    <StyledTask $isDragging={isDragging}>
-      <TaskInfo task={task} />
-      <ButtonsGroup>
-        <Modal.Trigger fn={() => onSelectTask(task)} opens="details">
-          <Button variation="mini">
-            <HiOutlineArrowTopRightOnSquare />
-            <span>Open</span>
-          </Button>
-        </Modal.Trigger>
-
-        <Modal.Trigger fn={() => onSelectTask(task)} opens="edit">
-          <Button variation="mini">
-            <HiOutlineWrenchScrewdriver />
-            <span>Edit</span>
-          </Button>
-        </Modal.Trigger>
-
-        <Button variation="mini">
-          <HiOutlineTrash />
-          <span>Delete</span>
-        </Button>
-      </ButtonsGroup>
-    </StyledTask>
+    <>
+      <Modal.Trigger opens="details">
+        <li
+          className="mb-1rem"
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+        >
+          <StyledTask $isDragging={isDragging}>
+            <DragDropHandler dndProps={provided.dragHandleProps} />
+            <TaskInfo task={task} />
+            <FloatMenuConfirmation
+              fineTunePosition={[0, 0]}
+              icon={<HiMiniEllipsisVertical />}
+              actionOnConfirmation={deleteTask}
+              confirm={confirm}
+              setConfirm={setConfirm}
+              isLoading={isDeleting}
+            >
+              <div style={{ padding: '1rem 1.2rem' }}>
+                <Button
+                  variation="mini"
+                  onClick={() => setConfirm('toConfirm')}
+                >
+                  <HiMiniTrash />
+                  <span>delete task</span>
+                </Button>
+                <Button disabled={true} variation="mini">
+                  <HiMiniWrenchScrewdriver />
+                  <span>edit task</span>
+                </Button>
+              </div>
+            </FloatMenuConfirmation>
+          </StyledTask>
+        </li>
+      </Modal.Trigger>
+      <Modal.Content name="details">
+        {/* {false ? <TaskDetails currTask={currTask} /> : <div>Loading</div>} */}
+        {<div>Loading</div>}
+      </Modal.Content>
+    </>
   );
 }

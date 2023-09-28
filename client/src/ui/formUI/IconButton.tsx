@@ -15,7 +15,8 @@ const IconButton = styled.button<Props>`
     width: 2.4rem;
     height: 2.4rem;
 
-    transform: ${(props) => (props.open ? 'rotateZ(-180deg)' : 'rotateZ(0)')};
+    /* transform: ${(props) =>
+      props.open ? 'rotateZ(-180deg)' : 'rotateZ(0)'}; */
   }
 
   &:hover,

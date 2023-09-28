@@ -7,17 +7,19 @@ const NewColumnStyled = styled.div`
   flex: 0 0 30rem;
   padding: 2rem;
   background-color: var(--color-grey-700);
-  margin-top: 4.8rem;
+  margin-top: 5.2rem;
   height: 18rem;
   border-radius: var(--border-radius-lg);
 `;
 
 export default function NewColumn() {
   const { boardId } = useParams();
-  const { isCreatingColumn, mutate, isError, error, reset } =
-    useCreateColumn(boardId);
+  const { isCreatingColumn, mutate, isError, error, reset } = useCreateColumn(
+    boardId ? boardId : ''
+  );
 
   function newColumn(name: string) {
+    if (!boardId) return;
     mutate({ name, boardId });
   }
 

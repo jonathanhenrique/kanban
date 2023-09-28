@@ -7,10 +7,14 @@ type Props = {
 
 const variations = {
   mini: css`
-    padding: 0.5rem 1rem;
+    padding: 0.8rem 1.2rem;
     border-radius: var(--border-radius-lg);
-    background-color: var(--color-grey-500);
+    /* background-color: var(--color-grey-500); */
+    background-color: transparent;
     --hover-color: var(--color-border);
+
+    justify-content: start;
+    gap: 1.2rem;
   `,
 
   primary: css`
@@ -59,6 +63,10 @@ const StyledButton = styled.button<Props>`
   ${(props) => variations[props.$variation]};
 
   transition: background-color 100ms linear;
+
+  & span {
+    display: block;
+  }
 
   & svg {
     transition: transform 200ms var(--bezier-ease-out);

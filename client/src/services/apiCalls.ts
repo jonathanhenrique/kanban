@@ -1,4 +1,10 @@
-export async function changeOrder(taskId, newPosition, newColumnId) {
+import { taskType } from '../types/types';
+
+export async function changeOrder(
+  taskId: string,
+  newPosition: number,
+  newColumnId: string
+) {
   const res = await fetch('/api/tasks/', {
     method: newColumnId ? 'PUT' : 'PATCH',
     body: JSON.stringify(
@@ -14,7 +20,7 @@ export async function changeOrder(taskId, newPosition, newColumnId) {
   if (res.status !== 200) throw new Error('An error occurs');
 }
 
-export async function createTask(newTask) {
+export async function createTask(newTask: taskType) {
   const res = await fetch('/api/tasks/', {
     method: 'POST',
     body: JSON.stringify(newTask),
@@ -26,7 +32,10 @@ export async function createTask(newTask) {
   if (res.status !== 200) throw new Error('An error occurs');
 }
 
-export async function createColumn(newColumn) {
+export async function createColumn(newColumn: {
+  name: string;
+  boardId: string;
+}) {
   const res = await fetch('/api/columns/', {
     method: 'POST',
     body: JSON.stringify(newColumn),
@@ -50,7 +59,17 @@ export async function deleteColumn(columnId: string) {
   }
 }
 
-export async function createBoard(newBoard) {
+export async function deleteTask(taskId: string) {
+  const res = await fetch(`/api/tasks/${taskId}`, {
+    method: 'DELETE',
+  });
+
+  if (res.status !== 200) {
+    throw new Error('Something went wrong, try again latter.');
+  }
+}
+
+export async function createBoard(newBoard: { name: string }) {
   const res = await fetch('/api/boards/', {
     method: 'POST',
     body: JSON.stringify(newBoard),
@@ -64,7 +83,7 @@ export async function createBoard(newBoard) {
   }
 }
 
-export async function toggleCompleted(subtaskId, completed) {
+export async function toggleCompleted(subtaskId: string, completed: boolean) {
   const res = await fetch(`/api/subtasks/${subtaskId}`, {
     method: 'PATCH',
     body: JSON.stringify({ completed: completed }),

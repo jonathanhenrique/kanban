@@ -16,9 +16,10 @@ import { useGlobalUI } from '../utils/GlobalUI';
 import IconButton from './formUI/IconButton';
 import MainNav from './MainNav';
 import { useParams } from 'react-router-dom';
-import { useIsFetching, useQueryClient } from '@tanstack/react-query';
+import { useIsFetching, useQuery, useQueryClient } from '@tanstack/react-query';
 import { boardType } from '../types/types';
 import { SpinnerMiniR } from './SpinnerMini';
+import FloatMenuConfirmation from './FloatMenuConfirmation';
 
 const StyledHeader = styled.header`
   height: 64px;
@@ -28,6 +29,7 @@ const StyledHeader = styled.header`
   justify-content: space-between;
   border-bottom: var(--border-hairline);
   background-color: var(--color-grey-700);
+  position: relative;
 
   & h1 {
     font-weight: 400;
@@ -56,11 +58,13 @@ export default function Header() {
   const queryClient = useQueryClient();
   const isFetching = useIsFetching({ queryKey: ['userBoards'] });
 
-  const data = !isFetching ? queryClient.getQueryData(['userBoards']) : null;
+  const data = !isFetching
+    ? queryClient.getQueryData<{ boards: boardType[] }>(['userBoards'])
+    : null;
   const board = data?.boards.find((b: boardType) => b.id === boardId);
 
   return (
-    <StyledHeader>
+    <StyledHeader id="header">
       <HeaderWrapper>
         <IconButton onClick={toggleSidebar}>
           <HiBars3 />
@@ -71,10 +75,11 @@ export default function Header() {
         {isFetching ? <SpinnerMiniR /> : <h1>{board?.name || 'Boards'}</h1>}
         {!sidebarOpen && (
           <FloatMenu
+            relativeTo="header"
             fn={setBoardLocked}
             identifier="boards-header"
             icon={<HiMiniChevronDown />}
-            fineTunePosition={[-130, 126]}
+            fineTunePosition={[-110, 52]}
           >
             <MainNav />
           </FloatMenu>
@@ -90,20 +95,6 @@ export default function Header() {
       <Modal.Content name="newTask">
         <NewTask />
       </Modal.Content>
-      <FloatMenu
-        fineTunePosition={[220, 126]}
-        identifier="header-options"
-        icon={<HiMiniEllipsisVertical />}
-      >
-        <Button variation="link" onClick={() => mutate(columnId)}>
-          <HiMiniTrash />
-          <span>Delete</span>
-        </Button>
-        <Button variation="link">
-          <HiMiniWrenchScrewdriver />
-          <span>Edit</span>
-        </Button>
-      </FloatMenu>
     </StyledHeader>
   );
 }

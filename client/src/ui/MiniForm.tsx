@@ -51,10 +51,10 @@ const FormBlock = styled.div`
 
   animation: formBoard 250ms cubic-bezier(0.4, 0, 0.2, 1);
 
-  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
 
   &.toClose {
-    transform: translateY(-120px);
+    transform: translateY(-150%);
   }
 `;
 
@@ -127,7 +127,7 @@ export default function MiniForm({
                   disabled={userInput.length < 2 || loading}
                 >
                   {loading ? <SpinnerMiniR /> : <HiPlusSmall />}
-                  <span>{loading ? 'Creating...' : 'Create'}</span>
+                  <span>Create</span>
                 </Button>
               </div>
               {error && <FormErrorMessage reset={reset} error={error} />}

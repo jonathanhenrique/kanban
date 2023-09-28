@@ -1,28 +1,19 @@
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-} from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-
 import { useUpdateBoard } from './useUpdateBoard';
 import { changeColumn, reorder } from '../../utils/cacheOperations';
-
-import StyledBoard from './BoardStyled';
+import StyledBoard from '../../ui/StyledBoard';
 import Column from '../column/Column';
-import Task from '../task/Task';
 import Modal from '../../ui/Modal';
 import TaskDetails from '../task/TaskDetails';
-import EditTask from '../task/EditTask';
 import Spinner from '../../ui/Spinner';
 import useLoadBoard from './useLoadBoard';
-import BoardLock from './BoardLock';
 import { useGlobalUI } from '../../utils/GlobalUI';
 import { columnType, taskType } from '../../types/types';
 import NewColumn from '../column/NewColumn';
+import { useCacheContext } from './BoardCacheContext';
 
 export default function Board() {
   const { boardLocked } = useGlobalUI();
@@ -30,7 +21,7 @@ export default function Board() {
   const { isUpdatingPosition, mutate } = useUpdateBoard(boardId);
   const queryClient = useQueryClient();
   const [currTask, setCurrTask] = useState<null | string>(null);
-  const [cache, setCache] = useState<columnType[]>([]);
+  const { cache, setCache } = useCacheContext();
 
   const { isLoading, isError, data, error } = useLoadBoard(boardId, setCache);
 
@@ -111,64 +102,27 @@ export default function Board() {
   return (
     <>
       <DragDropContext onDragEnd={onDragEnd}>
-        <BoardLock isLocked={boardLocked}>
-          <StyledBoard id="board">
-            {cache.map((column) => {
-              return (
-                <Droppable droppableId={column.id} key={column.id}>
-                  {(provided, snapshot) => (
-                    <Column
-                      title={column.name}
-                      isDraggingOver={snapshot.isDraggingOver}
-                      columnId={column.id}
-                      boardId={column.boardId}
-                    >
-                      <ul ref={provided.innerRef} {...provided.droppableProps}>
-                        {column.tasks.map((task, idx) => (
-                          <Draggable
-                            isDragDisabled={boardLocked}
-                            draggableId={task.id}
-                            key={task.id}
-                            index={idx}
-                          >
-                            {(provided, snapshot) => (
-                              <li
-                                className="mb-1rem"
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                              >
-                                <Task
-                                  task={task}
-                                  onSelectTask={onSelectTask}
-                                  isDragging={snapshot.isDragging}
-                                />
-                              </li>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
-                      </ul>
-                    </Column>
-                  )}
-                </Droppable>
-              );
-            })}
-            <NewColumn />
-          </StyledBoard>
-        </BoardLock>
+        <StyledBoard>
+          {cache.map((column) => {
+            return (
+              <Droppable droppableId={column.id} key={column.id}>
+                {(provided, snapshot) => (
+                  <Column
+                    provided={provided}
+                    column={column}
+                    isDraggingOver={snapshot.isDraggingOver}
+                  />
+                )}
+              </Droppable>
+            );
+          })}
+          <NewColumn />
+        </StyledBoard>
         {isUpdatingPosition ? <Spinner /> : null}
       </DragDropContext>
       <Modal.Content name="details">
         {currTask && !isUpdatingPosition ? (
           <TaskDetails currTask={currTask} />
-        ) : (
-          <div>Loading</div>
-        )}
-      </Modal.Content>
-      <Modal.Content name="edit">
-        {currTask && !isUpdatingPosition ? (
-          <EditTask task={currTask} />
         ) : (
           <div>Loading</div>
         )}

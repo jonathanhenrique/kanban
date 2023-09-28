@@ -9,12 +9,14 @@ export default function FloatMenu({
   identifier,
   fn,
   fineTunePosition = [0, 0],
+  relativeTo,
 }: {
   icon: React.ReactNode;
   children: React.ReactNode;
   identifier?: string;
-  fn?: (value: boolean) => void;
+  fn?: () => void;
   fineTunePosition?: [number, number];
+  relativeTo: string;
 }) {
   const [position, setPosition] = useState<[number, number]>([0, 0]);
   const { open, close, isOpen, isRunningAnimation } = useAnimationOnUnmount({
@@ -24,30 +26,32 @@ export default function FloatMenu({
 
   function closeFloat() {
     close();
-    fn && fn(false);
+    fn && fn();
+    // fn && fn(false);
   }
 
   function getPos() {
     if (!identifier) return [0, 0];
 
-    const board = document.getElementById('board');
-    const boardRect = board?.getBoundingClientRect();
+    const relative = document.getElementById(relativeTo);
+    const relativeRect = relative?.getBoundingClientRect();
 
     const el = document.getElementById(identifier);
     const rect = el?.getBoundingClientRect();
 
-    if (rect && boardRect) {
-      return [rect.left - boardRect.left, rect.top - boardRect.top];
+    if (rect && relativeRect) {
+      return [rect.left - relativeRect.left, rect.top - relativeRect.top];
     } else return [0, 0];
   }
 
-  function openFloat() {
+  function openFloat(e) {
+    e.stopPropagation();
     const pos = getPos();
     setPosition(pos);
 
     if (!isRunningAnimation) {
       open();
-      fn && fn(true);
+      // fn && fn(true);
     }
   }
 

@@ -6,61 +6,62 @@ type Props = { $pos: [number, number] };
 const Mask = styled.div<Props>`
   z-index: 10000;
   position: absolute;
-  left: ${(props) => `${props.$pos[0]}px`};
-  top: ${(props) => `${props.$pos[1]}px`};
+  /* left: ${(props) => `${props.$pos[0]}px`};
+  top: ${(props) => `${props.$pos[1]}px`}; */
 `;
 
 const Container = styled.div`
+  /* padding: 1rem 1.2rem; */
   display: flex;
   flex-direction: column;
+  /* width: 260px; */
   background-color: var(--color-grey-700);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
 
   transform-origin: top right;
-  animation: modalScale 250ms var(--bezier-overshoot);
+
+  animation: modalPosition 300ms var(--bezier-overshoot),
+    modalScale 300ms var(--bezier-overshoot);
+
   animation-fill-mode: both;
 
-  & > div {
+  & > nav {
     opacity: 1;
-    animation: contentAnimation 100ms var(--bezier-overshoot) backwards;
-    transition: opacity 100ms var(--bezier-ease-out);
+    animation: contentAnimation 100ms ease-out backwards;
+    transition: opacity 50ms ease-out;
   }
 
-  transition: transform 250ms var(--bezier-ease-out);
+  transition: transform 300ms var(--bezier-ease-out);
 
   &.toClose {
-    transform: scale(0);
+    transform: translateY(var(--origin-y, 0)) translateX(var(--origin-x, 0))
+      scale(0);
 
-    & > div {
+    & > nav {
       opacity: 0;
     }
-  }
-
-  & > .alert {
-    animation: alert 250ms var(--bezier-ease-out);
   }
 `;
 
 export default function FloatContainer({
-  closeFn,
+  fn,
   children,
   animation,
+  pos,
   pixels,
 }: {
-  closeFn: () => void;
+  fn: () => void;
   children: React.ReactNode;
   animation?: boolean;
+  pos: [number, number];
   pixels: [number, number];
 }) {
-  const { ref } = useOutsideClick(closeFn);
+  const { ref } = useOutsideClick(fn);
 
   return (
-    <Mask
-      ref={ref as React.LegacyRef<HTMLDivElement>}
-      $pos={[pixels[0], pixels[1]]}
-    >
+    <Mask ref={ref} $pos={[pos[0] + pixels[0], pos[1] + pixels[1]]}>
       <Container
         onClick={(e) => e.stopPropagation()}
         className={animation ? 'toClose' : ''}

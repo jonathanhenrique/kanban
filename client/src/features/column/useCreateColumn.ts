@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createColumn } from '../../services/apiCalls';
 
-export function useCreateColumn(boardId) {
+export function useCreateColumn(boardId: string) {
   const queryClient = useQueryClient();
   const {
     isLoading: isCreatingColumn,
@@ -13,7 +13,7 @@ export function useCreateColumn(boardId) {
     mutationFn: createColumn,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [boardId],
+        queryKey: ['boards', boardId],
       });
     },
   });

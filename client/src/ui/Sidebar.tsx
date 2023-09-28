@@ -7,7 +7,6 @@ type Props = { $closed: boolean };
 
 const StyledSidebar = styled.aside<Props>`
   flex: 0 0 264px;
-  /* flex: 0 0 500px; */
   display: flex;
   flex-direction: column;
   justify-content: space-between;

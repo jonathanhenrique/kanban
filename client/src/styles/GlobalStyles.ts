@@ -6,6 +6,7 @@ const GlobalStyles = createGlobalStyle`
   --color-2: #be185d;
 
   --alert: #dc2626;
+  --danger: #f43f5e;
 
   &.dark{
     color-scheme: dark;
@@ -209,7 +210,7 @@ img {
 
 @keyframes formBoard {
   0%{
-    transform: translateY(-120px);
+    transform: translateY(-100%);
   }
   100%{
     transform: translateY(0);
@@ -258,6 +259,15 @@ img {
   }
   100%{
     height: auto;
+  }
+}
+
+@keyframes alert {
+  0%{
+    transform: translateY(-100%);
+  }
+  100%{
+    transform: translateY(0);
   }
 }
 
