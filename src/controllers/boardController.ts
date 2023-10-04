@@ -6,6 +6,16 @@ export async function getAllBoards(req, res, next) {
       where: {
         belongsToId: req.user.id,
       },
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+        columns: {
+          select: {
+            id: true,
+          },
+        },
+      },
     });
 
     // throw new Error('This is a Test');
@@ -25,6 +35,9 @@ export async function getBoard(req, res, next) {
       },
       include: {
         columns: {
+          orderBy: {
+            createdAt: 'asc',
+          },
           include: {
             tasks: {
               orderBy: {

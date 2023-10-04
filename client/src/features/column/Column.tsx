@@ -9,13 +9,18 @@ type ColumnProps = {
   provided: DroppableProvided;
   column: columnType;
   isDraggingOver: boolean;
+  // boardId: string;
+  // columnIdx: number;
 };
 
 export default function Column({
   provided,
   column,
   isDraggingOver,
-}: ColumnProps) {
+}: // boardId,
+// columnIdx,
+ColumnProps) {
+  // const { data: column } = useBoard(boardId, columnIdx);
   const { isDeleting, mutate } = useDeleteColumn(column.boardId, column.id);
 
   function deleteColumnHandler() {
@@ -43,6 +48,8 @@ export default function Column({
                 isDragging={snapshot.isDragging}
                 provided={provided}
                 boardId={column.boardId}
+                // columnIdx={columnIdx}
+                // taskIdx={idx}
               />
             )}
           </Draggable>

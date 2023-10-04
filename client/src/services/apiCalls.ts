@@ -49,6 +49,40 @@ export async function createColumn(newColumn: {
   }
 }
 
+export async function getColumn(columnId: string) {
+  const res = await fetch(`/api/columns/${columnId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (res.status !== 200) {
+    throw new Error('Something went wrong, try again latter.');
+  }
+
+  const data = await res.json();
+
+  return data;
+}
+
+export async function getTask(taskId: string) {
+  const res = await fetch(`/api/tasks/${taskId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (res.status !== 200) {
+    throw new Error('Something went wrong, try again latter.');
+  }
+
+  const data = await res.json();
+
+  return data;
+}
+
 export async function deleteColumn(columnId: string) {
   const res = await fetch(`/api/columns/${columnId}`, {
     method: 'DELETE',
@@ -83,7 +117,13 @@ export async function createBoard(newBoard: { name: string }) {
   }
 }
 
-export async function toggleCompleted(subtaskId: string, completed: boolean) {
+export async function toggleCompleted({
+  subtaskId,
+  completed,
+}: {
+  subtaskId: string;
+  completed: boolean;
+}) {
   const res = await fetch(`/api/subtasks/${subtaskId}`, {
     method: 'PATCH',
     body: JSON.stringify({ completed: completed }),
@@ -93,4 +133,6 @@ export async function toggleCompleted(subtaskId: string, completed: boolean) {
   });
 
   if (res.status !== 200) throw new Error('An error occurs');
+  const data = await res.json();
+  return data;
 }

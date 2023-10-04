@@ -13,12 +13,15 @@ import Button from '../../ui/formUI/Button';
 import useDeleteTask from './useDeleteTask';
 import Modal from '../../ui/Modal';
 import TaskInfo from './TaskInfo';
+import TaskDetails from './TaskDetails';
 
 type TaskProps = {
   provided: DraggableProvided;
   task: taskType;
   isDragging: boolean;
   boardId: string;
+  // columnIdx: number;
+  // taskIdx: number;
 };
 
 export default function Task({
@@ -27,8 +30,10 @@ export default function Task({
   isDragging,
   boardId,
 }: TaskProps) {
+  // const { data: task2 } = useBoardTask(boardId, columnIdx, taskIdx);
   const [confirm, setConfirm] = useState('idle');
   const { isDeleting, mutate } = useDeleteTask(boardId, task.columnId, task.id);
+  // const { isDeleting, mutate } = useDeleteTask(boardId, task.columnId, task.id);
 
   function deleteTask() {
     mutate(task.id);
@@ -36,7 +41,7 @@ export default function Task({
 
   return (
     <>
-      <Modal.Trigger opens="details">
+      <Modal.Trigger opens={task.id}>
         <li
           className="mb-1rem"
           ref={provided.innerRef}
@@ -70,9 +75,12 @@ export default function Task({
           </StyledTask>
         </li>
       </Modal.Trigger>
-      <Modal.Content name="details">
-        {/* {false ? <TaskDetails currTask={currTask} /> : <div>Loading</div>} */}
-        {<div>Loading</div>}
+      <Modal.Content name={task.id}>
+        <TaskDetails
+          currTask={task.id}
+          // columnIdx={columnIdx}
+          // taskIdx={taskIdx}
+        />
       </Modal.Content>
     </>
   );

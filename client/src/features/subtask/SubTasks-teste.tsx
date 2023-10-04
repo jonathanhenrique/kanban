@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
 import Button from '../../ui/formUI/Button';
-import SubTask from './SubTask';
+import SubTask from './SubTask-teste';
 
 const StyledSubtasks = styled.div`
   display: flex;

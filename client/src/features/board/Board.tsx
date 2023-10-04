@@ -6,10 +6,8 @@ import { useUpdateBoard } from './useUpdateBoard';
 import { changeColumn, reorder } from '../../utils/cacheOperations';
 import StyledBoard from '../../ui/StyledBoard';
 import Column from '../column/Column';
-import Modal from '../../ui/Modal';
-import TaskDetails from '../task/TaskDetails';
 import Spinner from '../../ui/Spinner';
-import useLoadBoard from './useLoadBoard';
+import useLoadBoard2 from './useLoadBoard2';
 import { useGlobalUI } from '../../utils/GlobalUI';
 import { columnType, taskType } from '../../types/types';
 import NewColumn from '../column/NewColumn';
@@ -23,7 +21,7 @@ export default function Board() {
   const [currTask, setCurrTask] = useState<null | string>(null);
   const { cache, setCache } = useCacheContext();
 
-  const { isLoading, isError, data, error } = useLoadBoard(boardId, setCache);
+  const { isLoading, isError, data, error } = useLoadBoard2(boardId, setCache);
 
   function onDragEnd(result: DropResult) {
     const { source, destination } = result;
@@ -99,34 +97,29 @@ export default function Board() {
 
   if (isError) return <p>{(error as Error).message}</p>;
 
+  // console.log(cache);
+
   return (
-    <>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <StyledBoard>
-          {cache.map((column) => {
-            return (
-              <Droppable droppableId={column.id} key={column.id}>
-                {(provided, snapshot) => (
-                  <Column
-                    provided={provided}
-                    column={column}
-                    isDraggingOver={snapshot.isDraggingOver}
-                  />
-                )}
-              </Droppable>
-            );
-          })}
-          <NewColumn />
-        </StyledBoard>
-        {isUpdatingPosition ? <Spinner /> : null}
-      </DragDropContext>
-      <Modal.Content name="details">
-        {currTask && !isUpdatingPosition ? (
-          <TaskDetails currTask={currTask} />
-        ) : (
-          <div>Loading</div>
-        )}
-      </Modal.Content>
-    </>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <StyledBoard>
+        {cache.map((column, idx) => {
+          return (
+            <Droppable droppableId={column.id} key={column.id}>
+              {(provided, snapshot) => (
+                <Column
+                  provided={provided}
+                  column={column}
+                  isDraggingOver={snapshot.isDraggingOver}
+                  // boardId={boardId}
+                  // columnIdx={idx}
+                />
+              )}
+            </Droppable>
+          );
+        })}
+        <NewColumn />
+      </StyledBoard>
+      {isUpdatingPosition ? <Spinner /> : null}
+    </DragDropContext>
   );
 }

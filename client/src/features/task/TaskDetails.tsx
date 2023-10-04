@@ -17,10 +17,6 @@ const Description = styled.p`
 
 const StyledForm = styled.form`
   width: 50rem;
-
-  & > h3 {
-    font-size: 1.6rem;
-  }
 `;
 
 export default function TaskDetails({ currTask }: { currTask: string }) {
@@ -30,17 +26,13 @@ export default function TaskDetails({ currTask }: { currTask: string }) {
     data,
     error,
   } = useQuery({
-    queryKey: ['currTask'],
+    queryKey: ['tasks', currTask],
     queryFn: async () => {
       const res = await fetch(`/api/tasks/${currTask}`);
       const data = await res.json();
 
       return data;
     },
-    // onSuccess(data) {
-    //  console.log(data);
-    // },
-    refetchOnMount: true,
   });
 
   if (loadingTask) return <p>Loading...</p>;
@@ -55,15 +47,8 @@ export default function TaskDetails({ currTask }: { currTask: string }) {
 
   return (
     <StyledForm>
-      <Heading>
-        This is the Title of the Task and it should be bigger than 15 words this
-        is good
-      </Heading>
-      <Description>
-        This is the Title of the Task and it should be bigger than 15 words,
-        This is the Title of the Task and it should be bigger than 15 words,
-        This is the Title of the Task and it should be bigger than 15 words
-      </Description>
+      <Heading>{data.task.title}</Heading>
+      <Description>{data.task.description}</Description>
       <Heading>{`Subtasks completed (${subtasksCompleted} of ${totalSubtasks})`}</Heading>
       {data.task.subTasks.map((st: subtaskType) => {
         return <SubTaskDetails key={st.id} subtask={st} />;
