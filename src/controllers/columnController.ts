@@ -2,7 +2,7 @@ import prisma from '../db';
 
 export async function createColumn(req, res, next) {
   try {
-    await prisma.column.create({
+    const newColumn = await prisma.column.create({
       data: {
         name: req.body.name,
         boardId: req.body.boardId,
@@ -10,7 +10,7 @@ export async function createColumn(req, res, next) {
     });
 
     res.status(200);
-    res.json({ message: 'column created' });
+    res.json(newColumn);
   } catch (error) {
     next(error);
   }

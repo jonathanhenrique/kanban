@@ -144,7 +144,11 @@ img {
   max-width: 100%;
 }
 
-.mb-1rem:not(:last-child){
+/* .mb-1rem:not(:last-child){
+  margin-bottom: 1rem;
+} */
+
+.mb-1rem {
   margin-bottom: 1rem;
 }
 

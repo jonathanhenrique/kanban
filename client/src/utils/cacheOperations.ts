@@ -1,6 +1,6 @@
 import { taskType } from '../types/types';
 
-const reorder = (list: taskType[], startIndex: number, endIndex: number) => {
+const reorder = (list: string[], startIndex: number, endIndex: number) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
@@ -9,8 +9,8 @@ const reorder = (list: taskType[], startIndex: number, endIndex: number) => {
 };
 
 const changeColumn = (
-  source: taskType[],
-  destination: taskType[],
+  source: string[],
+  destination: string[],
   droppableSource: { index: number; droppableId: string },
   droppableDestination: { index: number; droppableId: string }
 ) => {
@@ -21,8 +21,10 @@ const changeColumn = (
   destClone.splice(droppableDestination.index, 0, removed);
 
   const result: {
-    [key: string]: taskType[];
+    [key: string]: string[];
   } = {};
+
+  // const result = {};
 
   result[droppableSource.droppableId] = sourceClone;
   result[droppableDestination.droppableId] = destClone;

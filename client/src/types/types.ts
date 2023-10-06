@@ -21,6 +21,13 @@ export type columnType = {
   tasks: taskType[];
 };
 
+export type cacheColumnType = {
+  id: string;
+  name: string;
+  boardId: string;
+  tasks: string[];
+};
+
 export type boardType = {
   id: string;
   name: string;

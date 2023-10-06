@@ -17,6 +17,7 @@ import {
 } from '../../utils/constants';
 import { reducer, initialState } from './NewTaskReducer';
 import { boardType } from '../../types/types';
+import useColumns from './useColumns';
 
 type Props = { $grid: null | string };
 
@@ -74,52 +75,58 @@ const Error = styled.div`
 
 export default function NewTask() {
   const { boardId } = useParams();
+  const columns = useColumns(boardId);
   const { isCreatingTask, mutate, error, reset, isError } =
     useCreateTask(boardId);
   const [state, dispatch] = useReducer(reducer, initialState);
-  const queryClient = useQueryClient();
-  const data = queryClient.getQueryData<{ board: boardType }>([boardId]);
   const { title, description, subtasks, columnId } = state;
 
-  const columns = data
-    ? data.board.columns.map((column) => ({
-        id: column.id,
-        name: column.name,
-      }))
-    : null;
+  // const queryClient = useQueryClient();
+  // const data = queryClient.getQueryData<{ board: boardType }>([
+  //   'userBoard',
+  //   boardId,
+  // ]);
 
-  if (!data) {
-    return (
-      <Error>
-        <div>
-          <img src="error.svg" alt="Error Illustration" />
-        </div>
-        <div>
-          <h3>You need to select a Board first!</h3>
-          <p>To create your task, you will need a Boards and a Column</p>
-        </div>
-      </Error>
-    );
-  } else if (!columns || columns.length === 0) {
-    return (
-      <Error>
-        <div>
-          <img src="error.svg" alt="Error Illustration" />
-        </div>
-        <div>
-          <h3>You need to select a Board first!</h3>
-          <p>To create your task, you will need a Boards and a Column</p>
-        </div>
-      </Error>
-    );
-  }
+  // const columns = data
+  //   ? data.board.columns.map((column) => ({
+  //       id: column.id,
+  //       name: column.name,
+  //     }))
+  //   : null;
+
+  // if (!data) {
+  //   return (
+  //     <Error>
+  //       <div>
+  //         <img src="error.svg" alt="Error Illustration" />
+  //       </div>
+  //       <div>
+  //         <h3>You need to select a Board first!</h3>
+  //         <p>To create your task, you will need a Boards and a Column</p>
+  //       </div>
+  //     </Error>
+  //   );
+  // } else if (!columns || columns.length === 0) {
+  //   return (
+  //     <Error>
+  //       <div>
+  //         <img src="error.svg" alt="Error Illustration" />
+  //       </div>
+  //       <div>
+  //         <h3>You need to select a Board first!</h3>
+  //         <p>To create your task, you will need a Boards and a Column</p>
+  //       </div>
+  //     </Error>
+  //   );
+  // }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!columns || columns.length === 0) return;
 
     const column = columnId || columns[0].id;
-    mutate({ title, description, subTasks: subtasks, columnId: column });
+    const filteredSubtasks = subtasks.filter((st) => st.length > 0);
+    mutate({ title, description, subTasks: filteredSubtasks, columnId: column });
   }
 
   return (

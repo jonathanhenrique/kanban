@@ -5,7 +5,7 @@ import { useCacheContext } from '../board/BoardCacheContext';
 import { produce } from 'immer';
 
 export function useDeleteColumn(boardId: string, columnId: string) {
-  const { setCache } = useCacheContext();
+  // const { setCache } = useCacheContext();
   const queryClient = useQueryClient();
   const {
     isLoading: isDeleting,
@@ -16,24 +16,28 @@ export function useDeleteColumn(boardId: string, columnId: string) {
   } = useMutation({
     mutationFn: deleteColumn,
     onSuccess: () => {
-      const prevState = queryClient.getQueryData<{ board: boardType }>([
-        'boards',
-        boardId,
-      ]);
+      queryClient.setQueryData(['columns', boardId], (oldData) => {
+        const newState = Array.from(oldData);
+        const idx = newState.findIndex((column) => column.id === columnId);
+        newState.splice(idx, 1);
 
-      if (!prevState) return;
+        return newState;
+      });
+      queryClient.removeQueries(['column', columnId]);
 
-      const newState = produce<{ board: boardType }>(
-        prevState,
-        (draftState: { board: boardType }) => {
-          let { columns } = draftState.board;
-          columns = columns.filter((column) => column.id !== columnId);
-          draftState.board.columns = columns;
-        }
-      );
+      // if (!prevState) return;
 
-      queryClient.setQueryData(['boards', boardId], newState);
-      setCache(newState.board.columns);
+      // const newState = produce<{ board: boardType }>(
+      //   prevState,
+      //   (draftState: { board: boardType }) => {
+      //     let { columns } = draftState.board;
+      //     columns = columns.filter((column) => column.id !== columnId);
+      //     draftState.board.columns = columns;
+      //   }
+      // );
+
+      // queryClient.setQueryData(['boards', boardId], newState);
+      // setCache(newState.board.columns);
     },
   });
 

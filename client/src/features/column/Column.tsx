@@ -4,23 +4,24 @@ import { useDeleteColumn } from './useDeleteColumn';
 import Task from '../task/Task';
 import ColumnHeader from './ColumnHeader';
 import StyledColumn from '../../ui/StyledColumn';
+import useBoard from './useBoard';
+import { useCacheContext } from '../board/BoardCacheContext';
 
 type ColumnProps = {
   provided: DroppableProvided;
-  column: columnType;
+  // column: columnType;
   isDraggingOver: boolean;
   // boardId: string;
-  // columnIdx: number;
+  columnId: string;
 };
 
 export default function Column({
   provided,
-  column,
   isDraggingOver,
-}: // boardId,
-// columnIdx,
-ColumnProps) {
-  // const { data: column } = useBoard(boardId, columnIdx);
+  // boardId,
+  columnId,
+}: ColumnProps) {
+  const { data: column } = useBoard(columnId);
   const { isDeleting, mutate } = useDeleteColumn(column.boardId, column.id);
 
   function deleteColumnHandler() {
@@ -35,21 +36,21 @@ ColumnProps) {
         isLoading={isDeleting}
       />
       <ul ref={provided.innerRef} {...provided.droppableProps}>
-        {column.tasks.map((task, idx) => (
+        {column.tasks.map((taskId, idx) => (
           <Draggable
             isDragDisabled={false}
-            draggableId={task.id}
-            key={task.id}
+            draggableId={taskId}
+            key={taskId}
             index={idx}
           >
             {(provided, snapshot) => (
               <Task
-                task={task}
+                // task={task}
                 isDragging={snapshot.isDragging}
                 provided={provided}
-                boardId={column.boardId}
+                // boardId={column.boardId}
                 // columnIdx={columnIdx}
-                // taskIdx={idx}
+                taskId={taskId}
               />
             )}
           </Draggable>

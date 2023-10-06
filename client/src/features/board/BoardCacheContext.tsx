@@ -1,15 +1,15 @@
 import { createContext, useState, useContext } from 'react';
-import { columnType } from '../../types/types';
+import { cacheColumnType } from '../../types/types';
 
 type CacheType = {
-  cache: columnType[];
-  setCache: React.Dispatch<React.SetStateAction<columnType[]>>;
+  cache: cacheColumnType[];
+  setCache: React.Dispatch<React.SetStateAction<cacheColumnType[]>>;
 };
 
 const CacheContext = createContext<CacheType>({} as CacheType);
 
 function CacheContextProvider({ children }: { children: React.ReactNode }) {
-  const [cache, setCache] = useState<columnType[]>([]);
+  const [cache, setCache] = useState<cacheColumnType[]>([]);
 
   return (
     <CacheContext.Provider value={{ cache, setCache }}>

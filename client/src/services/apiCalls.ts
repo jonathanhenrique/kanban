@@ -30,6 +30,8 @@ export async function createTask(newTask: taskType) {
   });
 
   if (res.status !== 200) throw new Error('An error occurs');
+  const data = await res.json();
+  return data;
 }
 
 export async function createColumn(newColumn: {
@@ -47,6 +49,9 @@ export async function createColumn(newColumn: {
   if (res.status !== 200) {
     throw new Error('Something went wrong, try again latter.');
   }
+
+  const data = await res.json();
+  return data;
 }
 
 export async function getColumn(columnId: string) {

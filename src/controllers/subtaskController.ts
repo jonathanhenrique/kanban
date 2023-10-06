@@ -9,9 +9,6 @@ export async function toggleCompleted(req, res, next) {
       data: {
         completed: req.body.completed,
       },
-      select: {
-        task: true,
-      },
     });
 
     res.status(200);

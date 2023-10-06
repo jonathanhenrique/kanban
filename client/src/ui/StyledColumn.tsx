@@ -17,7 +17,7 @@ const StyledColumn = styled.div<Props>`
     min-height: 10rem;
     display: flex;
     flex-direction: column;
-    padding: 1rem;
+    padding: 1rem 1rem 0 1rem;
     background-color: var(--color-grey-700);
     border-radius: var(--border-radius-lg);
 

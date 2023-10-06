@@ -1,4 +1,5 @@
 import { styled } from 'styled-components';
+import useGetTask from './useGetTask';
 
 const TaskInfoStyled = styled.div`
   & h4 {
@@ -12,15 +13,22 @@ const TaskInfoStyled = styled.div`
   }
 `;
 
-export default function TaskInfo({ task }) {
-  const taskTitle = task.title;
-  const subtaskTotal = task.subTasks.length;
-  const subtaskDone = task.subTasks.reduce((acc, st) => acc + st.completed, 0);
+export default function TaskInfo({ taskId }: { taskId: string }) {
+  const { data: task } = useGetTask(taskId);
+
+  if (!task) return null;
+
+  const title = task.title;
+  const total = task.subTasks.length;
+  const completed = task.subTasks.reduce(
+    (acc, st) => acc + (st.completed ? 1 : 0),
+    0
+  );
 
   return (
     <TaskInfoStyled>
-      <h4>{taskTitle}</h4>
-      <p>{`${subtaskDone} of ${subtaskTotal} subtasks completed`}</p>
+      <h4>{title}</h4>
+      <p>{`${completed} of ${total} subtasks completed`}</p>
     </TaskInfoStyled>
   );
 }

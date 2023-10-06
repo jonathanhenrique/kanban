@@ -17,17 +17,18 @@ export function useUpdateBoard(boardId: string | undefined) {
       newColumnId?: null | string;
     }) => {
       if (!boardId) throw new Error('No boardId');
-      setBoardLocked(true);
+      // setBoardLocked(true);
       return changeOrder(taskId, newPosition, newColumnId);
     },
     onSuccess: () => {
-      setBoardLocked(false);
-      queryClient.invalidateQueries({
-        queryKey: [boardId],
-      });
+      console.log('success');
+      // setBoardLocked(false);
     },
     onError: (err: Error) => {
-      setBoardLocked(false);
+      // setBoardLocked(false);
+      queryClient.invalidateQueries({
+        queryKey: ['userBoard', boardId],
+      });
       console.log(`Error ${err.message}`);
     },
   });

@@ -1,5 +1,5 @@
-import SpinnerMini from '../../ui/SpinnerMini';
 import { ImCheckboxChecked, ImCheckboxUnchecked } from 'react-icons/im';
+import SpinnerMini from '../../ui/SpinnerMini';
 import { subtaskType } from '../../types/types';
 import Subtask from '../../ui/StyledSubtask';
 import useToggleSubtask from './useToggleSubtask';

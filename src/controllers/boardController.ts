@@ -10,11 +10,9 @@ export async function getAllBoards(req, res, next) {
         id: true,
         name: true,
         createdAt: true,
-        columns: {
-          select: {
-            id: true,
-          },
-        },
+      },
+      orderBy: {
+        createdAt: 'asc',
       },
     });
 
@@ -51,6 +49,13 @@ export async function getBoard(req, res, next) {
         },
       },
     });
+    // const board = await prisma.task.findMany({
+    //   where: {
+    //     column: {
+    //       boardId: req.params.id,
+    //     },
+    //   },
+    // });
 
     res.status(200);
     res.json({ board });

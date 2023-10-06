@@ -8,35 +8,26 @@ import {
 import FloatMenuConfirmation from '../../ui/FloatMenuConfirmation';
 import DragDropHandler from '../../ui/DragDropHandler';
 import StyledTask from '../../ui/StyledTask';
-import { taskType } from '../../types/types';
 import Button from '../../ui/formUI/Button';
 import useDeleteTask from './useDeleteTask';
 import Modal from '../../ui/Modal';
 import TaskInfo from './TaskInfo';
 import TaskDetails from './TaskDetails';
+import useGetTask from './useGetTask';
 
 type TaskProps = {
   provided: DraggableProvided;
-  task: taskType;
   isDragging: boolean;
-  boardId: string;
-  // columnIdx: number;
-  // taskIdx: number;
+  taskId: string;
 };
 
-export default function Task({
-  provided,
-  task,
-  isDragging,
-  boardId,
-}: TaskProps) {
-  // const { data: task2 } = useBoardTask(boardId, columnIdx, taskIdx);
+export default function Task({ provided, isDragging, taskId }: TaskProps) {
+  const { data: task } = useGetTask(taskId);
   const [confirm, setConfirm] = useState('idle');
-  const { isDeleting, mutate } = useDeleteTask(boardId, task.columnId, task.id);
-  // const { isDeleting, mutate } = useDeleteTask(boardId, task.columnId, task.id);
+  const { isDeleting, mutate } = useDeleteTask(taskId);
 
   function deleteTask() {
-    mutate(task.id);
+    mutate(taskId);
   }
 
   return (
@@ -49,14 +40,14 @@ export default function Task({
         >
           <StyledTask $isDragging={isDragging}>
             <DragDropHandler dndProps={provided.dragHandleProps} />
-            <TaskInfo task={task} />
+            <TaskInfo taskId={taskId} />
             <FloatMenuConfirmation
               fineTunePosition={[0, 0]}
               icon={<HiMiniEllipsisVertical />}
               actionOnConfirmation={deleteTask}
               confirm={confirm}
               setConfirm={setConfirm}
-              isLoading={isDeleting}
+              isLoading={false}
             >
               <div style={{ padding: '1rem 1.2rem' }}>
                 <Button
@@ -77,7 +68,7 @@ export default function Task({
       </Modal.Trigger>
       <Modal.Content name={task.id}>
         <TaskDetails
-          currTask={task.id}
+          taskId={task.id}
           // columnIdx={columnIdx}
           // taskIdx={taskIdx}
         />

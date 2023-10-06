@@ -11,10 +11,17 @@ export function useCreateColumn(boardId: string) {
     reset,
   } = useMutation({
     mutationFn: createColumn,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['boards', boardId],
+    onSuccess: (data) => {
+      console.log(data);
+      queryClient.setQueryData(['columns', boardId], (oldData) => {
+        const newState = Array.from(oldData);
+        newState.push({ id: data.id, name: data.name });
+        return newState;
       });
+      queryClient.setQueryData(['column', data.id], { ...data, tasks: [] });
+      // queryClient.invalidateQueries({
+      //   queryKey: ['userBoard', boardId],
+      // });
     },
   });
 

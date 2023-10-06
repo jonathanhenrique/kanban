@@ -13,19 +13,17 @@ import { useGlobalUI } from '../../utils/GlobalUI';
 import { columnType, taskType } from '../../types/types';
 import NewColumn from '../column/NewColumn';
 import { useCacheContext } from './BoardCacheContext';
-import useColumns from '../task/useColumns';
 
 export default function Board() {
   const { boardLocked } = useGlobalUI();
   const { boardId } = useParams();
   const { isUpdatingPosition, mutate } = useUpdateBoard(boardId);
   const queryClient = useQueryClient();
-  // const [currTask, setCurrTask] = useState<null | string>(null);
-  // const { cache, setCache } = useCacheContext();
+  const [currTask, setCurrTask] = useState<null | string>(null);
+  const { cache, setCache } = useCacheContext();
 
   // const { isLoading, isError, data, error } = useLoadBoard(boardId, setCache);
-  const { isLoading, isError, error } = useLoadBoard2(boardId);
-  const { data: columns } = useColumns(boardId);
+  const { isLoading, isError, data, error } = useLoadBoard2(boardId, setCache);
 
   function onDragEnd(result: DropResult) {
     const { source, destination } = result;
@@ -42,20 +40,19 @@ export default function Board() {
     // const taskId = data.board.columns.find((column: columnType) => {
     //   return column.id === source.droppableId;
     // }).tasks[source.index].id;
-    const columnSource = queryClient.getQueryData([
-      'column',
-      source.droppableId,
-    ]);
-    const taskId = columnSource.tasks[source.index];
 
     if (source.droppableId === destination.droppableId) {
-      // mutate({
-      //   taskId: taskId,
-      //   newPosition: destination.index + 1,
-      // });
+      const column = queryClient.getQueryData(['column', source.droppableId]);
+
+      const taskId = column.tasks[source.index];
+
+      mutate({
+        taskId: taskId,
+        newPosition: destination.index + 1,
+      });
 
       const reorderedItems = reorder(
-        columnSource.tasks,
+        column.tasks,
         source.index,
         destination.index
       );
@@ -63,6 +60,18 @@ export default function Board() {
       queryClient.setQueriesData(['column', source.droppableId], (oldData) => {
         return { ...oldData, tasks: reorderedItems };
       });
+
+      // const index = cache.findIndex((cl) => cl.id === source.droppableId);
+
+      // const reorderedItems = reorder(
+      //   cache[index].tasks,
+      //   source.index,
+      //   destination.index
+      // );
+
+      // const newCache: columnType[] = [...cache];
+      // newCache[index].tasks = reorderedItems;
+      // setCache(newCache);
     } else {
       mutate({
         taskId: taskId,
@@ -70,46 +79,33 @@ export default function Board() {
         newPosition: destination.index + 1,
       });
 
-      const columnDest = queryClient.getQueryData([
-        'column',
-        destination.droppableId,
-      ]);
-
-      // const idxOrigin = cache.findIndex((cl) => cl.id === source.droppableId);
-      // const idxDes = cache.findIndex((cl) => cl.id === destination.droppableId);
+      const idxOrigin = cache.findIndex((cl) => cl.id === source.droppableId);
+      const idxDes = cache.findIndex((cl) => cl.id === destination.droppableId);
 
       const result = changeColumn(
-        columnSource.tasks,
-        columnDest.tasks,
+        cache[idxOrigin].tasks,
+        cache[idxDes].tasks,
         source,
         destination
       );
 
-      queryClient.setQueriesData(['column', source.droppableId], (oldData) => {
-        return { ...oldData, tasks: result[source.droppableId] };
-      });
-      queryClient.setQueriesData(
-        ['column', destination.droppableId],
-        (oldData) => {
-          return { ...oldData, tasks: result[destination.droppableId] };
-        }
-      );
-      // newCache[idxOrigin].tasks = result[source.droppableId];
-      // newCache[idxDes].tasks = result[destination.droppableId];
-      // setCache(newCache);
+      const newCache = [...cache];
+      newCache[idxOrigin].tasks = result[source.droppableId];
+      newCache[idxDes].tasks = result[destination.droppableId];
+      setCache(newCache);
     }
   }
 
-  // useEffect(() => {
-  //   if (!data) return;
+  useEffect(() => {
+    if (!data) return;
 
-  //   setCache(data);
-  // }, [boardId]);
+    setCache(data);
+  }, [boardId]);
 
-  // const onSelectTask = (task: taskType) => {
-  //   setCurrTask(task.id);
-  //   queryClient.setQueryData(['currTask'], () => ({ task }));
-  // };
+  const onSelectTask = (task: taskType) => {
+    setCurrTask(task.id);
+    queryClient.setQueryData(['currTask'], () => ({ task }));
+  };
 
   if (!boardId) return null;
 
@@ -117,13 +113,12 @@ export default function Board() {
 
   if (isError) return <p>{(error as Error).message}</p>;
 
-  // console.log(columns);
   // console.log(data);
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <StyledBoard>
-        {columns.map((column) => {
+        {cache.map((column) => {
           return (
             <Droppable droppableId={column.id} key={column.id}>
               {(provided, snapshot) => (

@@ -1,7 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createTask } from '../../services/apiCalls';
+import { cacheColumnType, taskType } from '../../types/types';
+import { useCacheContext } from '../board/BoardCacheContext';
 
-export function useCreateTask(boardId: string | undefined) {
+export function useCreateTask() {
+  const { setCache } = useCacheContext();
   const queryClient = useQueryClient();
   const {
     isLoading: isCreatingTask,
@@ -11,10 +14,26 @@ export function useCreateTask(boardId: string | undefined) {
     isError,
   } = useMutation({
     mutationFn: createTask,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [boardId],
-      });
+    onSuccess: ({ newTask }: { newTask: taskType }) => {
+      queryClient.setQueryData<cacheColumnType>(
+        ['column', newTask.columnId],
+        (oldData) => {
+          if (!oldData) return;
+
+          const updatedTasks = [...oldData.tasks];
+          updatedTasks.push(newTask.id);
+
+          setCache((s) => {
+            const idx = s.findIndex((col) => col.id === newTask.columnId);
+            const newState = [...s];
+            newState[idx] = { ...oldData, tasks: updatedTasks };
+            return newState;
+          });
+
+          return { ...oldData, tasks: updatedTasks };
+        }
+      );
+      queryClient.setQueryData(['task', newTask.id], newTask);
     },
   });
 

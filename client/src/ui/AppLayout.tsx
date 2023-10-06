@@ -35,15 +35,15 @@ export default function AppLayout() {
       <ReactQueryDevtools />
       <GlobalUIProvider>
         <Modal>
-          <Header />
-          <Content>
-            <Sidebar />
-            <CacheContextProvider>
+          <CacheContextProvider>
+            <Header />
+            <Content>
+              <Sidebar />
               <Main>
                 <Outlet />
               </Main>
-            </CacheContextProvider>
-          </Content>
+            </Content>
+          </CacheContextProvider>
         </Modal>
       </GlobalUIProvider>
     </QueryClientProvider>

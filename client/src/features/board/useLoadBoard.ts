@@ -14,11 +14,26 @@ export default function useLoadBoard(
         throw new Error('Something went wrong, try again latter.');
 
       const data = await res.json();
-      onSuccessFn(data.board.columns);
+      // onSuccessFn(data.board.columns);
       return data;
     },
+    select(data) {
+      return data.board.columns.map((column) => {
+        const tasks = column.tasks.map((task) => ({
+          id: task.id,
+          order: task.order,
+        }));
+
+        return {
+          id: column.id,
+          name: column.name,
+          tasks,
+        };
+      });
+    },
     onSuccess(data) {
-      onSuccessFn(data.board.columns);
+      console.log(data);
+      onSuccessFn(data);
     },
   });
 

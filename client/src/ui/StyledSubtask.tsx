@@ -8,6 +8,7 @@ const Subtask = styled.button<Props>`
   display: flex;
   gap: 1.2rem;
   align-items: center;
+  line-height: 0;
 
   font-size: 1.4rem;
   border: none;
@@ -17,7 +18,7 @@ const Subtask = styled.button<Props>`
   color: var(--color-grey-100);
 
   &:not(:last-of-type) {
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.6rem;
   }
 
   opacity: ${(props) => (props.$isCompleted ? '.5' : '1')};
@@ -31,7 +32,7 @@ const Subtask = styled.button<Props>`
 
   &::after {
     content: '';
-    transition: transform 200ms linear;
+    transition: transform 200ms var(--bezier-ease-out);
     display: block;
     height: 2px;
     width: 86%;

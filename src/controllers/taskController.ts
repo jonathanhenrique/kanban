@@ -39,7 +39,7 @@ export async function createTask(req, res, next) {
       },
     });
 
-    await prisma.task.create({
+    const newTask = await prisma.task.create({
       data: {
         title: req.body.title,
         description: req.body.description ?? '',
@@ -56,7 +56,7 @@ export async function createTask(req, res, next) {
     });
 
     res.status(200);
-    res.json({ message: 'task created' });
+    res.json({ newTask });
   } catch (error) {
     next(error);
   }
@@ -174,6 +174,7 @@ export async function changeOrder(req, res, next) {
 
 export async function changeOrderColumn(req, res, next) {
   try {
+    // throw new Error('testing error handling');
     const { newPosition, newColumnId } = req.body;
     const selectedTask = req.task;
 
