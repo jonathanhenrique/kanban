@@ -14,7 +14,7 @@ const StyledColumn = styled.div<Props>`
 
   & ul {
     width: 100%;
-    min-height: 10rem;
+    min-height: 9rem;
     display: flex;
     flex-direction: column;
     padding: 1rem 1rem 0 1rem;

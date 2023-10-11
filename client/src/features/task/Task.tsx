@@ -24,11 +24,13 @@ type TaskProps = {
 export default function Task({ provided, isDragging, taskId }: TaskProps) {
   const { data: task } = useGetTask(taskId);
   const [confirm, setConfirm] = useState('idle');
-  const { isDeleting, mutate } = useDeleteTask(taskId);
+  const { isDeletingTask, mutate } = useDeleteTask(taskId);
 
   function deleteTask() {
     mutate(taskId);
   }
+
+  if (!task) return null;
 
   return (
     <>
@@ -42,12 +44,12 @@ export default function Task({ provided, isDragging, taskId }: TaskProps) {
             <DragDropHandler dndProps={provided.dragHandleProps} />
             <TaskInfo taskId={taskId} />
             <FloatMenuConfirmation
-              fineTunePosition={[0, 0]}
+              fineTunePosition={[115, 25]}
               icon={<HiMiniEllipsisVertical />}
               actionOnConfirmation={deleteTask}
               confirm={confirm}
               setConfirm={setConfirm}
-              isLoading={false}
+              isLoading={isDeletingTask}
             >
               <div style={{ padding: '1rem 1.2rem' }}>
                 <Button
@@ -67,11 +69,7 @@ export default function Task({ provided, isDragging, taskId }: TaskProps) {
         </li>
       </Modal.Trigger>
       <Modal.Content name={task.id}>
-        <TaskDetails
-          taskId={task.id}
-          // columnIdx={columnIdx}
-          // taskIdx={taskIdx}
-        />
+        <TaskDetails taskId={task.id} />
       </Modal.Content>
     </>
   );

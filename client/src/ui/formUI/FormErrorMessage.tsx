@@ -41,7 +41,7 @@ export default function FormErrorMessage({
 }) {
   return (
     <ErrorMessage>
-      <ErrorHeading>An Error occurred!</ErrorHeading>
+      <ErrorHeading>Error!</ErrorHeading>
       <p>{error}</p>
       <HiMiniXCircle onClick={() => reset()} />
     </ErrorMessage>

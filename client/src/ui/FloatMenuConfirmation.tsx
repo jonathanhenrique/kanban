@@ -14,6 +14,7 @@ type FloatMenuConfirmationType = {
   confirm: string;
   setConfirm: (arg: string) => void;
   isLoading?: boolean;
+  disabled?: boolean;
 };
 
 const Alert = styled.div`
@@ -39,6 +40,7 @@ export default function FloatMenuConfirmation({
   confirm,
   setConfirm,
   isLoading,
+  disabled = false,
 }: FloatMenuConfirmationType) {
   const { open, close, isOpen, isRunningAnimation } = useAnimationOnUnmount({
     isMounted: false,
@@ -60,7 +62,14 @@ export default function FloatMenuConfirmation({
 
   return (
     <>
-      <IconButton onClick={openFloat}>{icon}</IconButton>
+      <IconButton
+        onClick={openFloat}
+        open={isOpen}
+        animateRotation={false}
+        disabled={disabled}
+      >
+        {icon}
+      </IconButton>
       {!isRunningAnimation && !isOpen ? null : (
         <FloatContainer
           closeFn={closeFloat}
@@ -82,7 +91,13 @@ export default function FloatMenuConfirmation({
                       <HiMiniXMark />
                       <span>No</span>
                     </Button>
-                    <Button variation="mini" onClick={actionOnConfirmation}>
+                    <Button
+                      variation="mini"
+                      onClick={() => {
+                        closeFloat();
+                        actionOnConfirmation();
+                      }}
+                    >
                       <HiMiniCheck />
                       <span>Yes</span>
                     </Button>

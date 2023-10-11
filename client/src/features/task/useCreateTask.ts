@@ -1,41 +1,33 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createTask } from '../../services/apiCalls';
-import { cacheColumnType, taskType } from '../../types/types';
-import { useCacheContext } from '../board/BoardCacheContext';
+import { columnCacheType, taskType } from '../../types/types';
+import toast from 'react-hot-toast';
+import { useParams } from 'react-router-dom';
 
 export function useCreateTask() {
-  const { setCache } = useCacheContext();
+  const { boardId } = useParams();
   const queryClient = useQueryClient();
-  const {
-    isLoading: isCreatingTask,
-    mutate,
-    error,
-    reset,
-    isError,
-  } = useMutation({
+  const { isLoading: isCreatingTask, mutate } = useMutation({
     mutationFn: createTask,
     onSuccess: ({ newTask }: { newTask: taskType }) => {
-      queryClient.setQueryData<cacheColumnType>(
-        ['column', newTask.columnId],
+      queryClient.setQueryData<columnCacheType>(
+        [boardId, newTask.columnId],
         (oldData) => {
           if (!oldData) return;
 
           const updatedTasks = [...oldData.tasks];
           updatedTasks.push(newTask.id);
 
-          setCache((s) => {
-            const idx = s.findIndex((col) => col.id === newTask.columnId);
-            const newState = [...s];
-            newState[idx] = { ...oldData, tasks: updatedTasks };
-            return newState;
-          });
-
           return { ...oldData, tasks: updatedTasks };
         }
       );
-      queryClient.setQueryData(['task', newTask.id], newTask);
+      queryClient.setQueryData([boardId, newTask.id], newTask);
+      toast.success('Task created!');
+    },
+    onError() {
+      toast.error('Try again latter.');
     },
   });
 
-  return { isCreatingTask, mutate, error, reset, isError };
+  return { isCreatingTask, mutate };
 }

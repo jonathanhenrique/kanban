@@ -1,45 +1,36 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteColumn } from '../../services/apiCalls';
-import { boardType } from '../../types/types';
-import { useCacheContext } from '../board/BoardCacheContext';
-import { produce } from 'immer';
+import { IDType, columnsCacheType } from '../../types/types';
+import toast from 'react-hot-toast';
 
-export function useDeleteColumn(boardId: string, columnId: string) {
-  // const { setCache } = useCacheContext();
+export default function useDeleteColumn(boardId: IDType, columnId: IDType) {
   const queryClient = useQueryClient();
-  const {
-    isLoading: isDeleting,
-    mutate,
-    isError,
-    error,
-    reset,
-  } = useMutation({
-    mutationFn: deleteColumn,
-    onSuccess: () => {
-      queryClient.setQueryData(['columns', boardId], (oldData) => {
-        const newState = Array.from(oldData);
-        const idx = newState.findIndex((column) => column.id === columnId);
-        newState.splice(idx, 1);
+  const { mutate } = useMutation({
+    mutationFn: (columnId: string) => {
+      if (!columnId) throw new Error('You need to select a column!');
 
-        return newState;
+      return toast.promise(deleteColumn(columnId), {
+        loading: 'Deleting column...',
+        success: 'Column Deleted!',
+        error: 'Try again latter!',
       });
-      queryClient.removeQueries(['column', columnId]);
+    },
 
-      // if (!prevState) return;
+    onSuccess: () => {
+      queryClient.setQueryData<columnsCacheType>(
+        [boardId, 'columns'],
+        (oldData) => {
+          if (!oldData) return;
+          const newState = Array.from(oldData);
+          const idx = newState.findIndex((column) => column.id === columnId);
+          newState.splice(idx, 1);
 
-      // const newState = produce<{ board: boardType }>(
-      //   prevState,
-      //   (draftState: { board: boardType }) => {
-      //     let { columns } = draftState.board;
-      //     columns = columns.filter((column) => column.id !== columnId);
-      //     draftState.board.columns = columns;
-      //   }
-      // );
-
-      // queryClient.setQueryData(['boards', boardId], newState);
-      // setCache(newState.board.columns);
+          return newState;
+        }
+      );
+      queryClient.removeQueries([boardId, columnId]);
     },
   });
 
-  return { isDeleting, mutate, isError, error, reset };
+  return { mutate };
 }

@@ -21,15 +21,22 @@ export type columnType = {
   tasks: taskType[];
 };
 
-export type cacheColumnType = {
+export type boardType = {
+  id: string;
+  name: string;
+  columns: columnType[];
+};
+
+export type columnsCacheType = {
+  id: string;
+  name: string;
+}[];
+
+export type columnCacheType = {
   id: string;
   name: string;
   boardId: string;
   tasks: string[];
 };
 
-export type boardType = {
-  id: string;
-  name: string;
-  columns: columnType[];
-};
+export type IDType = string | undefined;

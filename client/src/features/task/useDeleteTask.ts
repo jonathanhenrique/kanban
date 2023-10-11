@@ -1,57 +1,42 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteTask } from '../../services/apiCalls';
-import { useCacheContext } from '../board/BoardCacheContext';
-import { cacheColumnType, taskType } from '../../types/types';
+import { columnCacheType, taskType } from '../../types/types';
+import toast from 'react-hot-toast';
+import { useParams } from 'react-router-dom';
 
 export default function useDeleteTask(taskId: string) {
-  // const { setCache } = useCacheContext();
+  const { boardId } = useParams();
   const queryClient = useQueryClient();
-  const {
-    isLoading: isDeletingTask,
-    mutate,
-    error,
-    reset,
-    isError,
-  } = useMutation({
-    mutationFn: deleteTask,
+  const { isLoading: isDeletingTask, mutate } = useMutation({
+    mutationFn: (taskId: string) => {
+      if (!taskId) throw new Error('You need to select a task!');
+
+      return toast.promise(deleteTask(taskId), {
+        loading: 'Deleting task...',
+        success: 'Task Deleted!',
+        error: 'Try again latter!',
+      });
+    },
+
     onSuccess: () => {
-      const taskDeleted = queryClient.getQueryData<taskType>(['task', taskId]);
+      const taskDeleted = queryClient.getQueryData<taskType>([boardId, taskId]);
 
       if (!taskDeleted) return;
 
-      queryClient.setQueryData<cacheColumnType>(
-        ['column', taskDeleted.columnId],
+      queryClient.setQueryData<columnCacheType>(
+        [boardId, taskDeleted.columnId],
         (oldData) => {
           if (!oldData) return;
           const updatedTasks = Array.from(oldData.tasks);
           const idx = updatedTasks.findIndex((task) => task === taskDeleted.id);
           updatedTasks.splice(idx, 1);
 
-          // setCache((s) => {
-          //   const idx = s.findIndex((col) => col.id === taskDeleted.columnId);
-          //   const newState = [...s];
-          //   newState[idx] = { ...oldData, tasks: [...updatedTasks] };
-          //   return newState;
-          // });
-
           return { ...oldData, tasks: updatedTasks };
         }
       );
-      queryClient.removeQueries(['task', taskDeleted.id]);
+      queryClient.removeQueries([boardId, taskDeleted.id]);
     },
   });
 
-  return { isDeletingTask, mutate, error, reset, isError };
+  return { isDeletingTask, mutate };
 }
-
-// const newState = produce<{ board: boardType }>(
-//   prevState,
-//   (draftState: { board: boardType }) => {
-//     const { columns } = draftState.board;
-//     const columnIdx = columns.findIndex((cl) => cl.id === columnId);
-//     let tasks = columns[columnIdx].tasks;
-//     tasks = tasks.filter((t) => t.id !== taskId);
-
-//     draftState.board.columns[columnIdx].tasks = tasks;
-//   }
-// );

@@ -1,29 +1,38 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createColumn } from '../../services/apiCalls';
+import { columnsCacheType, columnType, IDType } from '../../types/types';
+import toast from 'react-hot-toast';
 
-export function useCreateColumn(boardId: string) {
+export default function useCreateColumn(boardId: IDType) {
   const queryClient = useQueryClient();
   const {
-    isLoading: isCreatingColumn,
+    isLoading: isCreating,
     mutate,
     isError,
     error,
     reset,
   } = useMutation({
-    mutationFn: createColumn,
-    onSuccess: (data) => {
-      console.log(data);
-      queryClient.setQueryData(['columns', boardId], (oldData) => {
-        const newState = Array.from(oldData);
-        newState.push({ id: data.id, name: data.name });
-        return newState;
+    mutationFn: (newColumn: { name: string; boardId: string }) => {
+      if (!boardId) throw new Error('You need to select a board!');
+
+      return toast.promise(createColumn(newColumn), {
+        loading: 'Creating column...',
+        success: 'Column created!',
+        error: 'Try again latter!',
       });
-      queryClient.setQueryData(['column', data.id], { ...data, tasks: [] });
-      // queryClient.invalidateQueries({
-      //   queryKey: ['userBoard', boardId],
-      // });
+    },
+    onSuccess: (data: columnType) => {
+      queryClient.setQueryData<columnsCacheType>(
+        [boardId, 'columns'],
+        (oldData) => {
+          const newState = oldData ? Array.from(oldData) : [];
+          newState.push({ id: data.id, name: data.name });
+          return newState;
+        }
+      );
+      queryClient.setQueryData([data.boardId, data.id], { ...data, tasks: [] });
     },
   });
 
-  return { isCreatingColumn, mutate, isError, error, reset };
+  return { isCreating, mutate, isError, error, reset };
 }

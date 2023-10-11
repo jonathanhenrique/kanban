@@ -10,7 +10,6 @@ import { useState } from 'react';
 
 type ColumnHeaderProps = {
   title: string;
-  isLoading: boolean;
   deleteColumn: () => void;
 };
 
@@ -24,7 +23,6 @@ const StyledColumnHeader = styled.div`
 
 export default function ColumnHeader({
   title,
-  isLoading,
   deleteColumn,
 }: ColumnHeaderProps) {
   const [confirm, setConfirm] = useState('idle');
@@ -38,7 +36,6 @@ export default function ColumnHeader({
         actionOnConfirmation={deleteColumn}
         confirm={confirm}
         setConfirm={setConfirm}
-        isLoading={isLoading}
       >
         <div style={{ padding: '1rem 1.2rem' }}>
           <Button variation="mini" onClick={() => setConfirm('toConfirm')}>

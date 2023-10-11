@@ -33,6 +33,7 @@ export async function createTask(req, res, next) {
   }
 
   try {
+    // throw new Error('Some error');
     const order = await prisma.task.findMany({
       where: {
         columnId: req.body.columnId,
@@ -97,6 +98,7 @@ export async function deleteTask(req, res, next) {
 
 export async function changeOrder(req, res, next) {
   try {
+    throw new Error('teste');
     const { newPosition } = req.body;
     const selectedTask = req.task;
 
@@ -174,7 +176,7 @@ export async function changeOrder(req, res, next) {
 
 export async function changeOrderColumn(req, res, next) {
   try {
-    // throw new Error('testing error handling');
+    throw new Error('testing error handling');
     const { newPosition, newColumnId } = req.body;
     const selectedTask = req.task;
 

@@ -1,13 +1,11 @@
 import { styled } from 'styled-components';
 import { useReducer } from 'react';
-import Button from '../../ui/formUI/Button';
 import { HiOutlineTrash, HiPlusSmall } from 'react-icons/hi2';
-import { useQueryClient } from '@tanstack/react-query';
+import Button from '../../ui/formUI/Button';
 import { useCreateTask } from './useCreateTask';
 import { useParams } from 'react-router-dom';
 import IconButton from '../../ui/formUI/IconButton';
 import { SpinnerMiniR } from '../../ui/SpinnerMini';
-import FormErrorMessage from '../../ui/formUI/FormErrorMessage';
 import StyledInput from '../../ui/formUI/Input';
 import StyledSelect from '../../ui/formUI/Select';
 import StyledTextArea from '../../ui/formUI/TextArea';
@@ -16,8 +14,7 @@ import {
   SUBTASK_PLACEHOLDERS,
 } from '../../utils/constants';
 import { reducer, initialState } from './NewTaskReducer';
-import { boardType } from '../../types/types';
-import useColumns from './useColumns';
+import useColumns from '../column/useColumns';
 
 type Props = { $grid: null | string };
 
@@ -57,68 +54,12 @@ const SubTask = styled.li`
   }
 `;
 
-const Error = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  align-items: center;
-  text-align: center;
-
-  & h3 {
-    font-size: 2.4rem;
-  }
-
-  & img {
-    width: 20rem;
-  }
-`;
-
 export default function NewTask() {
   const { boardId } = useParams();
-  const columns = useColumns(boardId);
-  const { isCreatingTask, mutate, error, reset, isError } =
-    useCreateTask(boardId);
+  const { data: columns } = useColumns(boardId ?? '');
+  const { isCreatingTask, mutate } = useCreateTask();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { title, description, subtasks, columnId } = state;
-
-  // const queryClient = useQueryClient();
-  // const data = queryClient.getQueryData<{ board: boardType }>([
-  //   'userBoard',
-  //   boardId,
-  // ]);
-
-  // const columns = data
-  //   ? data.board.columns.map((column) => ({
-  //       id: column.id,
-  //       name: column.name,
-  //     }))
-  //   : null;
-
-  // if (!data) {
-  //   return (
-  //     <Error>
-  //       <div>
-  //         <img src="error.svg" alt="Error Illustration" />
-  //       </div>
-  //       <div>
-  //         <h3>You need to select a Board first!</h3>
-  //         <p>To create your task, you will need a Boards and a Column</p>
-  //       </div>
-  //     </Error>
-  //   );
-  // } else if (!columns || columns.length === 0) {
-  //   return (
-  //     <Error>
-  //       <div>
-  //         <img src="error.svg" alt="Error Illustration" />
-  //       </div>
-  //       <div>
-  //         <h3>You need to select a Board first!</h3>
-  //         <p>To create your task, you will need a Boards and a Column</p>
-  //       </div>
-  //     </Error>
-  //   );
-  // }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -126,8 +67,15 @@ export default function NewTask() {
 
     const column = columnId || columns[0].id;
     const filteredSubtasks = subtasks.filter((st) => st.length > 0);
-    mutate({ title, description, subTasks: filteredSubtasks, columnId: column });
+    mutate({
+      title,
+      description,
+      subTasks: filteredSubtasks,
+      columnId: column,
+    });
   }
+
+  if (!columns || columns.length === 0) return null;
 
   return (
     <StyledForm onSubmit={handleSubmit}>
@@ -182,11 +130,12 @@ export default function NewTask() {
         ></StyledTextArea>
       </FormBlock>
       <FormBlock>
-        <label htmlFor="subtasks">Subtasks</label>
-        <SubtasksContainer id="subtasks">
+        <label htmlFor="subtasks-1">Subtasks</label>
+        <SubtasksContainer>
           {subtasks.map((st, idx: number) => (
             <SubTask key={`subtask_${idx}`}>
               <StyledInput
+                id={`subtasks-${idx + 1}`}
                 disabled={isCreatingTask}
                 value={st}
                 onChange={(event) =>
@@ -224,24 +173,9 @@ export default function NewTask() {
         </Button>
         <Button variation="primary" disabled={isCreatingTask}>
           {isCreatingTask ? <SpinnerMiniR /> : <HiPlusSmall />}
-          <span>{isCreatingTask ? 'Creating...' : 'Create Task'}</span>
+          <span>{isCreatingTask ? 'Creating task...' : 'Create Task'}</span>
         </Button>
       </FormBlockRow>
-      {isError && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '130px',
-            right: '0',
-            width: '235px',
-          }}
-        >
-          <FormErrorMessage
-            reset={reset}
-            error={(error as TypeError).message}
-          />
-        </div>
-      )}
     </StyledForm>
   );
 }

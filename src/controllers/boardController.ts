@@ -16,8 +16,6 @@ export async function getAllBoards(req, res, next) {
       },
     });
 
-    // throw new Error('This is a Test');
-
     res.status(200);
     res.json({ boards });
   } catch (error) {
@@ -49,13 +47,6 @@ export async function getBoard(req, res, next) {
         },
       },
     });
-    // const board = await prisma.task.findMany({
-    //   where: {
-    //     column: {
-    //       boardId: req.params.id,
-    //     },
-    //   },
-    // });
 
     res.status(200);
     res.json({ board });
@@ -66,7 +57,7 @@ export async function getBoard(req, res, next) {
 
 export async function createBoard(req, res, next) {
   try {
-    await prisma.board.create({
+    const newBoard = await prisma.board.create({
       data: {
         name: req.body.name,
         belongsToId: req.user.id,
@@ -74,7 +65,7 @@ export async function createBoard(req, res, next) {
     });
 
     res.status(200);
-    res.json({ message: 'board created' });
+    res.json({ id: newBoard.id });
   } catch (error) {
     next(error);
   }
@@ -100,14 +91,14 @@ export async function updateBoard(req, res, next) {
 
 export async function deleteBoard(req, res, next) {
   try {
-    await prisma.board.delete({
+    const deletedBoard = await prisma.board.delete({
       where: {
         id: req.params.id,
       },
     });
 
     res.status(200);
-    res.json({ message: 'board deleted' });
+    res.json({ id: deletedBoard.id });
   } catch (error) {
     next(error);
   }

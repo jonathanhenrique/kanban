@@ -1,41 +1,54 @@
-import { useQuery } from '@tanstack/react-query';
-import { columnType } from '../../types/types';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
+import { loadBoard } from '../../services/apiCalls';
+import { columnType, taskType } from '../../types/types';
 
-export default function useLoadBoard(
-  boardId: string | undefined,
-  onSuccessFn: (arg: columnType[]) => void
-) {
-  const { isLoading, isError, data, error } = useQuery({
-    queryKey: ['boards', boardId],
+export default function useLoadBoard() {
+  const queryClient = useQueryClient();
+  const { boardId } = useParams();
+  const { data, isLoading, isError, error, refetch } = useQuery({
+    queryKey: ['userBoard', boardId],
     queryFn: async () => {
-      const res = await fetch(`/api/boards/${boardId}`);
+      if (!boardId) throw new Error('You need to select a board!');
+      const data = await loadBoard(boardId);
 
-      if (res.status !== 200)
-        throw new Error('Something went wrong, try again latter.');
+      data.board.columns.forEach((column: columnType) => {
+        const tasks: string[] = [];
 
-      const data = await res.json();
-      // onSuccessFn(data.board.columns);
+        column.tasks.forEach((task) => {
+          tasks.push(task.id);
+          queryClient.setQueryData([boardId, task.id], { ...task });
+        });
+
+        queryClient.setQueryData([boardId, column.id], {
+          name: column.name,
+          id: column.id,
+          boardId: column.boardId,
+          tasks: tasks,
+        });
+      });
+
+      const columns = data.board.columns.map((column: columnType) => ({
+        id: column.id,
+        name: column.name,
+      }));
+
+      queryClient.setQueryData([boardId, 'columns'], columns);
+
       return data;
     },
     select(data) {
-      return data.board.columns.map((column) => {
-        const tasks = column.tasks.map((task) => ({
-          id: task.id,
-          order: task.order,
-        }));
-
+      return data.board.columns.map((column: columnType) => {
+        const tasks = column.tasks.map((task: taskType) => task.id);
         return {
           id: column.id,
           name: column.name,
+          boardId: column.boardId,
           tasks,
         };
       });
     },
-    onSuccess(data) {
-      console.log(data);
-      onSuccessFn(data);
-    },
   });
 
-  return { isLoading, isError, data, error };
+  return { data, isLoading, isError, error, refetch };
 }

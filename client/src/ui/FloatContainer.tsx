@@ -10,7 +10,9 @@ const Mask = styled.div<Props>`
   top: ${(props) => `${props.$pos[1]}px`};
 `;
 
-const Container = styled.div`
+type PropsContainer = { $origin: string };
+
+const Container = styled.div<PropsContainer>`
   display: flex;
   flex-direction: column;
   background-color: var(--color-grey-700);
@@ -18,7 +20,7 @@ const Container = styled.div`
   box-shadow: var(--shadow-lg);
   overflow: hidden;
 
-  transform-origin: top right;
+  transform-origin: ${(props) => props.$origin};
   animation: modalScale 250ms var(--bezier-overshoot);
   animation-fill-mode: both;
 
@@ -48,11 +50,13 @@ export default function FloatContainer({
   children,
   animation,
   pixels,
+  origin = 'top right',
 }: {
   closeFn: () => void;
   children: React.ReactNode;
   animation?: boolean;
   pixels: [number, number];
+  origin?: string;
 }) {
   const { ref } = useOutsideClick(closeFn);
 
@@ -62,6 +66,7 @@ export default function FloatContainer({
       $pos={[pixels[0], pixels[1]]}
     >
       <Container
+        $origin={origin}
         onClick={(e) => e.stopPropagation()}
         className={animation ? 'toClose' : ''}
       >

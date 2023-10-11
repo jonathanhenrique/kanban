@@ -8,7 +8,7 @@ import StyledBoard from '../../ui/StyledBoard';
 import Column from '../column/Column';
 import Spinner from '../../ui/Spinner';
 import useLoadBoard from './useLoadBoard';
-import useLoadBoard2 from './useLoadBoard2';
+import useLoadBoard2 from './useLoadBoard';
 import { useGlobalUI } from '../../utils/GlobalUI';
 import { columnType, taskType } from '../../types/types';
 import NewColumn from '../column/NewColumn';

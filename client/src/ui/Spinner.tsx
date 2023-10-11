@@ -8,11 +8,11 @@ const rotate = keyframes`
 
 const Spinner = styled.div`
   position: fixed;
-  top: 50%;
-  left: 50%;
-  /* margin: 4.8rem auto; */
+  top: calc(50% - 2.3rem);
+  left: calc(50% - 2.3rem);
+  z-index: 100000;
 
-  width: 5.4rem;
+  width: 4.6rem;
   aspect-ratio: 1;
   border-radius: 50%;
   background: radial-gradient(farthest-side, #d73b54 94%, #0000) top/10px 10px

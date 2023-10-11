@@ -1,9 +1,52 @@
-import { taskType } from '../types/types';
+// Board API calls -----------------------------------------------------------------
+
+export async function loadBoard(boardId: string) {
+  const res = await fetch(`/api/boards/${boardId}`);
+
+  if (res.status !== 200) {
+    throw new Error('Something went wrong. Try again latter.');
+  }
+  const data = await res.json();
+
+  return data;
+}
+
+export async function deleteBoard(boardId: string) {
+  const res = await fetch(`/api/boards/${boardId}`, {
+    method: 'DELETE',
+  });
+
+  if (res.status !== 200) {
+    throw new Error('Something went wrong, try again latter.');
+  }
+
+  const data = await res.json();
+  return data;
+}
+
+export async function createBoard(newBoard: { name: string }) {
+  const res = await fetch('/api/boards/', {
+    method: 'POST',
+    body: JSON.stringify(newBoard),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (res.status !== 200) {
+    throw new Error('Something went wrong, try again latter.');
+  }
+
+  const data = await res.json();
+  return data;
+}
+
+// Drag and Drop API call ----------------------------------------------------------
 
 export async function changeOrder(
   taskId: string,
   newPosition: number,
-  newColumnId: string
+  newColumnId: string | null
 ) {
   const res = await fetch('/api/tasks/', {
     method: newColumnId ? 'PUT' : 'PATCH',
@@ -17,20 +60,27 @@ export async function changeOrder(
     },
   });
 
-  if (res.status !== 200) throw new Error('An error occurs');
+  if (res.status !== 200) {
+    throw new Error('Something went wrong. Try again latter.');
+  }
 }
 
-export async function createTask(newTask: taskType) {
-  const res = await fetch('/api/tasks/', {
-    method: 'POST',
-    body: JSON.stringify(newTask),
+// Column API calls ----------------------------------------------------------------
+
+export async function getColumn(columnId: string) {
+  const res = await fetch(`/api/columns/${columnId}`, {
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   });
 
-  if (res.status !== 200) throw new Error('An error occurs');
+  if (res.status !== 200) {
+    throw new Error('Something went wrong, try again latter.');
+  }
+
   const data = await res.json();
+
   return data;
 }
 
@@ -54,22 +104,17 @@ export async function createColumn(newColumn: {
   return data;
 }
 
-export async function getColumn(columnId: string) {
+export async function deleteColumn(columnId: string) {
   const res = await fetch(`/api/columns/${columnId}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    method: 'DELETE',
   });
 
   if (res.status !== 200) {
     throw new Error('Something went wrong, try again latter.');
   }
-
-  const data = await res.json();
-
-  return data;
 }
+
+// Task API calls -----------------------------------------------------------------
 
 export async function getTask(taskId: string) {
   const res = await fetch(`/api/tasks/${taskId}`, {
@@ -88,14 +133,23 @@ export async function getTask(taskId: string) {
   return data;
 }
 
-export async function deleteColumn(columnId: string) {
-  const res = await fetch(`/api/columns/${columnId}`, {
-    method: 'DELETE',
+export async function createTask(newTask: {
+  title: string;
+  description: string;
+  subTasks: string[];
+  columnId: string;
+}) {
+  const res = await fetch('/api/tasks/', {
+    method: 'POST',
+    body: JSON.stringify(newTask),
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
 
-  if (res.status !== 200) {
-    throw new Error('Something went wrong, try again latter.');
-  }
+  if (res.status !== 200) throw new Error('An error occurs');
+  const data = await res.json();
+  return data;
 }
 
 export async function deleteTask(taskId: string) {
@@ -108,19 +162,7 @@ export async function deleteTask(taskId: string) {
   }
 }
 
-export async function createBoard(newBoard: { name: string }) {
-  const res = await fetch('/api/boards/', {
-    method: 'POST',
-    body: JSON.stringify(newBoard),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (res.status !== 200) {
-    throw new Error('Something went wrong, try again latter.');
-  }
-}
+// Subtask API calls --------------------------------------------------------------
 
 export async function toggleCompleted({
   subtaskId,

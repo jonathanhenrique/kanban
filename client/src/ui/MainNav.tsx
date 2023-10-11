@@ -3,7 +3,8 @@ import NavItem from './NavItem';
 import NewBoard from '../features/board/NewBoard';
 import { SpinnerMiniR } from './SpinnerMini';
 import { boardType } from '../types/types';
-import { useQuery } from '@tanstack/react-query';
+import useLoadUserBoards from '../features/board/useLoadUserBoards';
+import ErrorMessage from './ErrorMessage';
 
 const StyledNavList = styled.ul`
   padding: 1rem 0;
@@ -31,20 +32,11 @@ const Subtitle = styled.div`
 `;
 
 export default function MainNav() {
-  const { isLoading, isError, data } = useQuery({
-    queryKey: ['userBoards'],
-    queryFn: async () => {
-      const res = await fetch('/api/boards/');
-      if (res.status !== 200) throw new Error('Error');
-      const data = await res.json();
-      return data;
-    },
-    retry: false,
-  });
+  const { isLoading, isError, data, refetch, error } = useLoadUserBoards();
 
   if (isError) {
     return (
-      <p style={{ color: 'red' }}>An error occurred, Try to reload the page.</p>
+      <ErrorMessage message={(error as Error).message} refresh={refetch} />
     );
   }
 

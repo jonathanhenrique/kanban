@@ -1,8 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createBoard } from '../../services/apiCalls';
+import { useNavigate } from 'react-router-dom';
 
 export function useCreateBoard() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const {
     isLoading: isCreatingBoard,
     mutate,
@@ -11,10 +13,11 @@ export function useCreateBoard() {
     reset,
   } = useMutation({
     mutationFn: createBoard,
-    onSuccess: () => {
+    onSuccess: (data: { id: string }) => {
       queryClient.invalidateQueries({
         queryKey: ['userBoards'],
       });
+      navigate(`/app/${data.id}`);
     },
   });
 

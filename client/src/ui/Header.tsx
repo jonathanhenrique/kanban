@@ -1,25 +1,14 @@
-import {
-  HiBars3,
-  HiMiniChevronDown,
-  HiMiniEllipsisVertical,
-  HiMiniTrash,
-  HiMiniWrenchScrewdriver,
-  HiPlusSmall,
-} from 'react-icons/hi2';
+import { HiBars3, HiMiniChevronDown } from 'react-icons/hi2';
 import { styled } from 'styled-components';
-import Button from './formUI/Button';
-import Modal from './Modal';
-import NewTask from '../features/task/NewTask';
 import Logo from './Logo';
 import FloatMenu from './FloatMenu';
 import { useGlobalUI } from '../utils/GlobalUI';
 import IconButton from './formUI/IconButton';
 import MainNav from './MainNav';
-import { useParams } from 'react-router-dom';
-import { useIsFetching, useQuery, useQueryClient } from '@tanstack/react-query';
-import { boardType } from '../types/types';
 import { SpinnerMiniR } from './SpinnerMini';
-import FloatMenuConfirmation from './FloatMenuConfirmation';
+import useLoadUserBoards from '../features/board/useLoadUserBoards';
+import { useParams } from 'react-router-dom';
+import HeaderActions from './formUI/HeaderActions';
 
 const StyledHeader = styled.header`
   height: 64px;
@@ -54,14 +43,15 @@ const HeaderWrapperFull = styled.div`
 
 export default function Header() {
   const { boardId } = useParams();
-  const { sidebarOpen, toggleSidebar, setBoardLocked } = useGlobalUI();
-  const queryClient = useQueryClient();
-  const isFetching = useIsFetching({ queryKey: ['userBoards'] });
+  const { data, isLoading } = useLoadUserBoards();
+  const { sidebarOpen, toggleSidebar } = useGlobalUI();
 
-  const data = !isFetching
-    ? queryClient.getQueryData<{ boards: boardType[] }>(['userBoards'])
+  const currBoard = data
+    ? data.boards.find(
+        (board: { id: string; name: string; createdAt: string }) =>
+          board.id === boardId
+      )
     : null;
-  const board = data?.boards.find((b: boardType) => b.id === boardId);
 
   return (
     <StyledHeader id="header">
@@ -72,29 +62,20 @@ export default function Header() {
         <Logo />
       </HeaderWrapper>
       <HeaderWrapperFull>
-        {isFetching ? <SpinnerMiniR /> : <h1>{board?.name || 'Boards'}</h1>}
+        {isLoading ? <SpinnerMiniR /> : <h1>{currBoard?.name || 'Boards'}</h1>}
         {!sidebarOpen && (
           <FloatMenu
-            relativeTo="header"
-            fn={setBoardLocked}
-            identifier="boards-header"
             icon={<HiMiniChevronDown />}
-            fineTunePosition={[-110, 52]}
+            fineTunePosition={[200, 64]}
+            origin="top center"
           >
-            <MainNav />
+            <div style={{ width: '264px', padding: '2rem 1rem' }}>
+              <MainNav />
+            </div>
           </FloatMenu>
         )}
       </HeaderWrapperFull>
-      <Modal.Trigger opens="newTask">
-        <Button variation="primary">
-          <HiPlusSmall />
-          <span>new task</span>
-        </Button>
-      </Modal.Trigger>
-
-      <Modal.Content name="newTask">
-        <NewTask />
-      </Modal.Content>
+      <HeaderActions />
     </StyledHeader>
   );
 }

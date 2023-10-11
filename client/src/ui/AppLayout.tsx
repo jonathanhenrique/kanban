@@ -4,7 +4,6 @@ import { styled } from 'styled-components';
 import { Outlet } from 'react-router-dom';
 
 import { GlobalUIProvider } from '../utils/GlobalUI';
-import { CacheContextProvider } from '../features/board/BoardCacheContext';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import Modal from './Modal';
@@ -19,7 +18,6 @@ const queryClient = new QueryClient({
 
 const Main = styled.main`
   flex: 1 1 auto;
-  /* padding: 1rem 4.8rem 6.4rem; */
   overflow-y: scroll;
   height: 100%;
 `;
@@ -35,15 +33,13 @@ export default function AppLayout() {
       <ReactQueryDevtools />
       <GlobalUIProvider>
         <Modal>
-          <CacheContextProvider>
-            <Header />
-            <Content>
-              <Sidebar />
-              <Main>
-                <Outlet />
-              </Main>
-            </Content>
-          </CacheContextProvider>
+          <Header />
+          <Content>
+            <Sidebar />
+            <Main>
+              <Outlet />
+            </Main>
+          </Content>
         </Modal>
       </GlobalUIProvider>
     </QueryClientProvider>
