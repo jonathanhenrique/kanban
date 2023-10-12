@@ -97,7 +97,7 @@ export async function createColumn(newColumn: {
   });
 
   if (res.status !== 200) {
-    throw new Error('Something went wrong, try again latter.');
+    throw new Error('Something went wrong. Try again latter.');
   }
 
   const data = await res.json();

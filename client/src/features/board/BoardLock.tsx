@@ -22,7 +22,7 @@ const StyledLocker = styled.div<Props>`
 
 export default function BoardLock({ children }: { children: React.ReactNode }) {
   const { boardId } = useParams();
-  const fetch = useIsFetching({ queryKey: ['userBoard', boardId] });
+  const fetch = useIsFetching({ queryKey: [boardId, 'userBoard'] });
   const mutation = useIsMutating();
 
   return (

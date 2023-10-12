@@ -14,7 +14,7 @@ export default function useDeleteTask(taskId: string) {
       return toast.promise(deleteTask(taskId), {
         loading: 'Deleting task...',
         success: 'Task Deleted!',
-        error: 'Try again latter!',
+        error: 'Something went wrong. Try again latter.',
       });
     },
 

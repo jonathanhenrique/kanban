@@ -8,7 +8,8 @@ import MainNav from './MainNav';
 import { SpinnerMiniR } from './SpinnerMini';
 import useLoadUserBoards from '../features/board/useLoadUserBoards';
 import { useParams } from 'react-router-dom';
-import HeaderActions from './formUI/HeaderActions';
+import HeaderActions from './HeaderActions';
+import { boardCacheType } from '../types/types';
 
 const StyledHeader = styled.header`
   height: 64px;
@@ -47,10 +48,7 @@ export default function Header() {
   const { sidebarOpen, toggleSidebar } = useGlobalUI();
 
   const currBoard = data
-    ? data.boards.find(
-        (board: { id: string; name: string; createdAt: string }) =>
-          board.id === boardId
-      )
+    ? data.find((board: boardCacheType) => board.id === boardId)
     : null;
 
   return (

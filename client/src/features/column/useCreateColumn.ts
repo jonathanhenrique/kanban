@@ -18,7 +18,7 @@ export default function useCreateColumn(boardId: IDType) {
       return toast.promise(createColumn(newColumn), {
         loading: 'Creating column...',
         success: 'Column created!',
-        error: 'Try again latter!',
+        error: 'Something went wrong. Try again latter.',
       });
     },
     onSuccess: (data: columnType) => {

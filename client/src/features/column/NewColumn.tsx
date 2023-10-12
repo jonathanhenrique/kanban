@@ -1,5 +1,5 @@
 import { styled } from 'styled-components';
-import MiniForm from '../../ui/MiniForm';
+import MiniForm from '../../ui/formUI/MiniForm';
 import useCreateColumn from './useCreateColumn';
 import { useParams } from 'react-router-dom';
 

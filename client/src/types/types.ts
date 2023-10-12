@@ -27,6 +27,12 @@ export type boardType = {
   columns: columnType[];
 };
 
+export type boardCacheType = {
+  id: string;
+  name: string;
+  createdAt: string;
+};
+
 export type columnsCacheType = {
   id: string;
   name: string;

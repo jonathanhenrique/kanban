@@ -1,17 +1,17 @@
-import Modal from '../Modal';
+import Modal from './Modal';
 import {
   HiMiniEllipsisVertical,
   HiMiniTrash,
   HiMiniWrenchScrewdriver,
   HiPlusSmall,
 } from 'react-icons/hi2';
-import Button from './Button';
-import FloatMenuConfirmation from '../FloatMenuConfirmation';
-import useColumns from '../../features/column/useColumns';
+import Button from './formUI/Button';
+import FloatMenuConfirmation from './FloatMenuConfirmation';
+import useColumns from '../features/column/useColumns';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import NewTask from '../../features/task/NewTask';
-import useDeleteBoard from '../../features/board/useDeleteBoard';
+import NewTask from '../features/task/NewTask';
+import useDeleteBoard from '../features/board/useDeleteBoard';
 
 export default function HeaderActions() {
   const { boardId } = useParams();

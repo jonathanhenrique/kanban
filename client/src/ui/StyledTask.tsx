@@ -3,9 +3,9 @@ import { styled, css } from 'styled-components';
 type Props = { $isDragging: boolean };
 
 const StyledTask = styled.div<Props>`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 4rem;
+  gap: 0.8rem;
 
   position: relative;
 

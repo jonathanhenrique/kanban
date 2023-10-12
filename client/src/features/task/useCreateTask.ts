@@ -25,7 +25,7 @@ export function useCreateTask() {
       toast.success('Task created!');
     },
     onError() {
-      toast.error('Try again latter.');
+      toast.error('Something went wrong. Try again latter.');
     },
   });
 

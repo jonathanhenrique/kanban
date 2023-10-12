@@ -33,7 +33,6 @@ export async function createTask(req, res, next) {
   }
 
   try {
-    // throw new Error('Some error');
     const order = await prisma.task.findMany({
       where: {
         columnId: req.body.columnId,
@@ -44,7 +43,6 @@ export async function createTask(req, res, next) {
       data: {
         title: req.body.title,
         description: req.body.description ?? '',
-        // order: req.body.order,
         order: order.length + 1,
         columnId: req.body.columnId,
         subTasks: {
@@ -98,14 +96,11 @@ export async function deleteTask(req, res, next) {
 
 export async function changeOrder(req, res, next) {
   try {
-    throw new Error('teste');
     const { newPosition } = req.body;
     const selectedTask = req.task;
 
-    let column;
-
     if (selectedTask.order < newPosition) {
-      column = await prisma.column.update({
+      await prisma.column.update({
         where: {
           id: selectedTask.column.id,
         },
@@ -131,7 +126,7 @@ export async function changeOrder(req, res, next) {
         },
       });
     } else if (selectedTask.order > newPosition) {
-      column = await prisma.column.update({
+      await prisma.column.update({
         where: {
           id: selectedTask.column.id,
         },
@@ -168,7 +163,7 @@ export async function changeOrder(req, res, next) {
     });
 
     res.status(200);
-    res.json({ column });
+    res.json({ message: 'success' });
   } catch (error) {
     next(error);
   }
@@ -176,7 +171,6 @@ export async function changeOrder(req, res, next) {
 
 export async function changeOrderColumn(req, res, next) {
   try {
-    throw new Error('testing error handling');
     const { newPosition, newColumnId } = req.body;
     const selectedTask = req.task;
 
@@ -230,7 +224,7 @@ export async function changeOrderColumn(req, res, next) {
       },
     });
 
-    const task = await prisma.task.update({
+    await prisma.task.update({
       where: {
         id: selectedTask.id,
       },
@@ -241,14 +235,14 @@ export async function changeOrderColumn(req, res, next) {
     });
 
     res.status(200);
-    res.json({ task });
+    res.json({ message: 'success' });
   } catch (error) {
     next(error);
   }
 }
 
 export async function changeColumn(req, res) {
-  const { taskId, currColumn, newColumn } = req.body;
+  const { taskId, newColumn } = req.body;
 
   const task = await prisma.task.update({
     where: {

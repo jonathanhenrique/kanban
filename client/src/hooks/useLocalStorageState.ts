@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 
-function useLocalStorageState(key, defaultState) {
+function useLocalStorageState(
+  key: string,
+  defaultState: string | boolean | number
+) {
   const [state, setState] = useState(() => {
     const storageState = localStorage.getItem(key);
 
@@ -9,7 +12,7 @@ function useLocalStorageState(key, defaultState) {
   });
 
   useEffect(() => {
-    localStorage.setItem(key, state);
+    localStorage.setItem(key, state.toString());
   }, [key, state]);
 
   return [state, setState];

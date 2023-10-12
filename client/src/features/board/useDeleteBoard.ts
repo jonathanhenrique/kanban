@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteBoard } from '../../services/apiCalls';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { boardCacheType } from '../../types/types';
 
 export default function useDeleteBoard() {
   const queryClient = useQueryClient();
@@ -19,17 +20,15 @@ export default function useDeleteBoard() {
     },
 
     onSuccess: (data: { id: string }) => {
-      queryClient.setQueryData(['userBoards'], (oldData) => {
+      queryClient.setQueryData<boardCacheType[]>(['userBoards'], (oldData) => {
         if (!oldData) return;
-        const newState = Array.from(oldData.boards);
+        const newState = Array.from(oldData);
         const idx = newState.findIndex((board) => board.id === data.id);
         newState.splice(idx, 1);
 
-        return { boards: newState };
+        return newState;
       });
       queryClient.removeQueries([data.id]);
-      // queryClient.removeQueries(['columns', data.id]);
-      // queryClient.removeQueries(['userBoard', data.id]);
       navigate('/app');
     },
   });

@@ -20,14 +20,14 @@ export function useUpdateBoard() {
       if (!boardId) throw new Error('You need to select a board!');
 
       return toast.promise(changeOrder(taskId, newPosition, newColumnId), {
-        loading: 'Saving your change...',
+        loading: 'Saving your changes...',
         success: 'Your board was updated!',
-        error: 'Could not save, try again latter!',
+        error: 'Something went wrong. Try again latter.',
       });
     },
     onError: () => {
       queryClient.invalidateQueries({
-        queryKey: ['userBoard', boardId],
+        queryKey: [boardId, 'userBoard'],
       });
     },
   });

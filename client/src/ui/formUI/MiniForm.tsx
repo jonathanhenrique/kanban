@@ -6,11 +6,11 @@ import {
   HiMiniXCircle,
 } from 'react-icons/hi2';
 import { useState } from 'react';
-import Button from './formUI/Button';
-import { useAnimationOnUnmount } from '../hooks/useAnimationOnUnmount';
-import { SpinnerMiniR } from './SpinnerMini';
-import FormErrorMessage from './formUI/FormErrorMessage';
-import StyledInput from './formUI/Input';
+import Button from './Button';
+import { useAnimationOnUnmount } from '../../hooks/useAnimationOnUnmount';
+import { SpinnerMiniR } from '../SpinnerMini';
+import FormErrorMessage from './FormErrorMessage';
+import StyledInput from './Input';
 
 type Props = {
   $minWidth: string | undefined;

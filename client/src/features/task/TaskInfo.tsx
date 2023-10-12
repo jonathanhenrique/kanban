@@ -5,6 +5,7 @@ const TaskInfoStyled = styled.div`
   & h4 {
     font-weight: 400;
     font-size: 1.6rem;
+    margin-bottom: 0.4rem;
   }
 
   & > p {

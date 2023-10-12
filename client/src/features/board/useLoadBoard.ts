@@ -7,7 +7,7 @@ export default function useLoadBoard() {
   const queryClient = useQueryClient();
   const { boardId } = useParams();
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['userBoard', boardId],
+    queryKey: [boardId, 'userBoard'],
     queryFn: async () => {
       if (!boardId) throw new Error('You need to select a board!');
       const data = await loadBoard(boardId);

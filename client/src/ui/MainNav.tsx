@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 import NavItem from './NavItem';
 import NewBoard from '../features/board/NewBoard';
 import { SpinnerMiniR } from './SpinnerMini';
-import { boardType } from '../types/types';
+import { boardCacheType } from '../types/types';
 import useLoadUserBoards from '../features/board/useLoadUserBoards';
 import ErrorMessage from './ErrorMessage';
 
@@ -44,14 +44,10 @@ export default function MainNav() {
     <nav>
       <Subtitle>
         <span>all boards</span>
-        {isLoading ? (
-          <SpinnerMiniR />
-        ) : (
-          <span>{`(${data?.boards?.length})`}</span>
-        )}
+        {isLoading ? <SpinnerMiniR /> : <span>{`(${data?.length})`}</span>}
       </Subtitle>
       <StyledNavList>
-        {data?.boards?.map((board: boardType) => (
+        {data?.map((board: boardCacheType) => (
           <NavItem key={board.id} id={board.id}>
             {board.name}
           </NavItem>

@@ -12,7 +12,7 @@ export default function useDeleteColumn(boardId: IDType, columnId: IDType) {
       return toast.promise(deleteColumn(columnId), {
         loading: 'Deleting column...',
         success: 'Column Deleted!',
-        error: 'Try again latter!',
+        error: 'Something went wrong. Try again latter.',
       });
     },
 

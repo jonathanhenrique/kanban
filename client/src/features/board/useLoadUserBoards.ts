@@ -11,7 +11,7 @@ export default function useLoadUserBoards() {
       }
 
       const data = await res.json();
-      return data;
+      return data.boards;
     },
     retry: false,
   });
