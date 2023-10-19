@@ -5,6 +5,7 @@ import { SpinnerMiniR } from './SpinnerMini';
 import { boardCacheType } from '../types/types';
 import useLoadUserBoards from '../features/board/useLoadUserBoards';
 import ErrorMessage from './ErrorMessage';
+import { memo } from 'react';
 
 const StyledNavList = styled.ul`
   padding: 1rem 0;
@@ -31,7 +32,7 @@ const Subtitle = styled.div`
   gap: 1rem;
 `;
 
-export default function MainNav() {
+function MainNav() {
   const { isLoading, isError, data, refetch, error } = useLoadUserBoards();
 
   if (isError) {
@@ -57,3 +58,7 @@ export default function MainNav() {
     </nav>
   );
 }
+
+const MainNavMemo = memo(MainNav);
+
+export default MainNavMemo;

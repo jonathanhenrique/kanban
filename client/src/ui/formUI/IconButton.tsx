@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 
-type Props = { open?: boolean; animateRotation?: boolean };
+type Props = { $open?: boolean; $animateRotation?: boolean };
 
 const IconButton = styled.button<Props>`
   width: 4rem;
@@ -15,7 +15,9 @@ const IconButton = styled.button<Props>`
     height: 2.4rem;
     transition: transform 150ms var(--bezier-ease-out);
     transform: ${(props) =>
-      props.open && props.animateRotation ? 'rotateZ(-180deg)' : 'rotateZ(0)'};
+      props.$open && props.$animateRotation
+        ? 'rotateZ(-180deg)'
+        : 'rotateZ(0)'};
   }
 
   &:hover,
@@ -23,7 +25,7 @@ const IconButton = styled.button<Props>`
     background-color: var(--color-grey-400);
   }
 
-  opacity: ${(props) => (props.open ? 0.5 : 1)};
+  opacity: ${(props) => (props.$open ? 0.5 : 1)};
 `;
 
 export default IconButton;

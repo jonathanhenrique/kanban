@@ -31,8 +31,8 @@ export default function AppLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools />
-      <GlobalUIProvider>
-        <Modal>
+      <Modal>
+        <GlobalUIProvider>
           <Header />
           <Content>
             <Sidebar />
@@ -40,8 +40,8 @@ export default function AppLayout() {
               <Outlet />
             </Main>
           </Content>
-        </Modal>
-      </GlobalUIProvider>
+        </GlobalUIProvider>
+      </Modal>
     </QueryClientProvider>
   );
 }

@@ -52,7 +52,7 @@ export default function Header() {
     : null;
 
   return (
-    <StyledHeader id="header">
+    <StyledHeader>
       <HeaderWrapper>
         <IconButton onClick={toggleSidebar}>
           <HiBars3 />
@@ -64,10 +64,10 @@ export default function Header() {
         {!sidebarOpen && (
           <FloatMenu
             icon={<HiMiniChevronDown />}
-            fineTunePosition={[200, 64]}
+            fineTunePosition={[220, 64]}
             origin="top center"
           >
-            <div style={{ width: '264px', padding: '2rem 1rem' }}>
+            <div style={{ width: '264px', paddingTop: '1rem' }}>
               <MainNav />
             </div>
           </FloatMenu>

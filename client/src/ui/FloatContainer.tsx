@@ -15,19 +15,21 @@ type PropsContainer = { $origin: string };
 const Container = styled.div<PropsContainer>`
   display: flex;
   flex-direction: column;
+  padding: 1rem;
+  gap: 0.6rem;
   background-color: var(--color-grey-700);
   border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
+  min-width: 170px;
 
   transform-origin: ${(props) => props.$origin};
   animation: modalScale 250ms var(--bezier-overshoot);
   animation-fill-mode: both;
 
-  & > div {
-    opacity: 1;
-    animation: contentAnimation 100ms var(--bezier-overshoot) backwards;
-    transition: opacity 100ms var(--bezier-ease-out);
+  & > * {
+    animation: contentAnimation 100ms linear;
+    transition: opacity 100ms linear;
   }
 
   transition: transform 250ms var(--bezier-ease-out);
@@ -35,7 +37,7 @@ const Container = styled.div<PropsContainer>`
   &.toClose {
     transform: scale(0);
 
-    & > div {
+    & > * {
       opacity: 0;
     }
   }

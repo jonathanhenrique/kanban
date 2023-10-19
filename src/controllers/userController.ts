@@ -43,8 +43,18 @@ export async function login(req, res, next) {
       secure: process.env.ENVIRONMENT === 'production',
     });
     res.status(200);
-    res.json({ message: 'user logged in' });
+    res.json({ userName: user.name });
   } catch (error) {
     next(error.statusCode ? error : new Error());
   }
+}
+
+export async function logout(req, res, next) {
+  res.cookie('token', 'logout', {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+
+  res.status(200);
+  res.json({ message: 'User logout' });
 }

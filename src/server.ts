@@ -15,7 +15,7 @@ import subtaskRouter from './routes/subtaskRouter';
 import taskRouter from './routes/taskRouter';
 import columnRouter from './routes/columnRouter';
 import boardRouter from './routes/boardRouter';
-import { register, login } from './controllers/userController';
+import { register, login, logout } from './controllers/userController';
 
 const app = express();
 
@@ -35,6 +35,7 @@ app.use('/api/subtasks', protectedRoute, subtaskRouter);
 //Register and Login
 app.post('/api/register', validateRegisterInput as [], register);
 app.post('/api/login', validateLoginInput as [], login);
+app.post('/api/logout', logout);
 
 // Not Found handler
 app.use('*', (req, res) => {

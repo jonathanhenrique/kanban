@@ -1,6 +1,6 @@
 import { Droppable } from 'react-beautiful-dnd';
-import Column from './Column';
 import { memo } from 'react';
+import Column from './Column';
 import { columnsCacheType } from '../../types/types';
 
 function Columns({ columns }: { columns: columnsCacheType }) {

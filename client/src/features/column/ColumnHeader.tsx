@@ -31,22 +31,20 @@ export default function ColumnHeader({
     <StyledColumnHeader>
       <h3>{title}</h3>
       <FloatMenuConfirmation
-        fineTunePosition={[127, 15]}
+        fineTunePosition={[128, 15]}
         icon={<HiMiniEllipsisVertical />}
         actionOnConfirmation={deleteColumn}
         confirm={confirm}
         setConfirm={setConfirm}
       >
-        <div style={{ padding: '1rem 1.2rem' }}>
-          <Button variation="mini" onClick={() => setConfirm('toConfirm')}>
-            <HiMiniTrash />
-            <span>delete column</span>
-          </Button>
-          <Button disabled={true} variation="mini">
-            <HiMiniWrenchScrewdriver />
-            <span>edit column</span>
-          </Button>
-        </div>
+        <Button variation="mini" onClick={() => setConfirm('toConfirm')}>
+          <HiMiniTrash />
+          <span>delete column</span>
+        </Button>
+        <Button disabled={true} variation="mini">
+          <HiMiniWrenchScrewdriver />
+          <span>edit column</span>
+        </Button>
       </FloatMenuConfirmation>
     </StyledColumnHeader>
   );

@@ -4,7 +4,6 @@ import { useAnimationOnUnmount } from '../hooks/useAnimationOnUnmount';
 import FloatContainer from './FloatContainer';
 import Button from './formUI/Button';
 import IconButton from './formUI/IconButton';
-import { SpinnerMiniR } from './SpinnerMini';
 
 type FloatMenuConfirmationType = {
   icon: React.ReactNode;
@@ -13,13 +12,13 @@ type FloatMenuConfirmationType = {
   actionOnConfirmation: () => void;
   confirm: string;
   setConfirm: (arg: string) => void;
-  isLoading?: boolean;
   disabled?: boolean;
 };
 
 const Alert = styled.div`
-  padding: 1rem 1.2rem;
   position: absolute;
+  left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
   background-color: var(--danger);
@@ -29,7 +28,7 @@ const Alert = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 0.6rem;
+  gap: 1rem;
 `;
 
 export default function FloatMenuConfirmation({
@@ -39,17 +38,16 @@ export default function FloatMenuConfirmation({
   actionOnConfirmation,
   confirm,
   setConfirm,
-  isLoading,
   disabled = false,
 }: FloatMenuConfirmationType) {
   const { open, close, isOpen, isRunningAnimation } = useAnimationOnUnmount({
     isMounted: false,
     delay: 300,
+    fn: () => setConfirm('idle'),
   });
 
   function closeFloat() {
     close();
-    setConfirm('idle');
   }
 
   function openFloat(e: React.MouseEvent) {
@@ -64,8 +62,8 @@ export default function FloatMenuConfirmation({
     <>
       <IconButton
         onClick={openFloat}
-        open={isOpen}
-        animateRotation={false}
+        $open={isOpen}
+        $animateRotation={false}
         disabled={disabled}
       >
         {icon}
@@ -79,31 +77,23 @@ export default function FloatMenuConfirmation({
           {children}
           {confirm === 'toConfirm' && (
             <Alert className="alert">
-              {isLoading ? (
-                <SpinnerMiniR />
-              ) : (
-                <>
-                  <p>Confirm Deletion?</p>
-                  <div
-                    style={{ display: 'flex', justifyContent: 'space-between' }}
-                  >
-                    <Button variation="mini" onClick={closeFloat}>
-                      <HiMiniXMark />
-                      <span>No</span>
-                    </Button>
-                    <Button
-                      variation="mini"
-                      onClick={() => {
-                        closeFloat();
-                        actionOnConfirmation();
-                      }}
-                    >
-                      <HiMiniCheck />
-                      <span>Yes</span>
-                    </Button>
-                  </div>
-                </>
-              )}
+              <p style={{ fontWeight: '600' }}>Confirm Deletion?</p>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Button variation="mini" onClick={closeFloat}>
+                  <HiMiniXMark />
+                  <span>no</span>
+                </Button>
+                <Button
+                  variation="mini"
+                  onClick={() => {
+                    closeFloat();
+                    actionOnConfirmation();
+                  }}
+                >
+                  <HiMiniCheck />
+                  <span>yes</span>
+                </Button>
+              </div>
             </Alert>
           )}
         </FloatContainer>

@@ -45,9 +45,13 @@ const GlobalStyles = createGlobalStyle`
   --shadow-sm: 0px 1px 2px 0px rgba(60,64,67,0.3),
                0px 1px 3px 1px rgba(60,64,67,0.15);
   
-  --shadow-lg: 0 24px 38px 3px rgba(0,0,0,.14),
-               0 9px 46px 8px rgba(0,0,0,.12),
-               0 11px 15px -7px rgba(0,0,0,.2);
+  --shadow-md: 0 14px 24px 2px rgba(0,0,0,.08),
+               0 6px 20px 6px rgba(0,0,0,.04),
+               0 3px 8px -7px rgba(0,0,0,.2);
+
+  --shadow-lg: 0 24px 38px 3px rgba(0,0,0,.10),
+               0 9px 46px 8px rgba(0,0,0,.08),
+               0 11px 15px -7px rgba(0,0,0,.1);
 
   --border-radius-tiny: 3px;
   --border-radius-sm: 5px;
@@ -143,10 +147,6 @@ h6 {
 img {
   max-width: 100%;
 }
-
-/* .mb-1rem:not(:last-child){
-  margin-bottom: 1rem;
-} */
 
 .mb-1rem {
   margin-bottom: 1rem;
@@ -248,12 +248,12 @@ img {
   }
 }
 
-@keyframes scaleX {
+@keyframes scaleY {
   0%{
-    transform: scaleX(0);
+    transform: scaleY(0);
   }
   100%{
-    transform: scaleX(1);
+    transform: scaleY(1);
   }
 }
 

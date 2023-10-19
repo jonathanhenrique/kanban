@@ -15,19 +15,13 @@ import {
 } from '../../utils/constants';
 import { reducer, initialState } from './NewTaskReducer';
 import useColumns from '../column/useColumns';
+import FormBlock from '../../ui/formUI/FormBlock';
 
 type Props = { $grid: null | string };
 
 const StyledForm = styled.form`
   min-width: 50rem;
   position: relative;
-`;
-
-const FormBlock = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  margin-bottom: 1.8rem;
 `;
 
 const FormBlockRow = styled.div<Props>`
@@ -48,9 +42,9 @@ const SubTask = styled.li`
   align-items: center;
 
   & input {
-    transform-origin: center right;
-    animation: scaleX 250ms var(--bezier-ease-out);
     flex-basis: 90%;
+    transform-origin: center left;
+    animation: scaleY 250ms var(--bezier-ease-out);
   }
 `;
 

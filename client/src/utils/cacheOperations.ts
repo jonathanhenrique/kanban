@@ -1,5 +1,3 @@
-import { taskType } from '../types/types';
-
 const reorder = (list: string[], startIndex: number, endIndex: number) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
@@ -23,8 +21,6 @@ const changeColumn = (
   const result: {
     [key: string]: string[];
   } = {};
-
-  // const result = {};
 
   result[droppableSource.droppableId] = sourceClone;
   result[droppableDestination.droppableId] = destClone;

@@ -4,7 +4,7 @@ type Props = { $isCompleted: boolean };
 
 const Subtask = styled.button<Props>`
   position: relative;
-  padding: 1rem 1.4rem;
+  padding: 1rem 1.2rem;
   display: flex;
   gap: 1.2rem;
   align-items: center;

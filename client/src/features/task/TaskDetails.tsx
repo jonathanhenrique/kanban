@@ -17,6 +17,7 @@ const Description = styled.p`
 
 const StyledForm = styled.form`
   width: 50rem;
+  overflow: hidden;
 `;
 
 export default function TaskDetails({ taskId }: { taskId: string }) {

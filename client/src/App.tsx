@@ -2,10 +2,10 @@ import GlobalStyles from './styles/GlobalStyles';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
-import Homepage from './pages/Homepage';
-import Login from './pages/Login';
+import HomePage from './pages/HomePage';
 import AppLayout from './ui/AppLayout';
 import Board from './features/board/Board';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   return (
@@ -13,11 +13,11 @@ function App() {
       <GlobalStyles />
       <BrowserRouter>
         <Routes>
-          <Route index element={<Homepage />} />
-          <Route path="/login" element={<Login />} />
+          <Route index element={<HomePage />} />
           <Route path="/app" element={<AppLayout />}>
             <Route path=":boardId" element={<Board />} />
           </Route>
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
       <Toaster

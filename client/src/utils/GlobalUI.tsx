@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 import useLocalStorageState from '../hooks/useLocalStorageState';
 
 type GlobalUI = {
@@ -6,16 +6,19 @@ type GlobalUI = {
   toggleSidebar: () => void;
   darkTheme: boolean;
   toggleTheme: () => void;
-  boardLocked: boolean;
-  setBoardLocked: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const GlobalUIContext = createContext<GlobalUI>({} as GlobalUI);
 
 function GlobalUIProvider({ children }: { children: React.ReactNode }) {
-  const [sidebarOpen, setSidebarOpen] = useLocalStorageState('sidebar', true);
-  const [darkTheme, setDarkTheme] = useLocalStorageState('theme', true);
-  const [boardLocked, setBoardLocked] = useState(false);
+  const { state: sidebarOpen, setState: setSidebarOpen } = useLocalStorageState(
+    'sidebar',
+    true
+  );
+  const { state: darkTheme, setState: setDarkTheme } = useLocalStorageState(
+    'theme',
+    true
+  );
 
   function toggleSidebar() {
     setSidebarOpen(!sidebarOpen);
@@ -44,8 +47,6 @@ function GlobalUIProvider({ children }: { children: React.ReactNode }) {
       value={{
         sidebarOpen,
         toggleSidebar,
-        boardLocked,
-        setBoardLocked,
         darkTheme,
         toggleTheme,
       }}

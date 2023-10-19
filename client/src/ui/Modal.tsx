@@ -4,21 +4,28 @@ import { useOutsideClick } from '../hooks/useOutsideClick';
 import { useAnimationOnUnmount } from '../hooks/useAnimationOnUnmount';
 import Backdrop from './Backdrop';
 import ModalContainer from './ModalContainer';
-import { useGlobalUI } from '../utils/GlobalUI';
+
+type ClickOrigin = {
+  x: number;
+  y: number;
+} | null;
 
 type ModalContextType = {
   open: () => void;
   close: () => void;
   isOpen: boolean;
   isRunningAnimation?: boolean;
+  contentToOpen: string;
+  clickOrigin: ClickOrigin;
+  setClickOrigin: React.Dispatch<ClickOrigin>;
+  setContentToOpen: React.Dispatch<string>;
 };
 
 const ModalContext = createContext<ModalContextType | null>(null);
 
 function Modal({ children }: { children: React.ReactNode }) {
-  const { setBoardLocked } = useGlobalUI();
   const [contentToOpen, setContentToOpen] = useState('');
-  const [clickOrigin, setClickOrigin] = useState(null);
+  const [clickOrigin, setClickOrigin] = useState<ClickOrigin>(null);
   const { open, close, isOpen, isRunningAnimation } = useAnimationOnUnmount({
     isMounted: false,
     delay: 200,
@@ -36,7 +43,6 @@ function Modal({ children }: { children: React.ReactNode }) {
         setClickOrigin,
         contentToOpen,
         setContentToOpen,
-        setBoardLocked,
       }}
     >
       {children}
@@ -52,25 +58,13 @@ function Content({
   name?: string;
 }) {
   const value = useContext(ModalContext);
-  const {
-    close,
-    isOpen,
-    isRunningAnimation,
-    clickOrigin,
-    contentToOpen,
-    setContentToOpen,
-    setBoardLocked,
-    setClickOrigin,
-  } = value as ModalContextType;
+  const { close, isRunningAnimation, clickOrigin, contentToOpen } =
+    value as ModalContextType;
   const { ref } = useOutsideClick(() => {
-    // setContentToOpen('');
-    setBoardLocked(false);
     close();
   });
 
   if (name !== contentToOpen) return null;
-
-  // if (name !== contentToOpen && !isRunningAnimation) return null;
 
   const classToClose = isRunningAnimation ? 'toClose' : '';
   return createPortal(
@@ -78,8 +72,8 @@ function Content({
       <ModalContainer
         style={
           {
-            '--origin-x': `${clickOrigin.x}px` || '0px',
-            '--origin-y': `${clickOrigin.y}px` || '0px',
+            '--origin-x': `${clickOrigin?.x || 0}px`,
+            '--origin-y': `${clickOrigin?.y || 0}px`,
           } as React.CSSProperties
         }
         className={classToClose}
@@ -102,11 +96,10 @@ function Trigger({
   opens?: string;
 }) {
   const value = useContext(ModalContext);
-  const { open, setBoardLocked, setClickOrigin, setContentToOpen } =
-    value as ModalContextType;
+  const { open, setClickOrigin, setContentToOpen } = value as ModalContextType;
 
   return cloneElement(children as React.ReactElement, {
-    onClick: (e) => {
+    onClick: (e: React.MouseEvent) => {
       const centerX = e.view.innerWidth / 2;
       const centerY = e.view.innerHeight / 2;
       const clickX = e.clientX;
@@ -118,7 +111,6 @@ function Trigger({
       });
       fn && fn();
       setContentToOpen(opens);
-      setBoardLocked(true);
       open();
     },
   });

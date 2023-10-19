@@ -8,8 +8,8 @@ const ModalContainer = styled.div`
 
   background-color: var(--color-grey-700);
 
-  animation: modalPosition 400ms var(--bezier-overshoot),
-    modalScale 400ms var(--bezier-overshoot);
+  animation: modalPosition 300ms var(--bezier-overshoot),
+    modalScale 300ms var(--bezier-overshoot);
 
   animation-fill-mode: both;
 

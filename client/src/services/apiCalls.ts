@@ -1,3 +1,5 @@
+const testName = /^(?=.{1,20}$)[a-z]+(?:['\s][a-z]+)*$/i;
+
 // Board API calls -----------------------------------------------------------------
 
 export async function loadBoard(boardId: string) {
@@ -179,7 +181,73 @@ export async function toggleCompleted({
     },
   });
 
-  if (res.status !== 200) throw new Error('An error occurs');
+  if (res.status !== 200) {
+    throw new Error('Something went wrong, try again latter.');
+  }
+
   const data = await res.json();
   return data;
+}
+
+// Login and Logout ------------------------------------------------------------
+
+export async function login(email: string, password: string) {
+  const res = await fetch('/api/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (res.status === 401) {
+    throw new Error('Your email and/or password are invalid.');
+  }
+
+  if (res.status === 200) {
+    const data = await res.json();
+    return data;
+  }
+
+  throw new Error('Something went wrong, try again latter.');
+}
+
+export async function register(name: string, email: string, password: string) {
+  const nameOk = testName.test(name);
+  if (!nameOk) {
+    throw new Error('You use invalid symbols, only use alphabetic characters.');
+  }
+
+  const res = await fetch('/api/register', {
+    method: 'POST',
+    body: JSON.stringify({ name, email, password }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (res.status === 400) {
+    const error = await res.json();
+    if (error.message === 'Email already registered.') {
+      throw new Error(error.message);
+    } else {
+      throw new Error('Something went wrong, try again latter.');
+    }
+  }
+
+  if (res.status !== 201) {
+    throw new Error('Something went wrong, try again latter.');
+  }
+}
+
+export async function logout() {
+  const res = await fetch('/api/logout', {
+    method: 'POST',
+  });
+
+  if (res.status !== 200) {
+    return false;
+  }
+
+  return true;
 }

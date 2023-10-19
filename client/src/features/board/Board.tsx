@@ -13,84 +13,88 @@ import { columnCacheType } from '../../types/types';
 import Columns from '../column/Columns';
 import BoardLock from './BoardLock';
 import ErrorMessage from '../../ui/ErrorMessage';
+import { memo } from 'react';
 
-export default function Board() {
+function Board() {
   const { boardId } = useParams();
   const queryClient = useQueryClient();
   const { data: columns } = useColumns(boardId ?? '');
   const { isLoading, isError, error, refetch } = useLoadBoard();
   const { mutate } = useUpdateBoard();
 
-  const onDragEndMemo = useCallback(function onDragEnd(result: DropResult) {
-    const { source, destination } = result;
+  const onDragEndMemo = useCallback(
+    function onDragEnd(result: DropResult) {
+      const { source, destination } = result;
 
-    if (!source || !destination) return;
-    if (
-      source.droppableId === destination.droppableId &&
-      source.index === destination.index
-    ) {
-      return;
-    }
+      if (!source || !destination) return;
+      if (
+        source.droppableId === destination.droppableId &&
+        source.index === destination.index
+      ) {
+        return;
+      }
 
-    const columnSource = queryClient.getQueryData<columnCacheType>([
-      boardId,
-      source.droppableId,
-    ]);
-
-    if (!columnSource) return;
-    const taskId = columnSource.tasks[source.index];
-
-    if (source.droppableId === destination.droppableId) {
-      mutate({
-        taskId: taskId,
-        newPosition: destination.index + 1,
-      });
-
-      const reorderedItems = reorder(
-        columnSource.tasks,
-        source.index,
-        destination.index
-      );
-
-      queryClient.setQueriesData([boardId, source.droppableId], {
-        ...columnSource,
-        tasks: reorderedItems,
-      });
-    } else {
-      mutate({
-        taskId: taskId,
-        newColumnId: destination.droppableId,
-        newPosition: destination.index + 1,
-      });
-
-      const columnDest = queryClient.getQueryData<columnCacheType>([
+      const columnSource = queryClient.getQueryData<columnCacheType>([
         boardId,
-        destination.droppableId,
+        source.droppableId,
       ]);
 
-      if (!columnDest) return;
+      if (!columnSource) return;
+      const taskId = columnSource.tasks[source.index];
 
-      const result = changeColumn(
-        columnSource.tasks,
-        columnDest.tasks,
-        source,
-        destination
-      );
+      if (source.droppableId === destination.droppableId) {
+        mutate({
+          taskId: taskId,
+          newPosition: destination.index + 1,
+        });
 
-      queryClient.setQueriesData<columnCacheType>(
-        [boardId, source.droppableId],
-        (oldData) => {
-          if (!oldData) return;
-          return { ...oldData, tasks: result[source.droppableId] };
-        }
-      );
+        const reorderedItems = reorder(
+          columnSource.tasks,
+          source.index,
+          destination.index
+        );
 
-      queryClient.setQueriesData([boardId, destination.droppableId], {
-        ...columnDest,
-        tasks: result[destination.droppableId],
-      });
-    }
-  }, []);
+        queryClient.setQueriesData([boardId, source.droppableId], {
+          ...columnSource,
+          tasks: reorderedItems,
+        });
+      } else {
+        mutate({
+          taskId: taskId,
+          newColumnId: destination.droppableId,
+          newPosition: destination.index + 1,
+        });
+
+        const columnDest = queryClient.getQueryData<columnCacheType>([
+          boardId,
+          destination.droppableId,
+        ]);
+
+        if (!columnDest) return;
+
+        const result = changeColumn(
+          columnSource.tasks,
+          columnDest.tasks,
+          source,
+          destination
+        );
+
+        queryClient.setQueriesData<columnCacheType>(
+          [boardId, source.droppableId],
+          (oldData) => {
+            if (!oldData) return;
+            return { ...oldData, tasks: result[source.droppableId] };
+          }
+        );
+
+        queryClient.setQueriesData([boardId, destination.droppableId], {
+          ...columnDest,
+          tasks: result[destination.droppableId],
+        });
+      }
+    },
+    [boardId, mutate, queryClient]
+  );
 
   if (!boardId) return null;
   if (isError) {
@@ -115,3 +119,7 @@ export default function Board() {
     </DragDropContext>
   );
 }
+
+const BoardMemo = memo(Board);
+
+export default BoardMemo;

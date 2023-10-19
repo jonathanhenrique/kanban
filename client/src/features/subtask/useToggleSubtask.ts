@@ -1,20 +1,17 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toggleCompleted } from '../../services/apiCalls';
 import { subtaskType, taskType } from '../../types/types';
+import { useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 export default function useToggleSubtask(subtask: subtaskType) {
+  const { boardId } = useParams();
   const queryClient = useQueryClient();
-  const {
-    isLoading: isUpdating,
-    mutate,
-    isError,
-    error,
-    reset,
-  } = useMutation({
+  const { isLoading: isUpdating, mutate } = useMutation({
     mutationFn: toggleCompleted,
     onSuccess: (data) => {
       queryClient.setQueryData<taskType>(
-        ['task', subtask.taskId],
+        [boardId, subtask.taskId],
         (oldData) => {
           if (!oldData) return;
 
@@ -28,7 +25,10 @@ export default function useToggleSubtask(subtask: subtaskType) {
         }
       );
     },
+    onError: (error) => {
+      toast.error((error as Error).message);
+    },
   });
 
-  return { isUpdating, mutate, isError, error, reset };
+  return { isUpdating, mutate };
 }

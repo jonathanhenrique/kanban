@@ -399,7 +399,7 @@ export const validateRegisterInput = [
           },
         });
         if (emailRegistered) {
-          throw new Error('email already registered');
+          throw new Error('Email already registered.');
         }
       }),
     body('password')

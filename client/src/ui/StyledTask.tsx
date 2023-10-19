@@ -9,7 +9,7 @@ const StyledTask = styled.div<Props>`
 
   position: relative;
 
-  padding: 1rem 1.2rem;
+  padding: 1.2rem;
   border: 1px solid var(--color-grey-500);
   border-radius: var(--border-radius-lg);
   background-color: var(--bg-color);

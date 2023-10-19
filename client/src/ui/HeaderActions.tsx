@@ -1,5 +1,6 @@
 import Modal from './Modal';
 import {
+  HiMiniArrowLeftOnRectangle,
   HiMiniEllipsisVertical,
   HiMiniTrash,
   HiMiniWrenchScrewdriver,
@@ -9,21 +10,33 @@ import Button from './formUI/Button';
 import FloatMenuConfirmation from './FloatMenuConfirmation';
 import useColumns from '../features/column/useColumns';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import NewTask from '../features/task/NewTask';
 import useDeleteBoard from '../features/board/useDeleteBoard';
+import { logout } from '../services/apiCalls';
+import toast from 'react-hot-toast';
 
 export default function HeaderActions() {
   const { boardId } = useParams();
   const [confirm, setConfirm] = useState('idle');
   const { data: columns } = useColumns(boardId ?? '');
   const { mutate } = useDeleteBoard();
+  const navigate = useNavigate();
 
   const disableNewTask = !(columns && columns.length > 0);
 
   function deleteBoardHandler() {
     if (!boardId) return;
     mutate(boardId);
+  }
+
+  async function handleLogout() {
+    try {
+      await logout();
+      navigate('/');
+    } catch (error) {
+      toast.error((error as Error).message);
+    }
   }
 
   return (
@@ -40,18 +53,23 @@ export default function HeaderActions() {
         actionOnConfirmation={deleteBoardHandler}
         confirm={confirm}
         setConfirm={setConfirm}
-        disabled={boardId === undefined}
       >
-        <div style={{ padding: '1rem 1.2rem' }}>
-          <Button variation="mini" onClick={() => setConfirm('toConfirm')}>
-            <HiMiniTrash />
-            <span>delete board</span>
-          </Button>
-          <Button disabled={true} variation="mini">
-            <HiMiniWrenchScrewdriver />
-            <span>edit board</span>
-          </Button>
-        </div>
+        <Button
+          disabled={boardId === undefined}
+          variation="mini"
+          onClick={() => setConfirm('toConfirm')}
+        >
+          <HiMiniTrash />
+          <span>delete board</span>
+        </Button>
+        <Button disabled={true} variation="mini">
+          <HiMiniWrenchScrewdriver />
+          <span>edit board</span>
+        </Button>
+        <Button variation="mini" onClick={handleLogout}>
+          <HiMiniArrowLeftOnRectangle />
+          <span>Log out</span>
+        </Button>
       </FloatMenuConfirmation>
       <Modal.Content name="newTask">
         <NewTask />

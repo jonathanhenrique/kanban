@@ -14,6 +14,7 @@ import Modal from '../../ui/Modal';
 import TaskInfo from './TaskInfo';
 import TaskDetails from './TaskDetails';
 import useGetTask from './useGetTask';
+import { memo } from 'react';
 
 type TaskProps = {
   provided: DraggableProvided;
@@ -21,10 +22,10 @@ type TaskProps = {
   taskId: string;
 };
 
-export default function Task({ provided, isDragging, taskId }: TaskProps) {
+function Task({ provided, isDragging, taskId }: TaskProps) {
   const { data: task } = useGetTask(taskId);
   const [confirm, setConfirm] = useState('idle');
-  const { isDeletingTask, mutate } = useDeleteTask(taskId);
+  const { mutate } = useDeleteTask(taskId);
 
   function deleteTask() {
     mutate(taskId);
@@ -44,26 +45,20 @@ export default function Task({ provided, isDragging, taskId }: TaskProps) {
             <DragDropHandler dndProps={provided.dragHandleProps} />
             <TaskInfo taskId={taskId} />
             <FloatMenuConfirmation
-              fineTunePosition={[115, 25]}
+              fineTunePosition={[95, 25]}
               icon={<HiMiniEllipsisVertical />}
               actionOnConfirmation={deleteTask}
               confirm={confirm}
               setConfirm={setConfirm}
-              isLoading={isDeletingTask}
             >
-              <div style={{ padding: '1rem 1.2rem' }}>
-                <Button
-                  variation="mini"
-                  onClick={() => setConfirm('toConfirm')}
-                >
-                  <HiMiniTrash />
-                  <span>delete task</span>
-                </Button>
-                <Button disabled={true} variation="mini">
-                  <HiMiniWrenchScrewdriver />
-                  <span>edit task</span>
-                </Button>
-              </div>
+              <Button variation="mini" onClick={() => setConfirm('toConfirm')}>
+                <HiMiniTrash />
+                <span>delete task</span>
+              </Button>
+              <Button disabled={true} variation="mini">
+                <HiMiniWrenchScrewdriver />
+                <span>edit task</span>
+              </Button>
             </FloatMenuConfirmation>
           </StyledTask>
         </li>
@@ -74,3 +69,7 @@ export default function Task({ provided, isDragging, taskId }: TaskProps) {
     </>
   );
 }
+
+const TaskMemo = memo(Task);
+
+export default TaskMemo;

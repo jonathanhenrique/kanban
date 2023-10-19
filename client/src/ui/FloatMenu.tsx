@@ -32,7 +32,7 @@ export default function FloatMenu({
 
   return (
     <>
-      <IconButton onClick={openFloat} open={isOpen} animateRotation={true}>
+      <IconButton onClick={openFloat} $open={isOpen} $animateRotation={true}>
         {icon}
       </IconButton>
       {!isRunningAnimation && !isOpen ? null : (
