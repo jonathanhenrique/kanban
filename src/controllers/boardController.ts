@@ -40,7 +40,11 @@ export async function getBoard(req, res, next) {
                 order: 'asc',
               },
               include: {
-                subTasks: true,
+                subTasks: {
+                  orderBy: {
+                    order: 'asc',
+                  },
+                },
               },
             },
           },

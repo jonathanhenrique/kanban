@@ -61,6 +61,7 @@ model SubTask {
 
   description String  @db.VarChar(255)
   completed   Boolean @default(false)
+  order       Int
 
   taskId String
   task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)

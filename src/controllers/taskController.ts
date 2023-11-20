@@ -27,8 +27,8 @@ export async function createTask(req, res, next) {
   let subTasksData = [];
 
   if (subTasks && subTasks.length > 0) {
-    subTasksData = subTasks.map((st: string) => {
-      return { description: st };
+    subTasksData = subTasks.map((st: string, idx: number) => {
+      return { description: st, order: idx };
     });
   }
 
