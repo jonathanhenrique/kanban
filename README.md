@@ -193,9 +193,9 @@ export function useUpdateBoard() {
       newPosition,
       newColumnId = null,
     }: {
-      taskId: string,
-      newPosition: number,
-      newColumnId?: null | string,
+      taskId: string;
+      newPosition: number;
+      newColumnId?: null | string;
     }) => {
       if (!boardId) throw new Error('You need to select a board!');
 
